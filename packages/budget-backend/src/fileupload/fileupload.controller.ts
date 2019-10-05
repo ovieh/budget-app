@@ -1,5 +1,6 @@
-import { Controller, Logger, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Logger, Post, UseInterceptors, UploadedFile, Get } from '@nestjs/common';
 import { FileInterceptor} from '@nestjs/platform-express';
+import { UploadCsvDto } from './DTO/upload-csv.dto';
 
 @Controller('fileupload')
 export class FileuploadController {
@@ -10,6 +11,11 @@ export class FileuploadController {
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file) {
     console.log(file);
+  }
+
+  @Get()
+  sayHi(): string {
+    return 'Hi';
   }
 
 }

@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
-import { FileuploadController } from './fileupload/fileupload.controller';
+import { FileuploadModule } from './fileupload/fileupload.module';
+import { TypeOrmModule} from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
 
 @Module({
-  imports: [],
-  controllers: [FileuploadController],
+  imports: [TypeOrmModule.forRoot(),
+  FileuploadModule],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly connection: Connection) {}
+}
