@@ -10,6 +10,7 @@ export class FileuploadController {
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file) {
+    // this.logger.log(file);
     console.log(file);
   }
 
