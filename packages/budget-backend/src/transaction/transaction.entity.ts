@@ -6,26 +6,29 @@ export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('date')
-  transactionDate: string;
+  @Column()
+  'Transaction Date': string;
 
   @Column()
-  sortcode: string;
+  'Transaction Type': string;
 
   @Column()
-  accountNumber: number;
+  'Sort Code': string;
+
+  @Column()
+  'Account Number': string;
 
   @Column('text')
-  description: string;
+  'Transaction Description': string;
 
   @Column('money')
-  debitAmount: number;
+  'Debit Amount': string;
 
   @Column('money')
-  creditAmount: number;
+  'Credit Amount': string;
 
   @Column('money')
-  balance: number;
+  'Balance': string;
 
   @BeforeInsert()
   addId() {
