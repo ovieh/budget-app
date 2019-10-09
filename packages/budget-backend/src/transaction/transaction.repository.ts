@@ -21,4 +21,5 @@ export class TransactionRepository extends Repository<Transaction> {
     }
 
   }
+
 }
