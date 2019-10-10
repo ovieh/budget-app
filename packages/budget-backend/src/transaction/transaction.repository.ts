@@ -6,7 +6,7 @@ import { Logger, InternalServerErrorException } from '@nestjs/common';
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
-  async importFile(file): Promise<Transaction[]> {
+  async importFile(file: Buffer): Promise<Transaction[]> {
 
     const readTransactions = parse(file.buffer.toString(), {
       columns: true,
