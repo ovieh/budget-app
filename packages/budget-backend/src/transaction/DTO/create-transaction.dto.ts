@@ -29,6 +29,4 @@ export class CreateTransaction {
   @IsNotEmpty()
   balance: number;
 
-
-
 }

@@ -7,28 +7,28 @@ export class Transaction extends BaseEntity {
   id: string;
 
   @Column()
-  'Transaction Date': string;
+  transactionDate: string;
 
   @Column()
-  'Transaction Type': string;
+  transactionType: string;
 
   @Column()
-  'Sort Code': string;
+  sortCode: string;
 
   @Column()
-  'Account Number': string;
+  accountNumber: string;
 
   @Column('text')
-  'Transaction Description': string;
+  transactionDescription: string;
 
   @Column('money')
-  'Debit Amount': string;
+  debitAmount: string;
 
   @Column('money')
-  'Credit Amount': string;
+  creditAmount: string;
 
   @Column('money')
-  'Balance': string;
+  balance: string;
 
   @BeforeInsert()
   addId() {

@@ -8,12 +8,39 @@ export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
   async importFile(file: Buffer): Promise<Transaction[]> {
 
-    const readTransactions = parse(file.buffer.toString(), {
+    const toCamel = (json: object) => {
+      let newO; let origKey; let newKey; let value;
+      if (json instanceof Array) {
+        // tslint:disable-next-line:no-shadowed-variable
+        return json.map((value) => {
+            if (typeof value === 'object') {
+              value = toCamel(value);
+            }
+            return value;
+        });
+      } else {
+        newO = {};
+        for (origKey in json) {
+          if (json.hasOwnProperty(origKey)) {
+            newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString();
+            value = json[origKey];
+            if (value instanceof Array || (value !== null && value.constructor === Object)) {
+              value = toCamel(value);
+            }
+            newO[newKey] = value;
+          }
+        }
+      }
+      return newO;
+    };
+
+    const parsedTransactions = parse(file.buffer.toString(), {
       columns: true,
     });
+    const arr = toCamel(JSON.parse(JSON.stringify(parsedTransactions).replace(/\s(?=\w+":)/g, '')));
 
     try {
-      const transaction =  await this.save(readTransactions);
+      const transaction =  await this.save(arr);
       return transaction;
     } catch (error) {
       this.logger.error(`Failed to save transaction.`);
