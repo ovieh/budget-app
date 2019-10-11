@@ -1,7 +1,8 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique } from 'typeorm';
 import * as uuidv4 from 'uuid/v4';
 
 @Entity()
+@Unique(['transactionDate', 'balance'])
 export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
