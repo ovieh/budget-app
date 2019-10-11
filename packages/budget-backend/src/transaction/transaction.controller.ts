@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Post, Body, Logger, Delete } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
@@ -26,6 +26,13 @@ export class TransactionController {
   ): Promise<Transaction> {
     this.logger.verbose(`Transaction "${createTransactionDto.transactionDescription}" was created`);
     return this.transactionService.createTransaction(createTransactionDto);
+  }
+
+  @Delete('/:id')
+  deleteTransaction(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<void> {
+    return this.transactionService.deleteTransactionById(id);
   }
 
 }

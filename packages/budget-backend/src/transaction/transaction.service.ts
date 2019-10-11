@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +20,15 @@ export class TransactionService {
   }
 
   async createTransaction(createTransactionDto: CreateTransactionDto) {
-    return this.transactionRepository.createTransaction(createTransactionDto);
+    return await this.transactionRepository.createTransaction(createTransactionDto);
+  }
+
+  async deleteTransactionById(id: string): Promise<void> {
+    const result = await this.transactionRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`No id with "${id}" found!`);
+    }
+
   }
 }

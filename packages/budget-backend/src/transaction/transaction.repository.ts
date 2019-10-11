@@ -71,11 +71,7 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.sortCode = sortCode;
     transaction.transactionType = transactionType;
 
-    console.log(transactionDate);
-
     await transaction.save();
     return transaction;
-
   }
-
 }
