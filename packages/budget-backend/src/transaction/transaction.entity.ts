@@ -23,13 +23,13 @@ export class Transaction extends BaseEntity {
   transactionDescription: string;
 
   @Column('money')
-  debitAmount: string;
+  debitAmount: number;
 
   @Column('money')
-  creditAmount: string;
+  creditAmount: number;
 
   @Column('money')
-  balance: string;
+  balance: number;
 
   @BeforeInsert()
   addId() {

@@ -1,21 +1,21 @@
 import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsAlpha, IsCurrency} from 'class-validator';
 
-export class CreateTransaction {
+export class CreateTransactionDto {
   @IsNotEmpty()
   @IsDate()
-  date: string;
+  transactionDate: string;
 
   @IsNotEmpty()
-  type: string;
+  transactionType: string;
 
   @IsNotEmpty()
-  sortcode: string;
+  sortCode: string;
 
   @IsNotEmpty()
   accountNumber: string;
 
   @IsNotEmpty()
-  description: string;
+  transactionDescription: string;
 
   @IsCurrency()
   @IsNotEmpty()

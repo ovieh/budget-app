@@ -1,5 +1,6 @@
 import { Transaction } from './transaction.entity';
 import { EntityRepository, Repository } from 'typeorm';
+import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import * as parse from 'csv-parse/lib/sync';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 
@@ -46,6 +47,34 @@ export class TransactionRepository extends Repository<Transaction> {
       this.logger.error(`Failed to save transaction.`);
       throw new InternalServerErrorException();
     }
+
+  }
+
+  async createTransaction(createTransactionDto: CreateTransactionDto) {
+    const {
+      accountNumber,
+      balance,
+      creditAmount,
+      transactionDate,
+      debitAmount,
+      transactionDescription,
+      sortCode,
+      transactionType } = createTransactionDto;
+
+    const transaction = new Transaction();
+    transaction.accountNumber = accountNumber;
+    transaction.balance = balance;
+    transaction.creditAmount = creditAmount;
+    transaction.transactionDate = transactionDate;
+    transaction.debitAmount = debitAmount;
+    transaction.transactionDescription = transactionDescription;
+    transaction.sortCode = sortCode;
+    transaction.transactionType = transactionType;
+
+    console.log(transactionDate);
+
+    await transaction.save();
+    return transaction;
 
   }
 
