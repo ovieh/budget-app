@@ -18,4 +18,8 @@ export class CategoryService {
   async findAll(): Promise<Category[]> {
     return await this.categoryRepository.find();
   }
+
+  async getCategoryById(id: number): Promise<Category> {
+    return await this.categoryRepository.findOne(id);
+  }
 }
