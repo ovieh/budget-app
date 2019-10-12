@@ -1,4 +1,5 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique, ManyToOne } from 'typeorm';
+import { Category } from './category.entity';
 import * as uuidv4 from 'uuid/v4';
 
 @Entity()
@@ -30,6 +31,9 @@ export class Transaction extends BaseEntity {
 
   @Column('money')
   balance: number;
+
+  @ManyToOne(type => Category, category => category.transaction, { eager: false })
+  category: Category;
 
   @BeforeInsert()
   addId() {

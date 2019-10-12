@@ -29,6 +29,6 @@ export class TransactionService {
     if (result.affected === 0) {
       throw new NotFoundException(`No id with "${id}" found!`);
     }
-
   }
+
 }
