@@ -3,6 +3,7 @@ import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
+import { Category } from 'src/category/category.entity';
 
 @Injectable()
 export class TransactionService {
@@ -11,11 +12,11 @@ export class TransactionService {
     private transactionRepository: TransactionRepository,
   ) {}
 
-  async findAll(): Promise<Transaction[]> {
+  async getTransaction(): Promise<Transaction[]> {
     return await this.transactionRepository.find();
   }
 
-  async findOne(id: string): Promise<Transaction> {
+  async getTransactionsById(id: string): Promise<Transaction> {
     return await this.transactionRepository.findOne(id);
   }
 
@@ -29,6 +30,17 @@ export class TransactionService {
     if (result.affected === 0) {
       throw new NotFoundException(`No id with "${id}" found!`);
     }
+  }
+  async updateCategoryById(
+    id: string, category: Category): Promise<Transaction> {
+
+    const transaction =  await this.getTransactionsById(id);
+
+    transaction.name = category;
+    await transaction.save();
+
+    return transaction;
+
   }
 
 }
