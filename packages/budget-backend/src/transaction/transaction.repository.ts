@@ -8,7 +8,6 @@ import { Logger, InternalServerErrorException } from '@nestjs/common';
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
   async importFile(file: Buffer): Promise<Transaction[]> {
-
     const toCamel = (json: object) => {
       let newO; let origKey; let newKey; let value;
       if (json instanceof Array) {
@@ -76,6 +75,12 @@ export class TransactionRepository extends Repository<Transaction> {
   }
 
   async getTransactionsByMonth(month: number): Promise<Transaction[]> {
-    return await this.query(`SELECT * FROM transaction WHERE EXTRACT(MONTH FROM "transactionDate") = ${month}`);
+    try {
+      const result =  await this.query(`SELECT * FROM transaction WHERE EXTRACT(MONTH FROM "transactionDate") = ${month}`);
+      return result;
+    } catch {
+      this.logger.error(`Failed to get results for month: "${month}"`);
+      throw new InternalServerErrorException();
+    }
   }
 }
