@@ -74,4 +74,8 @@ export class TransactionRepository extends Repository<Transaction> {
     await transaction.save();
     return transaction;
   }
+
+  async getTransactionsByMonth(month: number): Promise<Transaction[]> {
+    return await this.query(`SELECT * FROM transaction WHERE EXTRACT(MONTH FROM "transactionDate") = ${month}`);
+  }
 }

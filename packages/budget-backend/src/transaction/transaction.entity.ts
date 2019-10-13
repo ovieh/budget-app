@@ -8,7 +8,7 @@ export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column('date')
   transactionDate: string;
 
   @Column()

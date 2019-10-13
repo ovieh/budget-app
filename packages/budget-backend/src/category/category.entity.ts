@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, BeforeInsert } from 'typeorm';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
 import { Transaction } from '../transaction/transaction.entity';
 
 @Entity()

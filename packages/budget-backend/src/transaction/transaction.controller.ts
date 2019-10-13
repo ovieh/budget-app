@@ -25,7 +25,7 @@ export class TransactionController {
     return this.transactionService.getTransactionsById(id);
   }
 
-  @Post()
+  @Post('/create')
   createTransaction(
     @Body() createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
@@ -59,4 +59,12 @@ export class TransactionController {
   ): Promise<Transaction> {
     return this.transactionService.updateCategoryById(id, name);
   }
+
+  @Get('/month/:month')
+  getTransactionsByMonth(
+    @Param('month')  month: number,
+  ): Promise<Transaction[]> {
+    return this.transactionService.getTransactionsByMonth(month);
+  }
+
 }
