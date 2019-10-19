@@ -85,11 +85,15 @@ export class TransactionRepository extends Repository<Transaction> {
 
   async getTransactionsByMonth(
     month: number, user: User): Promise<Transaction[]> {
-    const query = this.createQueryBuilder('transaction');
-    // query.where('transaction.userId = :userId', { userid: user.id })
+
     try {
-      const result =  await this.query(`SELECT * FROM transaction WHERE EXTRACT(MONTH FROM "transactionDate") = ${month}`);
-      return result;
+      const query = await this.createQueryBuilder('transaction')
+      .select('transaction')
+      .where('transaction.userId = :userId', {userId: user.id})
+      .andWhere(`EXTRACT(Month FROM transaction.transactionDate) = ${month}`)
+      .getMany();
+
+      return query;
     } catch {
       this.logger.error(`Failed to get results for month: "${month}"`);
       throw new InternalServerErrorException();
