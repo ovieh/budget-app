@@ -82,13 +82,13 @@ export class TransactionController {
     return this.transactionService.getTransactionsByMonth(month, user);
   }
 
-  // @Get('/date/:year/:month')
-  // getTransactionsByYearAndMonth(
-  //   @Param('year') year: number,
-  //   @Param('month') month: number,
-  //   @GetUser() user: User,
-  // ): Promise<Transaction[]> {
-  //   return this.transactionService.getTransactionsByYearAndMonth(year, month, user);
-  // }
+  @Get('/date/:year/:month')
+  getTransactionsByYearAndMonth(
+    @Param('year') year: number,
+    @Param('month') month: number,
+    @GetUser() user: User,
+  ): Promise<Transaction[]> {
+    return this.transactionService.getTransactionsByYearAndMonth(year, month, user);
+  }
 
 }

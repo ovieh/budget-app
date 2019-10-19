@@ -87,15 +87,35 @@ export class TransactionRepository extends Repository<Transaction> {
     month: number, user: User): Promise<Transaction[]> {
 
     try {
-      const query = await this.createQueryBuilder('transaction')
+      const results = await this.createQueryBuilder('transaction')
       .select('transaction')
       .where('transaction.userId = :userId', {userId: user.id})
       .andWhere(`EXTRACT(Month FROM transaction.transactionDate) = ${month}`)
       .getMany();
 
-      return query;
+      return results;
     } catch {
       this.logger.error(`Failed to get results for month: "${month}"`);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getTransactionsByYearAndMonth(
+    year: number,
+    month: number,
+    user: User): Promise<Transaction[]> {
+
+    try {
+      const results = await this.createQueryBuilder('transaction')
+      .select('transaction')
+      .where('transaction.userId = :userId', {userId: user.id})
+      .andWhere(`EXTRACT(Year FROM transaction.transactionDate) = ${year}`)
+      .andWhere(`EXTRACT(Month FROM transaction.transactionDate) = ${month}`)
+      .getMany();
+
+      return results;
+    } catch {
+      this.logger.error(`Failed to get results for "${year}/${month}"`);
       throw new InternalServerErrorException();
     }
   }

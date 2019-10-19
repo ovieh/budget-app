@@ -54,4 +54,12 @@ export class TransactionService {
     return await this.transactionRepository.getTransactionsByMonth(month, user);
   }
 
+  async getTransactionsByYearAndMonth(
+    year: number,
+    month: number,
+    user: User,
+  ): Promise<Transaction[]> {
+    return await this.transactionRepository.getTransactionsByYearAndMonth(year, month, user);
+  }
+
 }
