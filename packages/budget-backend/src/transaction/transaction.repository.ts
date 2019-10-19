@@ -50,7 +50,7 @@ export class TransactionRepository extends Repository<Transaction> {
       return transaction;
     } catch (error) {
       this.logger.error(`Failed to save transaction.`);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
 
   }
