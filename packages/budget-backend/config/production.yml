@@ -1,0 +1,7 @@
+server:
+  origin:  
+
+
+db:
+  synchronize: true
+

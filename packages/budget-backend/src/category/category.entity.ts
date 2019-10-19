@@ -1,5 +1,6 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, ManyToOne } from 'typeorm';
 import { Transaction } from '../transaction/transaction.entity';
+import { User } from '../auth/user.entity';
 
 @Entity()
 @Unique(['name'])
@@ -14,4 +15,6 @@ export class Category extends BaseEntity {
   @OneToMany(type => Transaction, transaction => transaction.name, { eager: true })
   transaction: Transaction;
 
+  @ManyToOne(type => User, user => user.category, { eager: false })
+  user: User;
 }

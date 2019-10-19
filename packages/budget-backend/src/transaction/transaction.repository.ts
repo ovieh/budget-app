@@ -3,11 +3,15 @@ import { EntityRepository, Repository } from 'typeorm';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import * as parse from 'csv-parse/lib/sync';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
+import { User } from '../auth/user.entity';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
-  async importFile(file: Buffer): Promise<Transaction[]> {
+  async importFile(
+    file: Buffer,
+    user: User,
+    ): Promise<Transaction[]> {
     const toCamel = (json: object) => {
       let newO; let origKey; let newKey; let value;
       if (json instanceof Array) {
@@ -34,10 +38,14 @@ export class TransactionRepository extends Repository<Transaction> {
       return newO;
     };
 
+
     const parsedTransactions = parse(file.buffer.toString(), {
       columns: true,
     });
     const arr = toCamel(JSON.parse(JSON.stringify(parsedTransactions).replace(/\s(?=\w+":)/g, '')));
+
+    console.log(user);
+
 
     try {
       const transaction =  await this.save(arr);
@@ -49,7 +57,10 @@ export class TransactionRepository extends Repository<Transaction> {
 
   }
 
-  async createTransaction(createTransactionDto: CreateTransactionDto) {
+  async createTransaction(
+    createTransactionDto: CreateTransactionDto,
+    user: User,
+    ) {
     const {
       accountNumber,
       balance,
@@ -69,12 +80,16 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.transactionDescription = transactionDescription;
     transaction.sortCode = sortCode;
     transaction.transactionType = transactionType;
+    transaction.user = user;
 
     await transaction.save();
     return transaction;
   }
 
-  async getTransactionsByMonth(month: number): Promise<Transaction[]> {
+  async getTransactionsByMonth(
+    month: number, user: User): Promise<Transaction[]> {
+    const query = this.createQueryBuilder('transaction');
+    // query.where('transaction.userId = :userId', { userid: user.id })
     try {
       const result =  await this.query(`SELECT * FROM transaction WHERE EXTRACT(MONTH FROM "transactionDate") = ${month}`);
       return result;

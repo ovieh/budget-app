@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Transaction } from '../transaction/transaction.entity';
 import { TransactionRepository } from '../transaction/transaction.repository';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class FileuploadService {
@@ -8,7 +9,7 @@ export class FileuploadService {
     private transactionRepository: TransactionRepository,
   ) {}
 
-  async importFile(file: Buffer): Promise<Transaction[]> {
-    return this.transactionRepository.importFile(file);
+  async importFile(file: Buffer, user: User): Promise<Transaction[]> {
+    return this.transactionRepository.importFile(file, user);
   }
 }

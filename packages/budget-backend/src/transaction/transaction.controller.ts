@@ -1,12 +1,16 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Body, Logger, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Post, Body, Logger, Delete, Patch, UseGuards } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CategoryService } from '../category/category.service';
 import { Transaction } from './transaction.entity';
 import { Category } from '../category/category.entity';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { CreateCategoryDto } from './DTO/create-category.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from '../auth/user.entity';
+import { GetUser } from '../auth/get-user.decorator';
 
 @Controller('transaction')
+@UseGuards(AuthGuard())
 export class TransactionController {
   private logger = new Logger('Task Controller');
   constructor(private transactionService: TransactionService,
@@ -14,57 +18,68 @@ export class TransactionController {
   ) {}
 
   @Get()
-  getTransaction(): Promise<Transaction[]> {
-    return this.transactionService.getTransaction();
+  getTransactions(
+    @GetUser() user: User,
+  ): Promise<Transaction[]> {
+    console.log(user);
+    return this.transactionService.getTransaction(user);
   }
 
   @Get('/:id')
   getTransactionById(
     @Param('id', ParseUUIDPipe) id: string,
+    @GetUser() user: User,
     ): Promise<Transaction> {
-    return this.transactionService.getTransactionsById(id);
+    return this.transactionService.getTransactionsById(id, user);
   }
 
   @Post('/create')
   createTransaction(
     @Body() createTransactionDto: CreateTransactionDto,
+    @GetUser() user: User,
   ): Promise<Transaction> {
     this.logger.verbose(`Transaction "${createTransactionDto.transactionDescription}" was created`);
-    return this.transactionService.createTransaction(createTransactionDto);
+    return this.transactionService.createTransaction(createTransactionDto, user);
   }
 
   @Delete('/:id')
   deleteTransaction(
     @Param('id', ParseUUIDPipe) id: string,
+    @GetUser() user: User,
   ): Promise<void> {
-    return this.transactionService.deleteTransactionById(id);
+    return this.transactionService.deleteTransactionById(id, user);
   }
 
   @Post('/category')
   createCategory(
     @Body() createCategoryDto: CreateCategoryDto,
+    @GetUser() user: User,
   ): Promise<Category> {
-    return this.categoryService.createCategory(createCategoryDto);
+    return this.categoryService.createCategory(createCategoryDto, user);
   }
 
   @Get('/:id/category')
-  getTransactionCategory(): Promise <Category[]> {
-    return this.categoryService.findAll();
+  getTransactionCategory(
+    @GetUser() user: User,
+  ): Promise <Category[]> {
+    return this.categoryService.findAll(user);
   }
 
   @Patch('/:id/category')
   updateCategoryById(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('name') name: Category,
+    @GetUser() user: User,
   ): Promise<Transaction> {
-    return this.transactionService.updateCategoryById(id, name);
+    return this.transactionService.updateCategoryById(id, name, user);
   }
 
   @Get('/month/:month')
   getTransactionsByMonth(
     @Param('month')  month: number,
+    @GetUser() user: User,
   ): Promise<Transaction[]> {
-    return this.transactionService.getTransactionsByMonth(month);
+    return this.transactionService.getTransactionsByMonth(month, user);
   }
 
 }

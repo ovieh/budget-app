@@ -2,6 +2,9 @@ import { Controller, Logger, Get, Post, Param, ParseIntPipe } from '@nestjs/comm
 import { CategoryService } from './category.service';
 import { Transaction } from '../transaction/transaction.entity';
 import { Category } from './category.entity';
+import { User } from '../auth/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../auth/get-user.decorator';
 
 @Controller('category')
 export class CategoryController {
@@ -9,15 +12,18 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Get()
-  getCategories(): Promise<Category[]> {
-    return this.categoryService.findAll();
+  getCategories(
+    @GetUser() user: User,
+  ): Promise<Category[]> {
+    return this.categoryService.findAll(user);
   }
 
   @Get('/:id')
   getTransactionsByCategory(
     @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
   ): Promise<Category> {
-    return this.categoryService.getCategoryById(id);
+    return this.categoryService.getCategoryById(id, user);
   }
 
 }
