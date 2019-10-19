@@ -38,17 +38,15 @@ export class TransactionRepository extends Repository<Transaction> {
       return newO;
     };
 
-
     const parsedTransactions = parse(file.buffer.toString(), {
       columns: true,
     });
     const arr = toCamel(JSON.parse(JSON.stringify(parsedTransactions).replace(/\s(?=\w+":)/g, '')));
 
-    console.log(user);
-
+    const transactions = arr.map(transaction => ({...transaction, user}));
 
     try {
-      const transaction =  await this.save(arr);
+      const transaction =  await this.save(transactions);
       return transaction;
     } catch (error) {
       this.logger.error(`Failed to save transaction.`);
@@ -81,7 +79,6 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.sortCode = sortCode;
     transaction.transactionType = transactionType;
     transaction.user = user;
-
     await transaction.save();
     return transaction;
   }

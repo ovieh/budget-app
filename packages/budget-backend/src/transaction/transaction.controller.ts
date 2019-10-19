@@ -21,7 +21,7 @@ export class TransactionController {
   getTransactions(
     @GetUser() user: User,
   ): Promise<Transaction[]> {
-    console.log(user);
+    // console.log(user);
     return this.transactionService.getTransaction(user);
   }
 
@@ -74,12 +74,21 @@ export class TransactionController {
     return this.transactionService.updateCategoryById(id, name, user);
   }
 
-  @Get('/month/:month')
+  @Get('/date/:month')
   getTransactionsByMonth(
     @Param('month')  month: number,
     @GetUser() user: User,
   ): Promise<Transaction[]> {
     return this.transactionService.getTransactionsByMonth(month, user);
   }
+
+  // @Get('/date/:year/:month')
+  // getTransactionsByYearAndMonth(
+  //   @Param('year') year: number,
+  //   @Param('month') month: number,
+  //   @GetUser() user: User,
+  // ): Promise<Transaction[]> {
+  //   return this.transactionService.getTransactionsByYearAndMonth(year, month, user);
+  // }
 
 }
