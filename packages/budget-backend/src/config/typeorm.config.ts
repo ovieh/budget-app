@@ -17,7 +17,7 @@ const connectionOptions = process.env.DATABASE_URL && PostGresConnectionStringPa
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,
-  url: process.env.DATA_URL,
+  url: process.env.DATABASE_URL,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: dbConfig.synchronize,
 };
