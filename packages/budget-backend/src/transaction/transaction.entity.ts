@@ -25,13 +25,13 @@ export class Transaction extends BaseEntity {
   @Column('text')
   transactionDescription: string;
 
-  @Column('money')
+  @Column('numeric')
   debitAmount: number;
 
-  @Column('money')
+  @Column('numeric')
   creditAmount: number;
 
-  @Column('money')
+  @Column('numeric')
   balance: number;
 
   @ManyToOne(type => Category, category => category.transaction, { eager: false })
