@@ -11,7 +11,7 @@ export class CategoryRepository extends Repository<Category> {
   async createCategory(
     createCategoryDto: CreateCategoryDto,
     user: User,
-    ) {
+    ): Promise<Category> {
     const { name } = createCategoryDto;
     const category = new Category();
     category.name = name;

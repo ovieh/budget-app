@@ -1,4 +1,4 @@
-import { Controller, Logger, Get, Post, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Logger, Get, Post, Param, ParseIntPipe, Body, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Transaction } from '../transaction/transaction.entity';
 import { Category } from './category.entity';
@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 
 @Controller('category')
+@UseGuards(AuthGuard())
 export class CategoryController {
   private logger = new Logger('Category Controller');
   constructor(private categoryService: CategoryService) {}
