@@ -1,8 +1,8 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as config from 'config';
-import * as PostGresConnectionStringParser from 'pg-connection-string';
+// import * as PostGresConnectionStringParser from 'pg-connection-string';
 const dbConfig = config.get('db');
-const connectionOptions = process.env.DATABASE_URL && PostGresConnectionStringParser.parse(process.env.DATABASE_URL);
+// const connectionOptions = process.env.DATABASE_URL && PostGresConnectionStringParser.parse(process.env.DATABASE_URL);
 
 // export const typeOrmConfig: TypeOrmModuleOptions = {
 //   type: dbConfig.type,
