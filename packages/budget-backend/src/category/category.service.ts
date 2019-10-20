@@ -4,7 +4,6 @@ import { Category } from './category.entity';
 import { CreateCategoryDto } from 'src/transaction/DTO/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/user.entity';
-import { Transaction } from 'src/transaction/transaction.entity';
 
 @Injectable()
 export class CategoryService {
