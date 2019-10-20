@@ -11,6 +11,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || serverConfig.port;
 
+  console.log(process.env.DATABASE_URL);
+
   if (process.env.NODE_ENV === 'development') {
     app.enableCors();
   } else {
