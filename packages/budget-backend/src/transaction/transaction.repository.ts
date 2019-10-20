@@ -12,6 +12,7 @@ export class TransactionRepository extends Repository<Transaction> {
     file: Buffer,
     user: User,
     ): Promise<Transaction[]> {
+    // Figure out a more elegant way of doing this
     const toCamel = (json: object) => {
       let newO; let origKey; let newKey; let value;
       if (json instanceof Array) {
