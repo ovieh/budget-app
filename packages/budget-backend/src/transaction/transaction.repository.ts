@@ -43,7 +43,7 @@ export class TransactionRepository extends Repository<Transaction> {
       columns: true,
     });
     const arr = toCamel(JSON.parse(JSON.stringify(parsedTransactions).replace(/\s(?=\w+":)/g, '')));
-
+    console.log(arr);
     const transactions = arr.map(transaction => ({...transaction, user}));
 
     try {
