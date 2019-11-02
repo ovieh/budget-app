@@ -1,5 +1,5 @@
 import { Transaction } from './transaction.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, Column } from 'typeorm';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import * as parse from 'csv-parse/lib/sync';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
@@ -13,17 +13,26 @@ export class TransactionRepository extends Repository<Transaction> {
     user: User,
     ): Promise<Transaction[]> {
 
+    // Rewrite this as stream
     const parsedTransactions = parse(file.buffer.toString(), {
       columns: [
-      'transactionDate',
-      'transactionType',
-      'sortCode',
-      'accountNumber',
-      'transactionDescription',
-      'debitAmount',
-      'creditAmount',
-      'balance',
-    ],
+        'transactionDate',
+        'transactionType',
+        'sortCode',
+        'accountNumber',
+        'transactionDescription',
+        'debitAmount',
+        'creditAmount',
+        'balance',
+      ],
+      // Casts empty debits / credits as 0
+      cast: (value, context) => {
+        if ((context.column === 'debitAmount' || context.column === 'creditAmount') && value === '') {
+          return 0;
+        } else {
+          return value;
+        }
+      },
     });
 
     // remove first element, which just containers headers
