@@ -1,7 +1,8 @@
 import { Transaction } from './transaction.entity';
-import { EntityRepository, Repository, Column } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import * as parse from 'csv-parse/lib/sync';
+import * as moment from 'moment';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 import { User } from '../auth/user.entity';
 
@@ -25,10 +26,13 @@ export class TransactionRepository extends Repository<Transaction> {
         'creditAmount',
         'balance',
       ],
-      // Casts empty debits / credits as 0
       cast: (value, context) => {
+        // Casts empty debits / credits as 0
         if ((context.column === 'debitAmount' || context.column === 'creditAmount') && value === '') {
           return 0;
+        // convert date format
+        } else if (context.column === 'transactionDate') {
+          return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
         } else {
           return value;
         }
