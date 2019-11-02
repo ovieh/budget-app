@@ -16,7 +16,14 @@ export class CategoryRepository extends Repository<Category> {
     const category = new Category();
     category.name = name;
     category.user = user;
-    await category.save();
-    return category;
+    try {
+      await category.save();
+      return category;
+    } catch (error) {
+      if (error.code === '23505') {
+        this.logger.error(`Category ${name} aleady exists!`);
+      }
+    }
+
   }
 }
