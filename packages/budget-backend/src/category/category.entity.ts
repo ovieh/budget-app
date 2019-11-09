@@ -12,6 +12,9 @@ export class Category extends BaseEntity {
   @Column()
   name: string;
 
+  @Column('numeric', { precision: 10, scale: 2 })
+  budget: number;
+
   @OneToMany(type => Transaction, transaction => transaction.name, { eager: true })
   transaction: Transaction;
 

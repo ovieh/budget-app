@@ -12,10 +12,11 @@ export class CategoryRepository extends Repository<Category> {
     createCategoryDto: CreateCategoryDto,
     user: User,
     ): Promise<Category> {
-    const { name } = createCategoryDto;
+    const { name, budget } = createCategoryDto;
     const category = new Category();
     category.name = name;
     category.user = user;
+    category.budget = budget;
     try {
       await category.save();
       delete category.user;

@@ -5,6 +5,9 @@ export class CreateCategoryDto {
   @IsAlpha()
   name: string;
 
+  @IsNumber()
+  budget: number;
+
   // @IsNumber()
   // userId: number;
 }
