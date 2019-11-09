@@ -64,6 +64,7 @@ export class CategoryRepository extends Repository<Category> {
     }
   }
 
+
   async removeCategoryById(
     id: number,
     user: User,

@@ -36,7 +36,10 @@ export class TransactionService {
     }
   }
   async updateCategoryById(
-    id: string, category: Category, user: User): Promise<Transaction> {
+    id: string,
+    category: Category,
+    user: User,
+    ): Promise<Transaction> {
 
     const transaction =  await this.getTransactionsById(id, user);
 

@@ -37,6 +37,22 @@ export class CategoryService {
     return found;
   }
 
+  async updateCategory(
+    id: number,
+    user: User,
+    name: string,
+    budget: number,
+  ): Promise<Category> {
+    const category = await this.getCategoryById(id, user);
+
+    category.name = name;
+    category.budget = budget;
+
+    await category.save();
+    return category;
+
+  }
+
   async getCategoryByDescription(
     description: string,
     user: User,
