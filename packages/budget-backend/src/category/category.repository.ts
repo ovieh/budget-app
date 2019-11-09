@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, Transaction } from 'typeorm';
 import { Category } from './category.entity';
 import { Logger, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
@@ -51,26 +51,49 @@ export class CategoryRepository extends Repository<Category> {
     description: string,
     user: User,
   ): Promise<Category> {
-    try {
-      const found = await this.createQueryBuilder('category')
-        .select('category')
-        // .where('category.userId = :userId', {userId: user.id})
-        .getOne();
-      return found;
-    } catch (error) {
-      this.logger.error(`Could not find description by "${description}"`);
-      throw new InternalServerErrorException();
 
+    const query = this.createQueryBuilder('category')
+      .select('category')
+      .leftJoinAndSelect('category.transaction', 'transaction')
+      .where('transaction.userId = :userId', {userId: user.id})
+      .andWhere('transaction.transactionDescription = :description', {description});
+
+    try {
+      const categories = await query.getOne();
+      return categories;
+
+    } catch (error) {
+        this.logger.error(`Failed to get tasks for user "${user.username}".`, error.stack);
+        throw new BadRequestException();
     }
   }
 
+  // async getCategoryByDescription(
+  //   description: string,
+  //   user: User,
+  // ): Promise<Category> {
+  //   try {
+  //     const found = await this.createQueryBuilder('category')
+  //       // .select('category')
+  //       .where('"userId" = :userId', {userId: user.id })
+  //       // .andWhere('"transactionDescription" = :description', {description})
+  //       .getOne();
+  //       // .select('category')
+  //       // .where('"userId" = :userId', {userId: user.id})
+  //       // .getOne();
+  //     console.log('found', user.id);
+  //     return found;
+  //   } catch (error) {
+  //     this.logger.error(`Could not find description by "${description}"`, error.stack);
+  //     throw new InternalServerErrorException();
+
+  //   }
+  // }
 
   async removeCategoryById(
     id: number,
     user: User,
   ): Promise<void> {
-    // const query = this.createQueryBuilder('category');
-    // query.where('"userId" = :userId', {userId: user.id });
 
     try {
       this.createQueryBuilder('category')

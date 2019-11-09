@@ -87,7 +87,9 @@ export class TransactionRepository extends Repository<Transaction> {
   }
 
   async getTransactionsByMonth(
-    month: number, user: User): Promise<Transaction[]> {
+    month: number,
+    user: User,
+  ): Promise<Transaction[]> {
 
     try {
       const results = await this.createQueryBuilder('transaction')
@@ -106,7 +108,8 @@ export class TransactionRepository extends Repository<Transaction> {
   async getTransactionsByYearAndMonth(
     year: number,
     month: number,
-    user: User): Promise<Transaction[]> {
+    user: User,
+  ): Promise<Transaction[]> {
 
     try {
       const results = await this.createQueryBuilder('transaction')
@@ -122,5 +125,10 @@ export class TransactionRepository extends Repository<Transaction> {
       throw new InternalServerErrorException();
     }
   }
+
+  // async getCategoryByDescription(
+  //   user: User,
+  //   description: string,
+  // )
 
 }

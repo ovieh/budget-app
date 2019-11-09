@@ -45,7 +45,7 @@ export class CategoryController {
 
   @Patch('/:id')
   updateCategory(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body('name') name: string,
     @Body('budget') budget: number,
     @GetUser() user: User,
