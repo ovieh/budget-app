@@ -27,4 +27,12 @@ export class CategoryController {
     return this.categoryService.getCategoryById(id, user);
   }
 
+  @Post('/description')
+  getCategoryByDescription(
+    @GetUser() user: User,
+    @Body('description') description: string,
+  ): Promise<Category> {
+    return this.categoryService.getCategoryByDescription(description, user);
+  }
+
 }

@@ -77,8 +77,13 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.sortCode = sortCode;
     transaction.transactionType = transactionType;
     transaction.user = user;
-    await transaction.save();
-    return transaction;
+    try {
+      await transaction.save();
+      return transaction;
+    } catch (error) {
+      this.logger.error(error);
+    }
+
   }
 
   async getTransactionsByMonth(
@@ -117,4 +122,5 @@ export class TransactionRepository extends Repository<Transaction> {
       throw new InternalServerErrorException();
     }
   }
+
 }

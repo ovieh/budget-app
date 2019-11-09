@@ -21,7 +21,6 @@ export class TransactionController {
   getTransactions(
     @GetUser() user: User,
   ): Promise<Transaction[]> {
-    // console.log(user);
     return this.transactionService.getTransaction(user);
   }
 

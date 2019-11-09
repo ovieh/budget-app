@@ -22,7 +22,7 @@ export class CategoryService {
   async findAll(
     user: User,
   ): Promise<Category[]> {
-    return await this.categoryRepository.find({ where: { userId: user.id }});
+    return await this.categoryRepository.getCategories(user);
   }
 
   async getCategoryById(
@@ -34,6 +34,19 @@ export class CategoryService {
       throw new NotFoundException(`Category with ${id} not found`);
     }
     return found;
+  }
+
+  async getCategoryByDescription(
+    description: string,
+    user: User,
+  ): Promise<Category> {
+    const found = await this.categoryRepository.findOne({ where: { userId: user.id }});
+    if (!found) {
+      throw new NotFoundException(`Category with ${description} not found`);
+    }
+    // console.log(description);
+    return found;
+    // return this.categoryRepository.getCategoryByDescription(description, user);
   }
 
 }
