@@ -1,4 +1,4 @@
-import { Controller, Logger, Get, Post, Param, ParseIntPipe, Body, UseGuards } from '@nestjs/common';
+import { Controller, Logger, Get, Post, Param, ParseIntPipe, Body, UseGuards, Delete } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Transaction } from '../transaction/transaction.entity';
 import { Category } from './category.entity';
@@ -25,6 +25,14 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category> {
     return this.categoryService.getCategoryById(id, user);
+  }
+
+  @Delete('/:id')
+  removeCategoryById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.categoryService.removeCategoryById(id, user);
   }
 
   @Post('/description')

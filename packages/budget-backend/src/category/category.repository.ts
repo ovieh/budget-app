@@ -63,4 +63,24 @@ export class CategoryRepository extends Repository<Category> {
     }
   }
 
+  async removeCategoryById(
+    id: number,
+    user: User,
+  ): Promise<void> {
+    // const query = this.createQueryBuilder('category');
+    // query.where('"userId" = :userId', {userId: user.id });
+
+    try {
+      this.createQueryBuilder('category')
+        .delete()
+        .from('category')
+        .where('"userId" = :userId', {userId: user.id })
+        .execute();
+    } catch (error) {
+      this.logger.error(`Could not delete category with id: "${id}"`);
+
+    }
+
+  }
+
 }
