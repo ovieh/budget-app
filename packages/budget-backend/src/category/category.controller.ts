@@ -53,4 +53,12 @@ export class CategoryController {
     return this.categoryService.updateCategory(id, user, name, budget);
   }
 
+  // @Post('/:id/sum')
+  // sumCategoryDebits(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @GetUser() user: User,
+  // ): Promise <number> {
+  //   return this.categoryService.sumCategoryDebits(id, user);
+  // }
+
 }

@@ -57,12 +57,6 @@ export class CategoryService {
     description: string,
     user: User,
   ): Promise<Category> {
-    // const found = await this.categoryRepository.findOne({ where: { userId: user.id }});
-    // if (!found) {
-    //   throw new NotFoundException(`Category with ${description} not found`);
-    // }
-    // // console.log(description);
-    // return found;
     return this.categoryRepository.getCategoryByDescription(description, user);
   }
 
@@ -72,5 +66,12 @@ export class CategoryService {
   ): Promise<void> {
     return this.categoryRepository.removeCategoryById(id, user);
   }
+
+  // async sumCategoryDebits(
+  //   id: number,
+  //   user: User,
+  // ): Promise<number> {
+  //   return this.categoryRepository.sumCategoryDebits(id, user);
+  // }
 
 }

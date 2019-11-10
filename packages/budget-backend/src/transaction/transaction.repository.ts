@@ -126,9 +126,4 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  // async getCategoryByDescription(
-  //   user: User,
-  //   description: string,
-  // )
-
 }

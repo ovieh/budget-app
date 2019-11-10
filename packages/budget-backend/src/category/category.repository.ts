@@ -63,32 +63,10 @@ export class CategoryRepository extends Repository<Category> {
       return categories;
 
     } catch (error) {
-        this.logger.error(`Failed to get tasks for user "${user.username}".`, error.stack);
+        this.logger.error(`Failed to get category for description "${description}".`, error.stack);
         throw new BadRequestException();
     }
   }
-
-  // async getCategoryByDescription(
-  //   description: string,
-  //   user: User,
-  // ): Promise<Category> {
-  //   try {
-  //     const found = await this.createQueryBuilder('category')
-  //       // .select('category')
-  //       .where('"userId" = :userId', {userId: user.id })
-  //       // .andWhere('"transactionDescription" = :description', {description})
-  //       .getOne();
-  //       // .select('category')
-  //       // .where('"userId" = :userId', {userId: user.id})
-  //       // .getOne();
-  //     console.log('found', user.id);
-  //     return found;
-  //   } catch (error) {
-  //     this.logger.error(`Could not find description by "${description}"`, error.stack);
-  //     throw new InternalServerErrorException();
-
-  //   }
-  // }
 
   async removeCategoryById(
     id: number,
@@ -107,5 +85,21 @@ export class CategoryRepository extends Repository<Category> {
     }
 
   }
+
+  // async sumCategoryDebits(
+  //   id: number,
+  //   user: User,
+  // ): Promise<number> {
+  //   const { sum } = await this.createQueryBuilder('category')
+  //     .leftJoinAndSelect('category.transaction', 'transaction')
+  //     .where('transaction.id = :id', {id})
+  //     .select('SUM(transaction.debitAmount)', 'sum')
+  //     .where('transaction.userId = :userId', {userId: user.id})
+  //     .getRawOne();
+
+  //   return sum;
+
+  // }
+
 
 }
