@@ -77,7 +77,8 @@ export class CategoryRepository extends Repository<Category> {
       this.createQueryBuilder('category')
         .delete()
         .from('category')
-        .where('"userId" = :userId', {userId: user.id })
+        .where('category.id = :id', {id})
+        .andWhere('"userId" = :userId', {userId: user.id })
         .execute();
     } catch (error) {
       this.logger.error(`Could not delete category with id: "${id}"`);

@@ -4,6 +4,7 @@ import { FileuploadService } from './fileupload.service';
 import { TransactionRepository } from '../transaction/transaction.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
+import { FileuploadResolver } from './fileupload.resolver';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { AuthModule } from '../auth/auth.module';
     AuthModule,
   ],
   controllers: [FileuploadController],
-  providers: [FileuploadService],
+  providers: [FileuploadService, FileuploadResolver],
 })
 export class FileuploadModule {}

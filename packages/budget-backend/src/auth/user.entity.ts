@@ -2,26 +2,37 @@ import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany }
 import * as bcrypt from 'bcryptjs';
 import { Transaction } from '../transaction/transaction.entity';
 import { Category } from '../category/category.entity';
+import { ObjectType, ID, Field, InputType } from 'type-graphql';
 
+@ObjectType()
+@InputType('UserInput')
 @Entity()
 @Unique(['username'])
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
+  @Field(type => ID)
   id: number;
 
   @Column()
+  @Field()
   username: string;
 
   @Column()
+  @Field()
   password: string;
 
   @Column()
   salt: string;
 
+  @Column('int', { default: 0 })
+  tokenVersion: string;
+
   @OneToMany(type => Transaction, transaction => transaction.user, { eager: true})
+  @Field(type => Transaction)
   transaction: Transaction[];
 
   @OneToMany(type => Category, category => category.user, { eager: true})
+  @Field(type => Category)
   category: Category[];
 
   async validatePassword(password: string): Promise<boolean> {

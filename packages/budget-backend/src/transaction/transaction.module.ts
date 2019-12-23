@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransactionRepository } from './transaction.repository';
 import { CategoryRepository } from '../category/category.repository';
 import { AuthModule } from '../auth/auth.module';
+import { TransactionResolver } from './transaction.resolver';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { AuthModule } from '../auth/auth.module';
     AuthModule,
   ],
   controllers: [TransactionController],
-  providers: [TransactionService, CategoryService],
+  providers: [TransactionService, CategoryService, TransactionResolver],
 })
 export class TransactionModule {}

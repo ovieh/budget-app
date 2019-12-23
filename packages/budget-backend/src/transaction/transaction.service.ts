@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
+import { CategoryInput } from '../category/category.input';
 
 @Injectable()
 export class TransactionService {
@@ -16,6 +17,10 @@ export class TransactionService {
   async getTransaction(
     user: User): Promise<Transaction[]> {
     return await this.transactionRepository.find({ userId: user.id });
+  }
+
+  async findAll(): Promise<Transaction[]> {
+    return await this.transactionRepository.find();
   }
 
   async getTransactionsById(
@@ -37,15 +42,20 @@ export class TransactionService {
   }
   async updateCategoryById(
     id: string,
-    category: Category,
+    categoryInput: CategoryInput,
     user: User,
     ): Promise<Transaction> {
-
     const transaction =  await this.getTransactionsById(id, user);
+    // TODO: Fix this
+    const category = JSON.parse(JSON.stringify(categoryInput));
 
-    transaction.name = category;
-    await transaction.save();
+    transaction.name = category.id;
+    try {
+      await transaction.save();
 
+    } catch (error) {
+      throw new InternalServerErrorException('This broke', error);
+    }
     return transaction;
 
   }

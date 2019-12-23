@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as config from 'config';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const serverConfig = config.get('server');
@@ -26,6 +27,8 @@ async function bootstrap() {
 
     logger.log(`Accepting requests from "${serverConfig.origin}"`);
   }
+
+  app.use(cookieParser());
 
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);

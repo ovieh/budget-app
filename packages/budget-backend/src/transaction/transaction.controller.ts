@@ -17,6 +17,11 @@ export class TransactionController {
               private categoryService: CategoryService,
   ) {}
 
+  @Get('/findall')
+  findAll(): Promise<Transaction[]> {
+    return this.transactionService.findAll();
+  }
+
   @Get()
   getTransactions(
     @GetUser() user: User,

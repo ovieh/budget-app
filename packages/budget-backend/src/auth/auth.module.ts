@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import * as config from 'config';
+import { AuthResolver } from './auth.resolver';
 
 const jwtConfig = config.get('jwt');
 
@@ -25,6 +26,7 @@ const jwtConfig = config.get('jwt');
   providers: [
     AuthService,
     JwtStrategy,
+    AuthResolver,
   ],
   exports: [
     JwtStrategy,

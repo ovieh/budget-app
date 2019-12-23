@@ -1,6 +1,5 @@
 import { Controller, Logger, Get, Post, Param, ParseIntPipe, Body, UseGuards, Delete, Patch } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { Transaction } from '../transaction/transaction.entity';
 import { Category } from './category.entity';
 import { User } from '../auth/user.entity';
 import { AuthGuard } from '@nestjs/passport';

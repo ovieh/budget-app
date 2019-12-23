@@ -9,7 +9,7 @@ export class FileuploadService {
     private transactionRepository: TransactionRepository,
   ) {}
 
-  async importFile(file: Buffer, user: User): Promise<Transaction[]> {
+  async importFile(file: any, user: User): Promise<Transaction[]> {
     return this.transactionRepository.importFile(file, user);
   }
 }
