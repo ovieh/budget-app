@@ -5,9 +5,8 @@ import { LoginResponseDto } from './DTO/login-response.dto';
 import { User } from './user.entity';
 import { ResGql } from './get-user.decorator';
 import { Response } from 'express';
-import { Int, Arg } from 'type-graphql';
-import { getConnection } from 'typeorm';
 import { UserRepository } from './user.repository';
+import { sendRefreshToken } from './token-service';
 
 @Resolver(of => User)
 export class AuthResolver {
@@ -47,6 +46,14 @@ export class AuthResolver {
     @Args('userId') userId: number,
   ): Promise<boolean> {
     await this.userRepository.increment({id: userId}, 'tokenVersion', 1);
+    return true;
+  }
+
+  @Mutation(returns => Boolean)
+  async signOut(
+    @ResGql() res: Response,
+  ): Promise<boolean> {
+    sendRefreshToken(res, '');
     return true;
   }
 
