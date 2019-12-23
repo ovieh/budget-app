@@ -31,11 +31,9 @@ export class AppController {
     if (!user) {
       return res.send({ ok: false, accessToken: '' });
     }
-
     if (user.tokenVersion !== payload.tokenVersion) {
       return res.send({ ok: false, accessToken: '' });
     }
-
     sendRefreshToken(res, await this.authService.createRefreshToken(user));
 
     return res.send({ ok: true, accessToken: await this.authService.createAccessToken(user) });

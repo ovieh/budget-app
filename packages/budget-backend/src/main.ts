@@ -13,7 +13,7 @@ async function bootstrap() {
   const port = process.env.PORT || serverConfig.port;
 
   if (process.env.NODE_ENV === 'development') {
-    app.enableCors();
+    app.enableCors({origin: 'http://localhost:5000', credentials: true})
   } else {
     app.enableCors({ origin: serverConfig.origin });
     app.use(helmet());
@@ -34,3 +34,4 @@ async function bootstrap() {
   logger.log(`Application listening on port ${port}`);
 }
 bootstrap();
+

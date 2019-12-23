@@ -35,18 +35,19 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Credentials');
     }
 
+    const user = await this.userRespository.findOne({username});
+
     const payload = { username };
     const accessToken = await this.jwtService.sign(payload);
     this.logger.debug(`Generated JWT with payload ${JSON.stringify(payload)}`);
 
-    const refreshToken = this.createRefreshToken(payload);
+    const refreshToken = this.createRefreshToken({username: user.username, tokenVersion: user.tokenVersion});
     sendRefreshToken(res, refreshToken);
 
     return { accessToken };
   }
 
    createRefreshToken = (payload: any) => {
-    console.log(payload);
     return sign({ username: payload, tokenVersion: payload.tokenVersion }, jwtConfig.secret, { expiresIn: 604800 });
   }
 
