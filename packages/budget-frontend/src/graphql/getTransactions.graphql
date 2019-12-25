@@ -1,0 +1,8 @@
+query getTransactions {
+  getTransactions {
+    id
+    transactionDate
+    creditAmount
+    debitAmount
+  }
+}

@@ -207,6 +207,17 @@ export type UserInput = {
   category: Array<CatIn>,
 };
 
+export type GetTransactionsQueryVariables = {};
+
+
+export type GetTransactionsQuery = (
+  { __typename?: 'Query' }
+  & { getTransactions: Array<(
+    { __typename?: 'Transaction' }
+    & Pick<Transaction, 'id' | 'transactionDate' | 'creditAmount' | 'debitAmount'>
+  )> }
+);
+
 export type HiQueryVariables = {};
 
 
@@ -241,6 +252,41 @@ export type RegisterMutation = (
 );
 
 
+export const GetTransactionsDocument = gql`
+    query getTransactions {
+  getTransactions {
+    id
+    transactionDate
+    creditAmount
+    debitAmount
+  }
+}
+    `;
+
+/**
+ * __useGetTransactionsQuery__
+ *
+ * To run a query within a React component, call `useGetTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTransactionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTransactionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, baseOptions);
+      }
+export function useGetTransactionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, baseOptions);
+        }
+export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
+export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
+export type GetTransactionsQueryResult = ApolloReactCommon.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
 export const HiDocument = gql`
     query Hi {
   hi

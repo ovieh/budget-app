@@ -10,6 +10,7 @@ import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { getAccessToken, setAccessToken } from './accessToken';
 import { App } from './App';
 import jwtDecode from 'jwt-decode';
+import './index.css';
 
 const cache = new InMemoryCache({});
 
@@ -42,22 +43,6 @@ const requestLink = new ApolloLink(
             };
         })
 );
-
-// const client = new ApolloClient({
-//     uri: 'http://localhost:3000/graphql',
-//     credentials: 'include',
-//     request: (operation) => {
-//         const accessToken = getAccessToken();
-//         if (accessToken) {
-//             operation.setContext({
-//                 headers: {
-//                     authorization: `bearer ${accessToken}`
-//                 }
-//             });
-//         }
-
-//     }
-// });
 
 const client = new ApolloClient({
     link: ApolloLink.from([
@@ -101,7 +86,7 @@ const client = new ApolloClient({
         }),
         requestLink,
         new HttpLink({
-            uri: 'http://localhost:4000/graphql',
+            uri: 'http://localhost:3000/graphql',
             credentials: 'include'
         })
     ]),
