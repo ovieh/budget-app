@@ -1,3 +1,17 @@
 {
-    "extends": "./node_modules/eslint-config-react-app/index.js" 
+    "extends": [
+        "./node_modules/eslint-config-react-app/index.js",
+        "prettier",
+        "prettier/react",
+        "plugin:prettier/recommended"
+    ],
+    "plugins": [
+        "prettier"
+    ],
+    "rules": {
+        // "prettier/prettier": "error",
+        "semi":"error",
+        "quotes": [1, "single", {"allowTemplateLiterals": true}],
+        "indent": ["warn", 4]
+    }
 }
