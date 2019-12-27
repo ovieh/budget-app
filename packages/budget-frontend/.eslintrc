@@ -12,6 +12,7 @@
         // "prettier/prettier": "error",
         "semi":"error",
         "quotes": [1, "single", {"allowTemplateLiterals": true}],
-        "indent": ["warn", 4]
+        "indent": ["warn", 4],
+        "no-console": "warn"
     }
 }

@@ -4,5 +4,7 @@ query getTransactions {
     transactionDate
     creditAmount
     debitAmount
+    balance
+    transactionDescription
   }
 }

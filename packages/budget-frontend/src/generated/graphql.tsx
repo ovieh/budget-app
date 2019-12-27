@@ -214,7 +214,7 @@ export type GetTransactionsQuery = (
   { __typename?: 'Query' }
   & { getTransactions: Array<(
     { __typename?: 'Transaction' }
-    & Pick<Transaction, 'id' | 'transactionDate' | 'creditAmount' | 'debitAmount'>
+    & Pick<Transaction, 'id' | 'transactionDate' | 'creditAmount' | 'debitAmount' | 'balance' | 'transactionDescription'>
   )> }
 );
 
@@ -259,6 +259,8 @@ export const GetTransactionsDocument = gql`
     transactionDate
     creditAmount
     debitAmount
+    balance
+    transactionDescription
   }
 }
     `;
