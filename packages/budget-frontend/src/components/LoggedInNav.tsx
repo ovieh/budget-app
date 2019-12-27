@@ -5,7 +5,7 @@ interface Props {}
 
 const LoggedInLinks = [
     { to: '/', name: 'Home' },
-    { to: '/dashboard', name: 'Dashboard' }
+    { to: '/transactions', name: 'Transactions' }
 ];
 
 export const LoggedInNav: React.FC<Props> = () => (

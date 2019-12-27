@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHiQuery } from '../../generated/graphql';
+import { useHiQuery } from '../generated/graphql';
 
 interface Props {}
 

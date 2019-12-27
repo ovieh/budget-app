@@ -3,4 +3,11 @@
 body {
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
+    background: #636363;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #a2ab58, #636363);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #a2ab58, #636363);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }

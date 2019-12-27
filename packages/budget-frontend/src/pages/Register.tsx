@@ -1,29 +1,24 @@
 import React, { useState } from 'react';
-import { useSignInMutation } from '../../generated/graphql';
+import { useRegisterMutation } from '../generated/graphql';
 import { RouteComponentProps } from 'react-router-dom';
-import { setAccessToken } from '../../accessToken';
 
-interface Props {}
-
-export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
+export const Register: React.FC<RouteComponentProps> = ({ history }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [signIn] = useSignInMutation();
+    const [register] = useRegisterMutation();
+
     return (
         <form
             onSubmit={async e => {
                 e.preventDefault();
-                const response = await signIn({
+                const response = await register({
                     variables: {
                         username,
                         password
                     }
                 });
                 history.push('/');
-                // console.log(response);
-                if (response && response.data) {
-                    setAccessToken(response.data.signIn.accessToken);
-                }
+                console.log(response);
             }}
         >
             <div>
@@ -43,7 +38,7 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                     }}
                 />
             </div>
-            <button type='submit'>Sign In</button>
+            <button type='submit'>Register</button>
         </form>
     );
 };
