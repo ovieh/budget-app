@@ -207,6 +207,23 @@ export type UserInput = {
   category: Array<CatIn>,
 };
 
+export type CreateTransactionMutationVariables = {
+  transactionDate: Scalars['String'],
+  transactionType: Scalars['String'],
+  sortCode: Scalars['String'],
+  accountNumber: Scalars['String'],
+  transactionDescription: Scalars['String'],
+  debitAmount: Scalars['Float'],
+  creditAmount: Scalars['Float'],
+  balance: Scalars['Float']
+};
+
+
+export type CreateTransactionMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'createTransaction'>
+);
+
 export type GetTransactionsQueryVariables = {};
 
 
@@ -252,6 +269,43 @@ export type RegisterMutation = (
 );
 
 
+export const CreateTransactionDocument = gql`
+    mutation CreateTransaction($transactionDate: String!, $transactionType: String!, $sortCode: String!, $accountNumber: String!, $transactionDescription: String!, $debitAmount: Float!, $creditAmount: Float!, $balance: Float!) {
+  createTransaction(transactionDate: $transactionDate, transactionType: $transactionType, sortCode: $sortCode, accountNumber: $accountNumber, transactionDescription: $transactionDescription, debitAmount: $debitAmount, creditAmount: $creditAmount, balance: $balance)
+}
+    `;
+export type CreateTransactionMutationFn = ApolloReactCommon.MutationFunction<CreateTransactionMutation, CreateTransactionMutationVariables>;
+
+/**
+ * __useCreateTransactionMutation__
+ *
+ * To run a mutation, you first call `useCreateTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTransactionMutation, { data, loading, error }] = useCreateTransactionMutation({
+ *   variables: {
+ *      transactionDate: // value for 'transactionDate'
+ *      transactionType: // value for 'transactionType'
+ *      sortCode: // value for 'sortCode'
+ *      accountNumber: // value for 'accountNumber'
+ *      transactionDescription: // value for 'transactionDescription'
+ *      debitAmount: // value for 'debitAmount'
+ *      creditAmount: // value for 'creditAmount'
+ *      balance: // value for 'balance'
+ *   },
+ * });
+ */
+export function useCreateTransactionMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateTransactionMutation, CreateTransactionMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateTransactionMutation, CreateTransactionMutationVariables>(CreateTransactionDocument, baseOptions);
+      }
+export type CreateTransactionMutationHookResult = ReturnType<typeof useCreateTransactionMutation>;
+export type CreateTransactionMutationResult = ApolloReactCommon.MutationResult<CreateTransactionMutation>;
+export type CreateTransactionMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateTransactionMutation, CreateTransactionMutationVariables>;
 export const GetTransactionsDocument = gql`
     query getTransactions {
   getTransactions {

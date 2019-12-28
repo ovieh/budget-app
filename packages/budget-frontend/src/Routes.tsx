@@ -12,6 +12,7 @@ export const Routes: React.FC = () => {
     return (
         <BrowserRouter>
             <LoggedInNav />
+            {/* <LoggedOutNav /> */}
             <Switch>
                 <Route exact path='/' component={Home} />
                 <Route exact path='/register' component={Register} />

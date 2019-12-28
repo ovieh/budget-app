@@ -1,0 +1,21 @@
+mutation CreateTransaction(
+  $transactionDate: String!,
+  $transactionType: String!, 
+  $sortCode: String!,
+  $accountNumber: String!,
+  $transactionDescription: String!,
+  $debitAmount: Float!,
+  $creditAmount: Float!,
+  $balance: Float!
+) {
+  createTransaction(
+    transactionDate: $transactionDate,
+    transactionType: $transactionType,
+    sortCode: $sortCode,
+    accountNumber: $accountNumber,
+    transactionDescription: $transactionDescription,
+    debitAmount: $debitAmount,
+    creditAmount: $creditAmount,
+    balance: $balance
+  )
+}
