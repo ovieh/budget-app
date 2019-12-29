@@ -4,7 +4,7 @@ import { useTable } from 'react-table';
 
 interface Props {
     columns: any;
-    data: transaction[];
+    data: any;
 }
 
 type column = { Header: string; accessor: any };
@@ -40,7 +40,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
         getTableBodyProps,
         headerGroups,
         rows,
-        prepareRow
+        prepareRow,
     } = useTable({ columns, data });
 
     return (

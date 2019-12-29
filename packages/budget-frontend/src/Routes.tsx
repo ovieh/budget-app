@@ -7,6 +7,7 @@ import { Hi } from './pages/Hi';
 // import { LoggedOutNav } from './components/LoggedOutNav';
 import { LoggedInNav } from './components/LoggedInNav';
 import { Transactions } from './pages/Transactions';
+import { Dashboard } from './pages/Dashboard';
 
 export const Routes: React.FC = () => {
     return (
@@ -19,6 +20,7 @@ export const Routes: React.FC = () => {
                 <Route exact path='/signin' component={SignIn} />
                 <Route exact path='/hi' component={Hi} />
                 <Route exact path='/transactions' component={Transactions} />
+                <Route exact path='/dashboard' component={Dashboard} />
             </Switch>
         </BrowserRouter>
     );

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     useGetTransactionsQuery,
-    useCreateTransactionMutation
+    useCreateTransactionMutation,
+    GetTransactionsDocument,
 } from '../generated/graphql';
 import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -27,6 +28,16 @@ export const Transactions: React.FC<Props> = () => {
     const Panel = styled.aside`
         /* background:  */
         flex: 2 40%;
+        padding: 15px;
+    `;
+
+    const StyledDiv = styled.div`
+        padding: 5px;
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 0.75rem;
+        }
     `;
 
     const Button = styled.button`
@@ -35,19 +46,6 @@ export const Transactions: React.FC<Props> = () => {
         color: black;
         border-radius: 5px;
     `;
-
-    // const [transactionDate, setTransactionDate] = useState('');
-    // const [transactionType, setTransactionType] = useState('');
-    // const [sortCode, setSortcode] = useState('');
-    // const [transactionDescription, setTransactionDescription] = useState('');
-    // const [accountNumber, setAccountNumber] = useState('');
-    // const [debitAmount, setDebitAmount] = useState(0);
-    // const [creditAmount, setCreditAmount] = useState(0);
-    // const [balance, setBalance] = useState(0);
-
-    // const [transaction, setTransaction] = useState({
-    //     date: ''
-    // });
 
     const { data, error, loading } = useGetTransactionsQuery();
 
@@ -58,7 +56,8 @@ export const Transactions: React.FC<Props> = () => {
         { Header: 'Description', accessor: 'transactionDescription' },
         { Header: 'Debit Amount', accessor: 'debitAmount' },
         { Header: 'Credit Amount', accessor: 'creditAmount' },
-        { Header: 'Balance', accessor: 'balance' }
+        { Header: 'Balance', accessor: 'balance' },
+        { Header: 'Category' },
     ];
 
     if (error) {
@@ -68,14 +67,6 @@ export const Transactions: React.FC<Props> = () => {
     if (loading) {
         return <div>Loading Transactions</div>;
     }
-
-    // const handleChange = (e: any) => {
-    //     console.log(e);
-    //     setTransaction({
-    //         ...transaction,
-    //         [e.currentTarget.name]: e.currentTarget.value
-    //     });
-    // };
 
     return (
         <Wrapper>
@@ -97,11 +88,11 @@ export const Transactions: React.FC<Props> = () => {
                         accountNumber: '',
                         debitAmount: '',
                         creditAmount: '',
-                        balance: ''
+                        balance: '',
+                        category: 'none',
                     }}
                     onSubmit={async (values, { setSubmitting }) => {
-                        console.log(values);
-                        const response = await addTransaction({
+                        await addTransaction({
                             variables: {
                                 transactionDate: values.transactionDate,
                                 transactionType: values.transactionType,
@@ -111,107 +102,50 @@ export const Transactions: React.FC<Props> = () => {
                                 accountNumber: values.accountNumber,
                                 debitAmount: parseFloat(values.debitAmount),
                                 creditAmount: parseFloat(values.creditAmount),
-                                balance: parseFloat(values.balance)
-                            }
+                                balance: parseFloat(values.balance),
+                            },
+                            refetchQueries: [
+                                { query: GetTransactionsDocument },
+                            ],
                         });
-                        console.log(response);
                         setSubmitting(false);
                     }}
                 >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                        isSubmitting
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <input
-                                name='transactionDate'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.transactionDate}
-                                placeholder='Transaction Date'
-                            />
-                            {errors.transactionDate &&
-                                touched.transactionDate &&
-                                errors.transactionDate}
-                            <input
-                                name='transactionDescription'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.transactionDescription}
-                                placeholder='Transaction Description'
-                            />
-                            {errors.transactionDescription &&
-                                touched.transactionDescription &&
-                                errors.transactionDescription}
-                            <input
-                                name='transactionType'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.transactionType}
-                                placeholder='Transaction Type'
-                            />
-                            {errors.transactionType &&
-                                touched.transactionType &&
-                                errors.transactionType}
-                            <input
-                                name='sortCode'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.sortCode}
-                                placeholder='Sortcode'
-                            />
-                            {errors.sortCode &&
-                                touched.sortCode &&
-                                errors.sortCode}
-                            <input
-                                name='accountNumber'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.accountNumber}
-                                placeholder='Account Number'
-                            />
-                            {errors.accountNumber &&
-                                touched.accountNumber &&
-                                errors.accountNumber}
-                            <input
-                                name='debitAmount'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.debitAmount}
-                                placeholder='Debit Amount'
-                            />
-                            {errors.debitAmount &&
-                                touched.debitAmount &&
-                                errors.debitAmount}
-                            <input
-                                name='creditAmount'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.creditAmount}
-                                placeholder='Credit Amount'
-                            />
-                            {errors.creditAmount &&
-                                touched.creditAmount &&
-                                errors.creditAmount}
-                            <input
-                                name='balance'
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.balance}
-                                placeholder='Balance'
-                            />
-                            {errors.balance &&
-                                touched.balance &&
-                                errors.balance}
+                    {({ handleSubmit, isSubmitting }) => (
+                        <Form onSubmit={handleSubmit}>
+                            <StyledDiv>
+                                <Field
+                                    name='transactionDate'
+                                    placeholder='Transaction Date'
+                                />
+                                <Field
+                                    name='transactionDescription'
+                                    placeholder='Description'
+                                />
+                                <Field
+                                    name='transactionType'
+                                    placeholder='Transaction Type'
+                                />
+                                <Field name='sortCode' placeholder='Sortcode' />
+                                <Field
+                                    name='accountNumber'
+                                    placeholder='Account Number'
+                                />
+                                <Field
+                                    name='debitAmount'
+                                    placeholder='Debit Amount'
+                                />
+                                <Field
+                                    name='creditAmount'
+                                    placeholder='Credit Amount'
+                                />
+                                <Field name='balance' placeholder='Balance' />
+                            </StyledDiv>
+
                             <Button type='submit' disabled={isSubmitting}>
                                 Submit
                             </Button>
-                        </form>
+                        </Form>
                     )}
                 </Formik>
             </Panel>

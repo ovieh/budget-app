@@ -4,5 +4,6 @@
     "tabWidth": 4,
     "jsxBracketSameLine": false,
     "semi": true,
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "trailingComma": "es5"
 }
