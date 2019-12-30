@@ -6,10 +6,10 @@ import { User } from '../auth/user.entity';
 import * as uuidv4 from 'uuid/v4';
 
 @ObjectType()
-@InputType("TransactionInput")
+@InputType('TransactionInput')
 @Entity()
 @Unique(['transactionDate', 'balance'])
-export class Transaction extends BaseEntity {
+export class  Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(type => ID)
   id: string;
@@ -48,14 +48,14 @@ export class Transaction extends BaseEntity {
 
   @ManyToOne(type => Category, category => category.transaction, { eager: false })
   @Field(type => Category)
-  name: Category;
+  category: Category;
 
   @ManyToOne(type => User, user => user.transaction, { eager: false })
   @Field(type => User)
   user: User;
 
   @Column()
-  @Field(type => Int)
+  @Field(type => ID)
   userId: number;
 
   @BeforeInsert()

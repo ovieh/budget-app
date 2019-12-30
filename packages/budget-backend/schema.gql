@@ -69,9 +69,9 @@ type Transaction {
   debitAmount: Float!
   creditAmount: Float!
   balance: Float!
-  name: Category!
+  category: Category!
   user: User!
-  userId: Int!
+  userId: ID!
 }
 
 input TransactionInput {
@@ -84,9 +84,9 @@ input TransactionInput {
   debitAmount: Float!
   creditAmount: Float!
   balance: Float!
-  name: CatIn!
+  category: CatIn!
   user: UserInput!
-  userId: Int!
+  userId: ID!
 }
 
 """Upload custom scalar type"""

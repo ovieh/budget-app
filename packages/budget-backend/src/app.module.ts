@@ -26,7 +26,7 @@ const jwtConfig = config.get('jwt');
         maxFileSize: 1000000,
         maxFiles: 1,
       },
-      cors: false
+      cors: false,
     }),
     FileuploadModule,
     TransactionModule,
