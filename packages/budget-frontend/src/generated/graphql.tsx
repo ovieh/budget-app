@@ -169,9 +169,9 @@ export type Transaction = {
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float'],
-  name: Category,
+  category: Category,
   user: User,
-  userId: Scalars['Int'],
+  userId: Scalars['ID'],
 };
 
 export type TransactionInput = {
@@ -184,9 +184,9 @@ export type TransactionInput = {
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float'],
-  name: CatIn,
+  category: CatIn,
   user: UserInput,
-  userId: Scalars['Int'],
+  userId: Scalars['ID'],
 };
 
 
@@ -266,6 +266,20 @@ export type RegisterMutationVariables = {
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'signUp'>
+);
+
+export type UpdateTransactionCategoryMutationVariables = {
+  nameId: Scalars['ID'],
+  id: Scalars['String']
+};
+
+
+export type UpdateTransactionCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTransactionCategory: (
+    { __typename?: 'Transaction' }
+    & Pick<Transaction, 'id'>
+  ) }
 );
 
 
@@ -437,3 +451,36 @@ export function useRegisterMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UpdateTransactionCategoryDocument = gql`
+    mutation updateTransactionCategory($nameId: ID!, $id: String!) {
+  updateTransactionCategory(name: {id: $nameId}, id: $id) {
+    id
+  }
+}
+    `;
+export type UpdateTransactionCategoryMutationFn = ApolloReactCommon.MutationFunction<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;
+
+/**
+ * __useUpdateTransactionCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateTransactionCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTransactionCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTransactionCategoryMutation, { data, loading, error }] = useUpdateTransactionCategoryMutation({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateTransactionCategoryMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>(UpdateTransactionCategoryDocument, baseOptions);
+      }
+export type UpdateTransactionCategoryMutationHookResult = ReturnType<typeof useUpdateTransactionCategoryMutation>;
+export type UpdateTransactionCategoryMutationResult = ApolloReactCommon.MutationResult<UpdateTransactionCategoryMutation>;
+export type UpdateTransactionCategoryMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;

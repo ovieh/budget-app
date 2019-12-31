@@ -1,0 +1,5 @@
+mutation updateTransactionCategory($nameId: ID!, $id: String! ){
+  updateTransactionCategory(name: {id: $nameId}, id: $id){
+    id
+  }
+}
