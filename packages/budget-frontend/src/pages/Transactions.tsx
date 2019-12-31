@@ -89,7 +89,6 @@ export const Transactions: React.FC<Props> = () => {
                         debitAmount: '',
                         creditAmount: '',
                         balance: '',
-                        category: 'none',
                     }}
                     onSubmit={async (values, { setSubmitting }) => {
                         await addTransaction({
