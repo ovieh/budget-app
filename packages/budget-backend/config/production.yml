@@ -1,7 +1,7 @@
 server:
-  origin:  
+  origin: 'https://kind-meninsky-39e520.netlify.com/'
 
 
 db:
-  synchronize: true
+  synchronize: false
 
