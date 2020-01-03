@@ -10,7 +10,7 @@ import { sign } from 'jsonwebtoken';
 import * as config from 'config';
 import { User } from './user.entity';
 
-const jwtConfig = config.get('jwtRefresh');
+const jwtConfig = config.get('jwt');
 
 @Injectable()
 export class AuthService {
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
    createRefreshToken = (payload: any) => {
-    return sign({ username: payload, tokenVersion: payload.tokenVersion }, jwtConfig.secret, { expiresIn: 604800 });
+    return sign({ username: payload, tokenVersion: payload.tokenVersion }, jwtConfig.secret2, { expiresIn: 604800 });
   }
 
   createAccessToken = async (user: User) => {
