@@ -1,42 +1,49 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Args,
+  Mutation,
+  ResolveProperty,
+  Parent,
+} from '@nestjs/graphql';
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
 import { User } from '../auth/user.entity';
-import { NotFoundException, UseGuards, Logger, ParseUUIDPipe } from '@nestjs/common';
+import {
+  NotFoundException,
+  UseGuards,
+  Logger,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
-import { CategoryService } from '../category/category.service';
 import { CategoryInput } from '../category/category.input';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
+import { Category } from '../category/category.entity';
+import { CategoryRepository } from '../category/category.repository';
 
 @Resolver(of => Transaction)
 export class TransactionResolver {
   private logger = new Logger('Transaction Resolver');
   constructor(
     private readonly transactionService: TransactionService,
-    private readonly categoryService: CategoryService,
-  ) { }
+    private categoryRepository: CategoryRepository,
+  ) {}
 
   @Query(returns => String)
   @UseGuards(GqlAuthGuard)
-  hi(
-    @CurrentUser() user: User,
-  ) {
+  async hi(@CurrentUser() user: User): Promise<string | null> {
     return `hi ${user.username}`;
   }
 
   @Query(returns => [Transaction])
   @UseGuards(GqlAuthGuard)
-  async getTransactions(
-    @CurrentUser() user: User,
-  ): Promise<Transaction[]> {
+  async getTransactions(@CurrentUser() user: User): Promise<Transaction[]> {
     const transactions = await this.transactionService.getTransaction(user);
-
     if (!transactions) {
       throw new NotFoundException();
     }
     return transactions;
-
   }
 
   @Query(returns => Transaction)
@@ -45,7 +52,10 @@ export class TransactionResolver {
     @CurrentUser() user: User,
     @Args('id') id: string,
   ): Promise<Transaction> {
-    const transaction = await this.transactionService.getTransactionsById(id, user);
+    const transaction = await this.transactionService.getTransactionsById(
+      id,
+      user,
+    );
 
     if (!transaction) {
       throw new NotFoundException();
@@ -60,7 +70,11 @@ export class TransactionResolver {
     @Args('month') month: number,
     @CurrentUser() user: User,
   ) {
-    return this.transactionService.getTransactionsByYearAndMonth(year, month, user);
+    return this.transactionService.getTransactionsByYearAndMonth(
+      year,
+      month,
+      user,
+    );
   }
 
   @Mutation(returns => String)
@@ -69,10 +83,11 @@ export class TransactionResolver {
     @CurrentUser() user: User,
     @Args() createTransactionDto: CreateTransactionDto,
   ): Promise<string> {
-
     this.transactionService.createTransaction(createTransactionDto, user);
 
-    this.logger.verbose(`Transaction "${createTransactionDto.transactionDescription}" was created`);
+    this.logger.verbose(
+      `Transaction "${createTransactionDto.transactionDescription}" was created`,
+    );
 
     return `Transaction created`;
   }
@@ -86,22 +101,25 @@ export class TransactionResolver {
     this.transactionService.deleteTransactionById(id, user);
   }
 
-  // @Query(returns => [Category])
-  // @UseGuards(GqlAuthGuard)
-  // getTransactionByCategory(
-  //   @CurrentUser() user: User,
-  // ): Promise<Category[]> {
-  //   return this.categoryService.findAll(user);
-  // }
-
   @Mutation(returns => Transaction)
   @UseGuards(GqlAuthGuard)
   updateTransactionCategory(
     @Args('id') id: string,
     @Args('name') name: CategoryInput,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<Transaction> {
     return this.transactionService.updateCategoryById(id, name, user);
   }
 
+  @ResolveProperty('category')
+  @UseGuards(GqlAuthGuard)
+  async category(
+    @Parent() transaction: Transaction,
+    @CurrentUser() user: User,
+  ): Promise<Category> {
+    const { categoryId } = transaction;
+    return await this.categoryRepository.findOne({
+      id: categoryId,
+    });
+  }
 }

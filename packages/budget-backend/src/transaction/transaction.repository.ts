@@ -6,8 +6,6 @@ import * as csv from 'csv-parse';
 import * as moment from 'moment';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 import { User } from '../auth/user.entity';
-import { UploadScalar } from 'src/fileupload/upload.scalar';
-import { OutputFileType } from 'typescript';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {

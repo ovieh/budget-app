@@ -26,6 +26,13 @@ export class CategoryService {
     return await this.categoryRepository.getCategories(user);
   }
 
+  async find(
+    id: number,
+  ): Promise<Category> {
+    console.log(`this is happening`);
+    return this.categoryRepository.findOne(id);
+  }
+
   async getCategoryById(
     id: number,
     user: User,

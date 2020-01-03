@@ -6,6 +6,7 @@ import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
+import { CategoryRepository } from 'src/category/category.repository';
 
 @Injectable()
 export class TransactionService {
@@ -74,5 +75,11 @@ export class TransactionService {
   ): Promise<Transaction[]> {
     return await this.transactionRepository.getTransactionsByYearAndMonth(year, month, user);
   }
+
+  // async findCategoryById(
+  //   id: number,
+  // ) {
+  //   return await this.categoryRepository.find({id});
+  // }
 
 }

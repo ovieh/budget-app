@@ -4,6 +4,7 @@ import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 
 import * as uuidv4 from 'uuid/v4';
+import { RelationColumn } from '../helpers';
 
 @ObjectType()
 @InputType('TransactionInput')
@@ -47,8 +48,10 @@ export class  Transaction extends BaseEntity {
   balance: number;
 
   @ManyToOne(type => Category, category => category.transaction, { eager: false })
-  @Field(type => Category)
+  @Field(type => Category, {nullable: true})
   category: Category;
+  @RelationColumn()
+  categoryId?: number;
 
   @ManyToOne(type => User, user => user.transaction, { eager: false })
   @Field(type => User)
