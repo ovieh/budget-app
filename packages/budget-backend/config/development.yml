@@ -6,5 +6,6 @@ db:
 
 jwt:
   secret: 'topSecret51'
+  secret2: 'topSecret41'
 jwtRefresh:
   secret: 'topSecret41'

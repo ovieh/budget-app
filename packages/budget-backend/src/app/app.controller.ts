@@ -6,7 +6,7 @@ import { User } from '../auth/user.entity';
 import { sendRefreshToken } from '../auth/token-service';
 import { AuthService } from '../auth/auth.service';
 
-const jwtConfig = config.get('jwtRefresh');
+const jwtConfig = config.get('jwt');
 
 @Controller()
 export class AppController {
@@ -23,7 +23,7 @@ export class AppController {
     let payload = null;
 
     try {
-      payload = verify(token, process.env.JWT_REFRESH_SECRET || jwtConfig.secret);
+      payload = verify(token, process.env.JWT_REFRESH_SECRET || jwtConfig.secret2);
     } catch (error) {
       return res.send({ok: false, accessToken: ''});
     }
