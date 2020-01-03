@@ -23,7 +23,7 @@ export class AppController {
     let payload = null;
 
     try {
-      payload = verify(token, process.env.JWT_REFRESH_SECRET || jwtConfig.jwtRefresh);
+      payload = verify(token, process.env.JWT_REFRESH_SECRET || jwtConfig.secret);
     } catch (error) {
       return res.send({ok: false, accessToken: ''});
     }
