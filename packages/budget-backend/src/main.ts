@@ -15,7 +15,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     app.enableCors({ origin: 'http://localhost:5000', credentials: true });
   } else {
-    app.enableCors({ origin: serverConfig.origin });
+    app.enableCors({ origin: serverConfig.origin, credentials: true });
     app.use(helmet());
 
     app.use(
