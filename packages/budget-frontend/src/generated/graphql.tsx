@@ -169,7 +169,7 @@ export type Transaction = {
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float'],
-  category: Category,
+  category?: Maybe<Category>,
   user: User,
   userId: Scalars['ID'],
 };
@@ -184,7 +184,7 @@ export type TransactionInput = {
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float'],
-  category: CatIn,
+  category?: Maybe<CatIn>,
   user: UserInput,
   userId: Scalars['ID'],
 };
@@ -232,6 +232,10 @@ export type GetTransactionsQuery = (
   & { getTransactions: Array<(
     { __typename?: 'Transaction' }
     & Pick<Transaction, 'id' | 'transactionDate' | 'creditAmount' | 'debitAmount' | 'balance' | 'transactionDescription'>
+    & { category: Maybe<(
+      { __typename?: 'Category' }
+      & Pick<Category, 'id' | 'name' | 'budget'>
+    )> }
   )> }
 );
 
@@ -329,6 +333,11 @@ export const GetTransactionsDocument = gql`
     debitAmount
     balance
     transactionDescription
+    category {
+      id
+      name
+      budget
+    }
   }
 }
     `;

@@ -57,7 +57,7 @@ export const Transactions: React.FC<Props> = () => {
         { Header: 'Debit Amount', accessor: 'debitAmount' },
         { Header: 'Credit Amount', accessor: 'creditAmount' },
         { Header: 'Balance', accessor: 'balance' },
-        { Header: 'Category' },
+        { Header: 'Category', accessor: 'category.name' },
     ];
 
     if (error) {
@@ -67,7 +67,6 @@ export const Transactions: React.FC<Props> = () => {
     if (loading) {
         return <div>Loading Transactions</div>;
     }
-
     return (
         <Wrapper>
             <Section>

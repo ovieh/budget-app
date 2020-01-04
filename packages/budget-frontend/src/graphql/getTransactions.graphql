@@ -6,5 +6,10 @@ query getTransactions {
     debitAmount
     balance
     transactionDescription
+    category {
+      id
+      name
+      budget
+    }
   }
 }
