@@ -24,8 +24,8 @@ const requestLink = new ApolloLink(
                     if (accessToken) {
                         operation.setContext({
                             headers: {
-                                authorization: `bearer ${accessToken}`
-                            }
+                                authorization: `bearer ${accessToken}`,
+                            },
                         });
                     }
                 })
@@ -33,7 +33,7 @@ const requestLink = new ApolloLink(
                     handle = forward(operation).subscribe({
                         next: observer.next.bind(observer),
                         error: observer.error.bind(observer),
-                        complete: observer.complete.bind(observer)
+                        complete: observer.complete.bind(observer),
                     });
                 })
                 .catch(observer.error.bind(observer));
@@ -67,10 +67,13 @@ const client = new ApolloClient({
                 }
             },
             fetchAccessToken: () => {
-                return fetch('http://localhost:3000/refresh_token', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
+                return fetch(
+                    'https://budgetbackend01.herokuapp.com/refresh_token',
+                    {
+                        method: 'POST',
+                        credentials: 'include',
+                    }
+                );
             },
             handleFetch: accessToken => {
                 setAccessToken(accessToken);
@@ -78,7 +81,7 @@ const client = new ApolloClient({
             handleError: err => {
                 console.warn('Your refresh token is invalid. Try to relogin');
                 console.error(err);
-            }
+            },
         }),
         onError(({ graphQLErrors, networkError }) => {
             console.log(graphQLErrors);
@@ -86,11 +89,11 @@ const client = new ApolloClient({
         }),
         requestLink,
         new HttpLink({
-            uri: 'http://localhost:3000/graphql',
-            credentials: 'include'
-        })
+            uri: 'https://budgetbackend01.herokuapp.com/graphql',
+            credentials: 'include',
+        }),
     ]),
-    cache
+    cache,
 });
 
 ReactDOM.render(
