@@ -114,15 +114,15 @@ export class TransactionResolver {
     return this.transactionService.updateCategoryById(id, name, user);
   }
 
-  // @ResolveProperty('category')
-  // @UseGuards(GqlAuthGuard)
-  // async category(
-  //   @Parent() transaction: Transaction,
-  //   @CurrentUser() user: User,
-  // ): Promise<Category> {
-  //   const { categoryId } = transaction;
-  //   return await this.categoryRepository.findOne({
-  //     id: categoryId,
-  //   });
-  // }
+  @ResolveProperty(returns => Category)
+  @UseGuards(GqlAuthGuard)
+  async category(
+    @Parent() transaction: Transaction,
+    @CurrentUser() user: User,
+  ): Promise<Category> {
+    const { categoryId } = transaction;
+    return await this.categoryRepository.findOne({
+      id: categoryId,
+    });
+  }
 }

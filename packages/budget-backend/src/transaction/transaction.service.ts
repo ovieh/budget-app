@@ -50,7 +50,7 @@ export class TransactionService {
     // TODO: Fix this
     const category = JSON.parse(JSON.stringify(categoryInput));
 
-    transaction.category = category.id;
+    transaction.categoryId = category.id;
     try {
       await transaction.save();
 
