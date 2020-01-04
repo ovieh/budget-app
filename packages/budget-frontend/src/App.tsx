@@ -7,8 +7,10 @@ interface Props {}
 export const App: React.FC<Props> = () => {
     const [loading, setLoading] = useState(true);
 
+    const URL = `${process.env.REACT_APP_API_URL}`;
+
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/refresh_token`, {
+        fetch(`${URL}/refresh_token`, {
             method: 'POST',
             credentials: 'include',
         }).then(async result => {

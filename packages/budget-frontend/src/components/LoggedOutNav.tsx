@@ -5,7 +5,7 @@ interface Props {}
 
 const LoggedOutLinks = [
     { to: '/signin', name: 'Sign In' },
-    { to: '/register', name: 'Register' }
+    { to: '/register', name: 'Register' },
 ];
 
 export const LoggedOutNav: React.FC<Props> = () => (

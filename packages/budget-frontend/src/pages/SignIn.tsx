@@ -16,11 +16,12 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                 const response = await signIn({
                     variables: {
                         username,
-                        password
-                    }
+                        password,
+                    },
                 });
+                console.log('response', response);
+
                 history.push('/');
-                // console.log(response);
                 if (response && response.data) {
                     setAccessToken(response.data.signIn.accessToken);
                 }

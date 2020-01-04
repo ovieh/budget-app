@@ -14,6 +14,8 @@ import './index.css';
 
 const cache = new InMemoryCache({});
 
+const URL = `${process.env.REACT_APP_API_URL}/graphql`;
+
 const requestLink = new ApolloLink(
     (operation, forward) =>
         new Observable(observer => {
@@ -86,7 +88,7 @@ const client = new ApolloClient({
         }),
         requestLink,
         new HttpLink({
-            uri: `${process.env.REACT_APP_API_URL}/graphql`,
+            uri: URL,
             credentials: 'include',
         }),
     ]),

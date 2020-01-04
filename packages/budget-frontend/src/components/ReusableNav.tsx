@@ -4,11 +4,13 @@ import styled from '@emotion/styled/macro';
 
 interface Props {
     links: link[];
+    signOut?: any;
 }
 
 type link = {
     to: string;
     name: string;
+    // onClick?: any;
 };
 
 const StyledNav = styled.nav`
@@ -33,12 +35,13 @@ const StyledListItem = styled.li`
     }
 `;
 
-export const ReusableNav: React.FC<Props> = ({ links }) => (
+export const ReusableNav: React.FC<Props> = ({ links, signOut }) => (
     <StyledNav>
         <StyledList>
             {links.map((link, index) => (
                 <StyledListItem key={index}>
                     <Link to={link.to}>{link.name}</Link>
+                    {/* {signOut} */}
                 </StyledListItem>
             ))}
         </StyledList>

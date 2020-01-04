@@ -128,7 +128,7 @@ export type MutationRemoveCategoryArgs = {
 
 export type Query = {
    __typename?: 'Query',
-  hi: Scalars['String'],
+  me?: Maybe<User>,
   getTransactions: Array<Transaction>,
   getTransactionById: Transaction,
   getTransactionByMonthAndYear: Array<Transaction>,
@@ -207,6 +207,20 @@ export type UserInput = {
   category: Array<CatIn>,
 };
 
+export type CreateCategoryMutationVariables = {
+  name: Scalars['String'],
+  budget: Scalars['Float']
+};
+
+
+export type CreateCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createCategory: (
+    { __typename?: 'Category' }
+    & Pick<Category, 'id'>
+  ) }
+);
+
 export type CreateTransactionMutationVariables = {
   transactionDate: Scalars['String'],
   transactionType: Scalars['String'],
@@ -239,12 +253,15 @@ export type GetTransactionsQuery = (
   )> }
 );
 
-export type HiQueryVariables = {};
+export type MeQueryVariables = {};
 
 
-export type HiQuery = (
+export type MeQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'hi'>
+  & { me: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+  )> }
 );
 
 export type SignInMutationVariables = {
@@ -259,6 +276,14 @@ export type SignInMutation = (
     { __typename?: 'LoginResponseDto' }
     & Pick<LoginResponseDto, 'accessToken'>
   ) }
+);
+
+export type SignOutMutationVariables = {};
+
+
+export type SignOutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signOut'>
 );
 
 export type RegisterMutationVariables = {
@@ -287,6 +312,39 @@ export type UpdateTransactionCategoryMutation = (
 );
 
 
+export const CreateCategoryDocument = gql`
+    mutation createCategory($name: String!, $budget: Float!) {
+  createCategory(name: $name, budget: $budget) {
+    id
+  }
+}
+    `;
+export type CreateCategoryMutationFn = ApolloReactCommon.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
+
+/**
+ * __useCreateCategoryMutation__
+ *
+ * To run a mutation, you first call `useCreateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCategoryMutation, { data, loading, error }] = useCreateCategoryMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      budget: // value for 'budget'
+ *   },
+ * });
+ */
+export function useCreateCategoryMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, baseOptions);
+      }
+export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
+export type CreateCategoryMutationResult = ApolloReactCommon.MutationResult<CreateCategoryMutation>;
+export type CreateCategoryMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateTransactionDocument = gql`
     mutation CreateTransaction($transactionDate: String!, $transactionType: String!, $sortCode: String!, $accountNumber: String!, $transactionDescription: String!, $debitAmount: Float!, $creditAmount: Float!, $balance: Float!) {
   createTransaction(transactionDate: $transactionDate, transactionType: $transactionType, sortCode: $sortCode, accountNumber: $accountNumber, transactionDescription: $transactionDescription, debitAmount: $debitAmount, creditAmount: $creditAmount, balance: $balance)
@@ -366,36 +424,39 @@ export function useGetTransactionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
 export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
 export type GetTransactionsQueryResult = ApolloReactCommon.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
-export const HiDocument = gql`
-    query Hi {
-  hi
+export const MeDocument = gql`
+    query me {
+  me {
+    id
+    username
+  }
 }
     `;
 
 /**
- * __useHiQuery__
+ * __useMeQuery__
  *
- * To run a query within a React component, call `useHiQuery` and pass it any options that fit your needs.
- * When your component renders, `useHiQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHiQuery({
+ * const { data, loading, error } = useMeQuery({
  *   variables: {
  *   },
  * });
  */
-export function useHiQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<HiQuery, HiQueryVariables>) {
-        return ApolloReactHooks.useQuery<HiQuery, HiQueryVariables>(HiDocument, baseOptions);
+export function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        return ApolloReactHooks.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
       }
-export function useHiLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<HiQuery, HiQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<HiQuery, HiQueryVariables>(HiDocument, baseOptions);
+export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
         }
-export type HiQueryHookResult = ReturnType<typeof useHiQuery>;
-export type HiLazyQueryHookResult = ReturnType<typeof useHiLazyQuery>;
-export type HiQueryResult = ApolloReactCommon.QueryResult<HiQuery, HiQueryVariables>;
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>;
 export const SignInDocument = gql`
     mutation SignIn($username: String!, $password: String!) {
   signIn(username: $username, password: $password) {
@@ -429,6 +490,35 @@ export function useSignInMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
 export type SignInMutationResult = ApolloReactCommon.MutationResult<SignInMutation>;
 export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
+export const SignOutDocument = gql`
+    mutation signOut {
+  signOut
+}
+    `;
+export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutation, SignOutMutationVariables>;
+
+/**
+ * __useSignOutMutation__
+ *
+ * To run a mutation, you first call `useSignOutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignOutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signOutMutation, { data, loading, error }] = useSignOutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
+        return ApolloReactHooks.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
+      }
+export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
+export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
+export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($username: String!, $password: String!) {
   signUp(username: $username, password: $password)

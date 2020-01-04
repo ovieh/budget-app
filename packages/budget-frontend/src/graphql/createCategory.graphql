@@ -1,0 +1,5 @@
+mutation createCategory($name: String!, $budget: Float!) {
+  createCategory(name: $name, budget: $budget) {
+    id
+  }
+}
