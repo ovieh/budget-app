@@ -50,7 +50,7 @@ type Mutation {
 }
 
 type Query {
-  hi: String!
+  me: User
   getTransactions: [Transaction!]!
   getTransactionById(id: String!): Transaction!
   getTransactionByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
@@ -69,7 +69,7 @@ type Transaction {
   debitAmount: Float!
   creditAmount: Float!
   balance: Float!
-  category: Category
+  category: Category!
   user: User!
   userId: ID!
 }
@@ -84,7 +84,7 @@ input TransactionInput {
   debitAmount: Float!
   creditAmount: Float!
   balance: Float!
-  category: CatIn
+  category: CatIn!
   user: UserInput!
   userId: ID!
 }

@@ -30,10 +30,13 @@ export class TransactionResolver {
     private categoryRepository: CategoryRepository,
   ) {}
 
-  @Query(returns => String)
+  @Query(returns => User, { nullable: true })
   @UseGuards(GqlAuthGuard)
-  async hi(@CurrentUser() user: User): Promise<string | null> {
-    return `hi ${user.username}`;
+  async me(@CurrentUser() user: User): Promise<User> {
+    if (user) {
+      return user;
+    }
+    return null;
   }
 
   @Query(returns => [Transaction])
@@ -111,15 +114,15 @@ export class TransactionResolver {
     return this.transactionService.updateCategoryById(id, name, user);
   }
 
-  @ResolveProperty('category')
-  @UseGuards(GqlAuthGuard)
-  async category(
-    @Parent() transaction: Transaction,
-    @CurrentUser() user: User,
-  ): Promise<Category> {
-    const { categoryId } = transaction;
-    return await this.categoryRepository.findOne({
-      id: categoryId,
-    });
-  }
+  // @ResolveProperty('category')
+  // @UseGuards(GqlAuthGuard)
+  // async category(
+  //   @Parent() transaction: Transaction,
+  //   @CurrentUser() user: User,
+  // ): Promise<Category> {
+  //   const { categoryId } = transaction;
+  //   return await this.categoryRepository.findOne({
+  //     id: categoryId,
+  //   });
+  // }
 }
