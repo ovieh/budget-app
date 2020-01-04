@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://budgetbackend01.herokuapp.com/graphql"
+schema: `${process.env.REACT_APP_API_URL}`
 documents: "src/graphql/*.graphql"
 generates:
   src/generated/graphql.tsx:

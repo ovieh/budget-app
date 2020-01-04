@@ -67,13 +67,10 @@ const client = new ApolloClient({
                 }
             },
             fetchAccessToken: () => {
-                return fetch(
-                    'https://budgetbackend01.herokuapp.com/refresh_token',
-                    {
-                        method: 'POST',
-                        credentials: 'include',
-                    }
-                );
+                return fetch(`${process.env.REACT_APP_API_URL}/refresh_token`, {
+                    method: 'POST',
+                    credentials: 'include',
+                });
             },
             handleFetch: accessToken => {
                 setAccessToken(accessToken);
@@ -89,7 +86,7 @@ const client = new ApolloClient({
         }),
         requestLink,
         new HttpLink({
-            uri: 'https://budgetbackend01.herokuapp.com/graphql',
+            uri: `${process.env.REACT_APP_API_URL}/graphql`,
             credentials: 'include',
         }),
     ]),

@@ -8,7 +8,7 @@ export const App: React.FC<Props> = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('https://budgetbackend01.herokuapp.com/refresh_token', {
+        fetch(`${process.env.REACT_APP_API_URL}/refresh_token`, {
             method: 'POST',
             credentials: 'include',
         }).then(async result => {
