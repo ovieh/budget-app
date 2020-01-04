@@ -1,5 +1,5 @@
 server:
-  origin: 'https://kind-meninsky-39e520.netlify.com/'
+  origin: 'https://kind-meninsky-39e520.netlify.com'
 
 
 db:
