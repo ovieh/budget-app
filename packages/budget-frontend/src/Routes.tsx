@@ -12,8 +12,6 @@ import { useMeQuery } from './generated/graphql';
 export const Routes: React.FC = () => {
     const { data } = useMeQuery();
 
-    // console.log(data);
-
     return (
         <BrowserRouter>
             {data ? <LoggedInNav /> : <LoggedOutNav />}

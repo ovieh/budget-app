@@ -1,49 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled/macro';
-
+import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
 interface Props {
     links: link[];
-    signOut?: any;
+    children?: React.ReactNode;
 }
 
 type link = {
     to: string;
     name: string;
-    // onClick?: any;
 };
 
-const StyledNav = styled.nav`
-    background: gray;
-    color: white;
-`;
-
-const StyledList = styled.ul`
+const StyledToolbar = styled(Toolbar)`
     display: flex;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+    justify-content: space-between;
 `;
 
-const StyledListItem = styled.li`
-    display: inline;
-    margin: 5px;
-    a {
-        :visited {
-            color: whitesmoke;
-        }
-    }
-`;
-
-export const ReusableNav: React.FC<Props> = ({ links, signOut }) => (
-    <StyledNav>
-        <StyledList>
-            {links.map((link, index) => (
-                <StyledListItem key={index}>
-                    <Link to={link.to}>{link.name}</Link>
-                    {/* {signOut} */}
-                </StyledListItem>
-            ))}
-        </StyledList>
-    </StyledNav>
+export const ReusableNav: React.FC<Props> = ({ links, children }) => (
+    <AppBar position='static' color='inherit'>
+        <StyledToolbar>
+            <Typography variant='h6'>Budget-App</Typography>
+            <div>
+                {links.map((link, index) => (
+                    <Button color='inherit' key={index}>
+                        <Link to={link.to}>{link.name}</Link>
+                    </Button>
+                ))}
+                {children}
+            </div>
+        </StyledToolbar>
+    </AppBar>
 );

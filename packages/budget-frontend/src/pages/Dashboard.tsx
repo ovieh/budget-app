@@ -44,10 +44,10 @@ export const Dashboard: FC<Props> = () => {
     return (
         <Wrapper>
             <Section>
-                <ReusuableTable
+                {/* <ReusuableTable
                     columns={DashboardColumns}
-                    data={{ name: '' }}
-                />
+                    // data={{ name: '' }}
+                /> */}
             </Section>
         </Wrapper>
     );

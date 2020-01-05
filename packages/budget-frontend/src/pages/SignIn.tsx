@@ -19,7 +19,6 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                         password,
                     },
                 });
-                console.log('response', response);
 
                 history.push('/');
                 if (response && response.data) {
