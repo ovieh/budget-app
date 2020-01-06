@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled/macro';
 import { ReusuableTable } from '../components/ReusableTable';
+import { LoggedInNav } from '../components/LoggedInNav';
 
 interface Props {}
 
@@ -42,13 +43,16 @@ export const Dashboard: FC<Props> = () => {
     ];
 
     return (
-        <Wrapper>
-            <Section>
-                {/* <ReusuableTable
+        <Fragment>
+            <LoggedInNav />
+            <Wrapper>
+                <Section>
+                    {/* <ReusuableTable
                     columns={DashboardColumns}
                     // data={{ name: '' }}
                 /> */}
-            </Section>
-        </Wrapper>
+                </Section>
+            </Wrapper>
+        </Fragment>
     );
 };

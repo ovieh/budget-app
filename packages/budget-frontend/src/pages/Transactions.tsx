@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     useGetTransactionsQuery,
     useCreateTransactionMutation,
@@ -7,6 +7,7 @@ import {
 import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ReusuableTable } from '../components/ReusableTable';
+import { LoggedInNav } from '../components/LoggedInNav';
 
 interface Props {}
 
@@ -68,85 +69,96 @@ export const Transactions: React.FC<Props> = () => {
         return <div>Loading Transactions</div>;
     }
     return (
-        <Wrapper>
-            <Section>
-                {data && (
-                    <ReusuableTable
-                        columns={TransactionsColumns}
-                        data={data.getTransactions}
-                    />
-                )}
-            </Section>
-            <Panel>
-                <Formik
-                    initialValues={{
-                        transactionDate: '',
-                        transactionType: '',
-                        sortCode: '',
-                        transactionDescription: '',
-                        accountNumber: '',
-                        debitAmount: '',
-                        creditAmount: '',
-                        balance: '',
-                    }}
-                    onSubmit={async (values, { setSubmitting }) => {
-                        await addTransaction({
-                            variables: {
-                                transactionDate: values.transactionDate,
-                                transactionType: values.transactionType,
-                                sortCode: values.sortCode,
-                                transactionDescription:
-                                    values.transactionDescription,
-                                accountNumber: values.accountNumber,
-                                debitAmount: parseFloat(values.debitAmount),
-                                creditAmount: parseFloat(values.creditAmount),
-                                balance: parseFloat(values.balance),
-                            },
-                            refetchQueries: [
-                                { query: GetTransactionsDocument },
-                            ],
-                        });
-                        setSubmitting(false);
-                    }}
-                >
-                    {({ handleSubmit, isSubmitting }) => (
-                        <Form onSubmit={handleSubmit}>
-                            <StyledDiv>
-                                <Field
-                                    name='transactionDate'
-                                    placeholder='Transaction Date'
-                                />
-                                <Field
-                                    name='transactionDescription'
-                                    placeholder='Description'
-                                />
-                                <Field
-                                    name='transactionType'
-                                    placeholder='Transaction Type'
-                                />
-                                <Field name='sortCode' placeholder='Sortcode' />
-                                <Field
-                                    name='accountNumber'
-                                    placeholder='Account Number'
-                                />
-                                <Field
-                                    name='debitAmount'
-                                    placeholder='Debit Amount'
-                                />
-                                <Field
-                                    name='creditAmount'
-                                    placeholder='Credit Amount'
-                                />
-                                <Field name='balance' placeholder='Balance' />
-                            </StyledDiv>
-
-                            <Button type='submit' disabled={isSubmitting}>
-                                Submit
-                            </Button>
-                        </Form>
+        <Fragment>
+            <LoggedInNav />
+            <Wrapper>
+                <Section>
+                    {data && (
+                        <ReusuableTable
+                            columns={TransactionsColumns}
+                            data={data.getTransactions}
+                        />
                     )}
-                </Formik>
-            </Panel>
-        </Wrapper>
+                </Section>
+                <Panel>
+                    <Formik
+                        initialValues={{
+                            transactionDate: '',
+                            transactionType: '',
+                            sortCode: '',
+                            transactionDescription: '',
+                            accountNumber: '',
+                            debitAmount: '',
+                            creditAmount: '',
+                            balance: '',
+                        }}
+                        onSubmit={async (values, { setSubmitting }) => {
+                            await addTransaction({
+                                variables: {
+                                    transactionDate: values.transactionDate,
+                                    transactionType: values.transactionType,
+                                    sortCode: values.sortCode,
+                                    transactionDescription:
+                                        values.transactionDescription,
+                                    accountNumber: values.accountNumber,
+                                    debitAmount: parseFloat(values.debitAmount),
+                                    creditAmount: parseFloat(
+                                        values.creditAmount
+                                    ),
+                                    balance: parseFloat(values.balance),
+                                },
+                                refetchQueries: [
+                                    { query: GetTransactionsDocument },
+                                ],
+                            });
+                            setSubmitting(false);
+                        }}
+                    >
+                        {({ handleSubmit, isSubmitting }) => (
+                            <Form onSubmit={handleSubmit}>
+                                <StyledDiv>
+                                    <Field
+                                        name='transactionDate'
+                                        placeholder='Transaction Date'
+                                    />
+                                    <Field
+                                        name='transactionDescription'
+                                        placeholder='Description'
+                                    />
+                                    <Field
+                                        name='transactionType'
+                                        placeholder='Transaction Type'
+                                    />
+                                    <Field
+                                        name='sortCode'
+                                        placeholder='Sortcode'
+                                    />
+                                    <Field
+                                        name='accountNumber'
+                                        placeholder='Account Number'
+                                    />
+                                    <Field
+                                        name='debitAmount'
+                                        placeholder='Debit Amount'
+                                    />
+                                    <Field
+                                        name='creditAmount'
+                                        placeholder='Credit Amount'
+                                    />
+                                    <Field
+                                        name='balance'
+                                        placeholder='Balance'
+                                    />
+                                </StyledDiv>
+
+                                <Button type='submit' disabled={isSubmitting}>
+                                    Submit
+                                </Button>
+                            </Form>
+                        )}
+                    </Formik>
+                </Panel>
+            </Wrapper>
+        </Fragment>
     );
 };
