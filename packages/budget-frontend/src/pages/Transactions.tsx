@@ -48,7 +48,9 @@ export const Transactions: React.FC<Props> = () => {
         border-radius: 5px;
     `;
 
-    const { data, error, loading } = useGetTransactionsQuery();
+    const { data, error, loading } = useGetTransactionsQuery({
+        errorPolicy: 'all',
+    });
 
     const [addTransaction] = useCreateTransactionMutation();
 
@@ -62,7 +64,14 @@ export const Transactions: React.FC<Props> = () => {
     ];
 
     if (error) {
-        return <div>{error.message}</div>;
+        return (
+            <pre>
+                Errors:{' '}
+                {error?.graphQLErrors.map(({ message }, i) => (
+                    <span key={i}>{message}</span>
+                ))}
+            </pre>
+        );
     }
 
     if (loading) {
