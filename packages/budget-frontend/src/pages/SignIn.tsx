@@ -4,15 +4,15 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { setAccessToken } from '../accessToken';
 import { LoggedOutNav } from '../components/LoggedOutNav';
-import { Paper, Button, TextField } from '@material-ui/core';
+import { Paper, Button, TextField, Container } from '@material-ui/core';
 import styled from '@emotion/styled/macro';
 
 interface Props {}
 
 const PaperStyled = styled(Paper)`
     margin-top: 10px;
-    max-width: 40rem;
-    height: 40rem;
+    /* max-width: 20rem;
+    height: 20rem; */
 `;
 
 const FieldStyled = styled(Field)`
@@ -37,53 +37,57 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
     return (
         <Fragment>
             <LoggedOutNav />
-            <PaperStyled elevation={5}>
-                <Formik
-                    initialValues={{
-                        password: '',
-                        username: '',
-                    }}
-                    onSubmit={async (values, { setSubmitting }) => {
-                        const { username, password } = values;
-                        const response = await signIn({
-                            variables: {
-                                username,
-                                password,
-                            },
-                        });
-                        history.push('/');
-                        response &&
-                            response.data &&
-                            setAccessToken(response.data.signIn.accessToken);
-                    }}
-                >
-                    {({ handleSubmit, isSubmitting }) => (
-                        <FormStyled onSubmit={handleSubmit}>
-                            <FieldStyled
-                                as={TextField}
-                                name='username'
-                                placeholder='username'
-                                variant='outlined'
-                            />
-                            <FieldStyled
-                                as={TextField}
-                                name='password'
-                                placeholder='password'
-                                type='password'
-                                variant='outlined'
-                            />
-                            <ButtonStyled
-                                variant='contained'
-                                type='submit'
-                                disabled={isSubmitting}
-                                color='primary'
-                            >
-                                Sign In
-                            </ButtonStyled>
-                        </FormStyled>
-                    )}
-                </Formik>
-            </PaperStyled>
+            <Container maxWidth='sm'>
+                <PaperStyled elevation={5}>
+                    <Formik
+                        initialValues={{
+                            password: '',
+                            username: '',
+                        }}
+                        onSubmit={async (values, { setSubmitting }) => {
+                            const { username, password } = values;
+                            const response = await signIn({
+                                variables: {
+                                    username,
+                                    password,
+                                },
+                            });
+                            history.push('/');
+                            response &&
+                                response.data &&
+                                setAccessToken(
+                                    response.data.signIn.accessToken
+                                );
+                        }}
+                    >
+                        {({ handleSubmit, isSubmitting }) => (
+                            <FormStyled onSubmit={handleSubmit}>
+                                <FieldStyled
+                                    as={TextField}
+                                    name='username'
+                                    placeholder='username'
+                                    variant='outlined'
+                                />
+                                <FieldStyled
+                                    as={TextField}
+                                    name='password'
+                                    placeholder='password'
+                                    type='password'
+                                    variant='outlined'
+                                />
+                                <ButtonStyled
+                                    variant='contained'
+                                    type='submit'
+                                    disabled={isSubmitting}
+                                    color='primary'
+                                >
+                                    Sign In
+                                </ButtonStyled>
+                            </FormStyled>
+                        )}
+                    </Formik>
+                </PaperStyled>
+            </Container>
         </Fragment>
     );
 };

@@ -2,6 +2,7 @@ import React, { FC, Fragment } from 'react';
 import styled from '@emotion/styled/macro';
 import { ReusuableTable } from '../components/ReusableTable';
 import { LoggedInNav } from '../components/LoggedInNav';
+import { Container, Paper } from '@material-ui/core';
 
 interface Props {}
 
@@ -45,14 +46,9 @@ export const Dashboard: FC<Props> = () => {
     return (
         <Fragment>
             <LoggedInNav />
-            <Wrapper>
-                <Section>
-                    {/* <ReusuableTable
-                    columns={DashboardColumns}
-                    // data={{ name: '' }}
-                /> */}
-                </Section>
-            </Wrapper>
+            <Paper variant='elevation'>
+                <h1>blah</h1>
+            </Paper>
         </Fragment>
     );
 };

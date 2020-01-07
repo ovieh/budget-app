@@ -3,18 +3,16 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { SignIn } from './pages/SignIn';
 import { Home } from './pages/Home';
-// import { LoggedOutNav } from './components/LoggedOutNav';
-// import { LoggedInNav } from './components/LoggedInNav';
+
 import { Transactions } from './pages/Transactions';
 import { Dashboard } from './pages/Dashboard';
 import { useMeQuery } from './generated/graphql';
 
 export const Routes: React.FC = () => {
-    useMeQuery();
+    useMeQuery(); // maybe there's a beter way of doing this?
 
     return (
         <BrowserRouter>
-            {/* {data ? <LoggedInNav /> : <LoggedOutNav />} */}
             <Switch>
                 <Route exact path='/' component={Home} />
                 <Route exact path='/register' component={Register} />
