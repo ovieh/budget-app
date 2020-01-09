@@ -21,6 +21,7 @@ import { CategoryInput } from '../category/category.input';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { Category } from '../category/category.entity';
 import { CategoryRepository } from '../category/category.repository';
+import { YearMonth } from './DTO/year-month.dto';
 
 @Resolver(of => Transaction)
 export class TransactionResolver {
@@ -78,6 +79,12 @@ export class TransactionResolver {
       month,
       user,
     );
+  }
+
+  @Query(returns => [YearMonth])
+  @UseGuards(GqlAuthGuard)
+  async getYearMonth(@CurrentUser() user: User) {
+    return this.transactionService.getYearMonth(user);
   }
 
   @Mutation(returns => String)

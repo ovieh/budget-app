@@ -3,10 +3,9 @@ import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
-import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
-import { CategoryRepository } from 'src/category/category.repository';
+import { YearMonth } from './DTO/year-month.dto';
 
 @Injectable()
 export class TransactionService {
@@ -76,7 +75,11 @@ export class TransactionService {
     return await this.transactionRepository.getTransactionsByYearAndMonth(year, month, user);
   }
 
-  // async findCategoryById(
+  async getYearMonth(user: User): Promise<YearMonth[]> {
+    return await this.transactionRepository.getYearMonth(user);
+  }
+
+  // async findCategoryById(`
   //   id: number,
   // ) {
   //   return await this.categoryRepository.find({id});

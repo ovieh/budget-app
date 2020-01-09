@@ -54,6 +54,7 @@ type Query {
   getTransactions: [Transaction!]!
   getTransactionById(id: String!): Transaction!
   getTransactionByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
+  getYearMonth: [YearMonth!]!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
   getCategoryByDescription(description: String!): Category!
@@ -106,4 +107,9 @@ input UserInput {
   password: String!
   transaction: [TransactionInput!]!
   category: [CatIn!]!
+}
+
+type YearMonth {
+  year: Int!
+  month: Int!
 }

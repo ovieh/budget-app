@@ -6,6 +6,7 @@ import * as csv from 'csv-parse';
 import * as moment from 'moment';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 import { User } from '../auth/user.entity';
+import { YearMonth } from './DTO/year-month.dto';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
@@ -123,6 +124,25 @@ export class TransactionRepository extends Repository<Transaction> {
       return results;
     } catch {
       this.logger.error(`Failed to get results for "${year}/${month}"`);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getYearMonth(user: User): Promise<YearMonth[]> {
+    try {
+      const results = await this.createQueryBuilder()
+        .select(`EXTRACT(YEAR FROM transaction.transactionDate) as year`)
+        .addSelect(`EXTRACT(MONTH FROM transaction.transactionDate) as month`)
+        .from(Transaction, 'transaction')
+        .where('transaction.userId = :userId', {userId: user.id})
+        .groupBy('year')
+        .addGroupBy('month')
+        .orderBy('year', 'DESC')
+        .addOrderBy('month', 'DESC')
+        .getRawMany();
+      return results;
+    } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
