@@ -9,7 +9,6 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
-  /** Upload custom scalar type */
   Upload: any,
 };
 
@@ -132,6 +131,7 @@ export type Query = {
   getTransactions: Array<Transaction>,
   getTransactionById: Transaction,
   getTransactionByMonthAndYear: Array<Transaction>,
+  getYearMonth: Array<YearMonth>,
   getTransactionsByCategory: Category,
   getCategories: Array<Category>,
   getCategoryByDescription: Category,
@@ -207,6 +207,12 @@ export type UserInput = {
   category: Array<CatIn>,
 };
 
+export type YearMonth = {
+   __typename?: 'YearMonth',
+  year: Scalars['Int'],
+  month: Scalars['Int'],
+};
+
 export type CreateCategoryMutationVariables = {
   name: Scalars['String'],
   budget: Scalars['Float']
@@ -250,6 +256,17 @@ export type GetTransactionsQuery = (
       { __typename?: 'Category' }
       & Pick<Category, 'id' | 'name' | 'budget'>
     )> }
+  )> }
+);
+
+export type GetYearMonthQueryVariables = {};
+
+
+export type GetYearMonthQuery = (
+  { __typename?: 'Query' }
+  & { getYearMonth: Array<(
+    { __typename?: 'YearMonth' }
+    & Pick<YearMonth, 'year' | 'month'>
   )> }
 );
 
@@ -424,6 +441,39 @@ export function useGetTransactionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
 export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
 export type GetTransactionsQueryResult = ApolloReactCommon.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
+export const GetYearMonthDocument = gql`
+    query getYearMonth {
+  getYearMonth {
+    year
+    month
+  }
+}
+    `;
+
+/**
+ * __useGetYearMonthQuery__
+ *
+ * To run a query within a React component, call `useGetYearMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetYearMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetYearMonthQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetYearMonthQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetYearMonthQuery, GetYearMonthQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetYearMonthQuery, GetYearMonthQueryVariables>(GetYearMonthDocument, baseOptions);
+      }
+export function useGetYearMonthLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetYearMonthQuery, GetYearMonthQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetYearMonthQuery, GetYearMonthQueryVariables>(GetYearMonthDocument, baseOptions);
+        }
+export type GetYearMonthQueryHookResult = ReturnType<typeof useGetYearMonthQuery>;
+export type GetYearMonthLazyQueryHookResult = ReturnType<typeof useGetYearMonthLazyQuery>;
+export type GetYearMonthQueryResult = ApolloReactCommon.QueryResult<GetYearMonthQuery, GetYearMonthQueryVariables>;
 export const MeDocument = gql`
     query me {
   me {
