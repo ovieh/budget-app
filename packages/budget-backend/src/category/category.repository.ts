@@ -89,12 +89,12 @@ export class CategoryRepository extends Repository<Category> {
   async sumCategoryDebits(id: number, user: User): Promise<number> {
     const { sum } = await this.createQueryBuilder('category')
       .leftJoinAndSelect('category.transaction', 'transaction')
-      .where('transaction.id = :id', { id })
+      .where('category.id = :id', { id })
+      .andWhere('transaction.userId = :userId', { userId: user.id })
       .select('SUM(transaction.debitAmount)', 'sum')
-      .where('transaction.userId = :userId', { userId: user.id })
       .getRawOne();
 
-    return sum;
+    return sum || 0;
   }
 
   async sumCategoryDebitsByYearMonth(
