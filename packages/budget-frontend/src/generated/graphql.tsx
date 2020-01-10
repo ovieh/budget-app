@@ -227,6 +227,24 @@ export type YearMonth = {
   month: Scalars['Int'],
 };
 
+export type TransactionByMonthYearQueryVariables = {
+  month: Scalars['Float'],
+  year: Scalars['Float']
+};
+
+
+export type TransactionByMonthYearQuery = (
+  { __typename?: 'Query' }
+  & { getTransactionByMonthAndYear: Array<(
+    { __typename?: 'Transaction' }
+    & Pick<Transaction, 'id' | 'transactionDate' | 'transactionDescription' | 'debitAmount' | 'creditAmount' | 'balance'>
+    & { category: Maybe<(
+      { __typename?: 'Category' }
+      & Pick<Category, 'id' | 'name' | 'budget'>
+    )> }
+  )> }
+);
+
 export type CreateCategoryMutationVariables = {
   name: Scalars['String'],
   budget: Scalars['Float']
@@ -343,6 +361,50 @@ export type UpdateTransactionCategoryMutation = (
 );
 
 
+export const TransactionByMonthYearDocument = gql`
+    query TransactionByMonthYear($month: Float!, $year: Float!) {
+  getTransactionByMonthAndYear(month: $month, year: $year) {
+    id
+    transactionDate
+    transactionDescription
+    debitAmount
+    creditAmount
+    balance
+    category {
+      id
+      name
+      budget
+    }
+  }
+}
+    `;
+
+/**
+ * __useTransactionByMonthYearQuery__
+ *
+ * To run a query within a React component, call `useTransactionByMonthYearQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionByMonthYearQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransactionByMonthYearQuery({
+ *   variables: {
+ *      month: // value for 'month'
+ *      year: // value for 'year'
+ *   },
+ * });
+ */
+export function useTransactionByMonthYearQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>) {
+        return ApolloReactHooks.useQuery<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>(TransactionByMonthYearDocument, baseOptions);
+      }
+export function useTransactionByMonthYearLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>(TransactionByMonthYearDocument, baseOptions);
+        }
+export type TransactionByMonthYearQueryHookResult = ReturnType<typeof useTransactionByMonthYearQuery>;
+export type TransactionByMonthYearLazyQueryHookResult = ReturnType<typeof useTransactionByMonthYearLazyQuery>;
+export type TransactionByMonthYearQueryResult = ApolloReactCommon.QueryResult<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>;
 export const CreateCategoryDocument = gql`
     mutation createCategory($name: String!, $budget: Float!) {
   createCategory(name: $name, budget: $budget) {

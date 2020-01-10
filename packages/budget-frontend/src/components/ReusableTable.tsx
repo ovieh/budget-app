@@ -1,6 +1,12 @@
 import React from 'react';
-import styled from '@emotion/styled/macro';
 import { useTable } from 'react-table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 interface Props {
     columns: any;
@@ -17,23 +23,6 @@ type transaction = {
     balance: number;
 };
 
-const Table = styled.table`
-    /* border: 1px solid black; */
-    margin-top: 5px;
-    border-collapse: collapse;
-
-    td,
-    th {
-        border-bottom: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-        min-width: 5rem;
-    }
-    tr:hover {
-        background-color: gainsboro;
-    }
-`;
-
 export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
     const {
         getTableProps,
@@ -44,34 +33,42 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
     } = useTable({ columns, data });
 
     return (
-        <Table {...getTableProps()}>
-            <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>
-                                {column.render('Header')}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row);
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return (
-                                    <td {...cell.getCellProps()}>
-                                        {cell.render('Cell')}
-                                    </td>
-                                );
-                            })}
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </Table>
+        <TableContainer component={Paper}>
+            <Table {...getTableProps()}>
+                <TableHead>
+                    {headerGroups.map(headerGroup => (
+                        <TableRow {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map(column => (
+                                <TableCell
+                                    {...column.getHeaderProps()}
+                                    align='right'
+                                >
+                                    {column.render('Header')}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableHead>
+                <TableBody {...getTableBodyProps()}>
+                    {rows.map((row, i) => {
+                        prepareRow(row);
+                        return (
+                            <TableRow {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    return (
+                                        <TableCell
+                                            align='right'
+                                            {...cell.getCellProps()}
+                                        >
+                                            {cell.render('Cell')}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };

@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
-    useGetTransactionsQuery,
     useCreateTransactionMutation,
-    GetTransactionsDocument,
+    useTransactionByMonthYearQuery,
+    YearMonth,
 } from '../generated/graphql';
 import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -14,45 +14,21 @@ import { YearMonthTab } from '../components/YearMonthTab';
 interface Props {}
 
 export const Transactions: React.FC<Props> = () => {
-    const Wrapper = styled.div`
-        display: flex;
-        section,
-        aside {
-            background: whitesmoke;
-            margin: 2.5rem;
-        }
-    `;
-
-    const Section = styled.section`
-        /* background: whitesmoke; */
-        flex: 1 60%;
-    `;
-
-    const Panel = styled.aside`
-        /* background:  */
-        flex: 2 40%;
-        padding: 15px;
-    `;
-
-    const StyledDiv = styled.div`
-        padding: 5px;
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 0.75rem;
-        }
-    `;
-
-    const Button = styled.button`
-        border: 1px solid black;
-        background: white;
-        color: black;
-        border-radius: 5px;
-    `;
-
-    const { data, error, loading } = useGetTransactionsQuery({
-        errorPolicy: 'all',
+    const [active, setActive] = useState(0);
+    const [yearMonth, setYearMonth] = useState<YearMonth>({
+        month: 1,
+        year: 2020,
     });
+
+    const { data, error, loading } = useTransactionByMonthYearQuery({
+        errorPolicy: 'all',
+        variables: {
+            month: yearMonth.month,
+            year: yearMonth.year,
+        },
+    });
+
+
 
     const [addTransaction] = useCreateTransactionMutation();
 
@@ -76,6 +52,7 @@ export const Transactions: React.FC<Props> = () => {
         );
     }
 
+    // TODO handle loading better
     if (loading) {
         return <div>Loading Transactions</div>;
     }
@@ -90,7 +67,17 @@ export const Transactions: React.FC<Props> = () => {
             >
                 <Grid item xs={7}>
                     <Paper style={{ height: '40rem' }}>
-                        <YearMonthTab />
+                        <YearMonthTab
+                            active={active}
+                            setActive={setActive}
+                            setYearMonth={setYearMonth}
+                        />
+                        {data && (
+                            <ReusuableTable
+                                columns={TransactionsColumns}
+                                data={data.getTransactionByMonthAndYear}
+                            />
+                        )}
                     </Paper>
                 </Grid>
                 <Grid item xs={4}>

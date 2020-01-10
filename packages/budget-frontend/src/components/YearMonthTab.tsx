@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
-import { useGetYearMonthQuery } from '../generated/graphql';
+import { useGetYearMonthQuery, YearMonth } from '../generated/graphql';
 import { Tab, Tabs } from '@material-ui/core';
 import styled from '@emotion/styled/macro';
+import { useApolloClient } from '@apollo/react-hooks';
 
-interface Props {}
+// TODO fix horrible typings
+interface Props {
+    active: number;
+    setActive: any;
+    setYearMonth: any;
+}
 
-export const YearMonthTab: React.FC<Props> = () => {
+export const YearMonthTab: React.FC<Props> = ({
+    active,
+    setActive,
+    setYearMonth,
+}) => {
     const { data } = useGetYearMonthQuery();
-    const [action, setActive] = useState(0);
 
-    // return (
-    //     <pre>
-    //         {data?.getYearMonth.map((el,i) => (
-    //             <div key={i}>
-    //                 {el.month}, {el.year}
-    //             </div>
-    //         ))}
-    //     </pre>
-    // );
+
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        event.preventDefault();
         setActive(newValue);
+        setYearMonth(data?.getYearMonth[newValue]);
     };
 
     return (
         <Tabs
-            value={action}
+            value={active}
             onChange={handleChange}
             indicatorColor='primary'
             textColor='primary'
