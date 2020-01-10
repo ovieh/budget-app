@@ -79,10 +79,4 @@ export class TransactionService {
     return await this.transactionRepository.getYearMonth(user);
   }
 
-  // async findCategoryById(`
-  //   id: number,
-  // ) {
-  //   return await this.categoryRepository.find({id});
-  // }
-
 }

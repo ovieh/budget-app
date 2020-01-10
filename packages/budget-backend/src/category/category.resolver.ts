@@ -6,6 +6,7 @@ import { GqlAuthGuard } from '../auth/gql-auth.guard';
 import { User } from '../auth/user.entity';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
+import { Float } from 'type-graphql';
 
 @Resolver(of => Category)
 export class CategoryResolver {
@@ -64,5 +65,30 @@ export class CategoryResolver {
     @CurrentUser() user: User,
   ): Promise<Category> {
     return this.categoryService.getCategoryByDescription(description, user);
+  }
+
+  @Query(returns => Float)
+  @UseGuards(GqlAuthGuard)
+  sumCategoryDebits(
+    @Args('id', ParseIntPipe) id: number,
+    @CurrentUser() user: User,
+  ): Promise<number> {
+    return this.categoryService.sumCategoryDebits(id, user);
+  }
+
+  @Query(returns => Float)
+  @UseGuards(GqlAuthGuard)
+  sumCategoryDebitsByYearMonth(
+    @Args('id', ParseIntPipe) id: number,
+    @Args('year', ParseIntPipe) year: number,
+    @Args('month', ParseIntPipe) month: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.categoryService.sumCategoryDebitsByYearMonth(
+      id,
+      user,
+      year,
+      month,
+    );
   }
 }

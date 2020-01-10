@@ -58,6 +58,8 @@ type Query {
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
   getCategoryByDescription(description: String!): Category!
+  sumCategoryDebits(id: Float!): Float!
+  sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
 }
 
 type Transaction {

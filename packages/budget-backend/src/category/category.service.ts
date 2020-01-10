@@ -74,11 +74,19 @@ export class CategoryService {
     return this.categoryRepository.removeCategoryById(id, user);
   }
 
-  // async sumCategoryDebits(
-  //   id: number,
-  //   user: User,
-  // ): Promise<number> {
-  //   return this.categoryRepository.sumCategoryDebits(id, user);
-  // }
+  async sumCategoryDebits(
+    id: number,
+    user: User,
+  ): Promise<number> {
+    return this.categoryRepository.sumCategoryDebits(id, user);
+  }
 
+  async sumCategoryDebitsByYearMonth(
+    id: number,
+    user: User,
+    year: number,
+    month: number,
+  ) {
+    return this.categoryRepository.sumCategoryDebitsByYearMonth(id, user, year, month);
+  }
 }
