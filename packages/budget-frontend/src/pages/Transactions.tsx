@@ -8,6 +8,8 @@ import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ReusuableTable } from '../components/ReusableTable';
 import { LoggedInNav } from '../components/LoggedInNav';
+import { Container, Grid, Paper } from '@material-ui/core';
+import { YearMonthTab } from '../components/YearMonthTab';
 
 interface Props {}
 
@@ -80,7 +82,22 @@ export const Transactions: React.FC<Props> = () => {
     return (
         <Fragment>
             <LoggedInNav />
-            <Wrapper>
+            <Grid
+                container
+                justify='space-evenly'
+                spacing={2}
+                style={{ marginTop: '20px' }}
+            >
+                <Grid item xs={7}>
+                    <Paper style={{ height: '40rem' }}>
+                        <YearMonthTab />
+                    </Paper>
+                </Grid>
+                <Grid item xs={4}>
+                    <Paper style={{ height: '40rem' }}></Paper>
+                </Grid>
+            </Grid>
+            {/* <Wrapper>
                 <Section>
                     {data && (
                         <ReusuableTable
@@ -167,7 +184,7 @@ export const Transactions: React.FC<Props> = () => {
                         )}
                     </Formik>
                 </Panel>
-            </Wrapper>
+            </Wrapper> */}
         </Fragment>
     );
 };

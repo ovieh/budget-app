@@ -135,6 +135,8 @@ export type Query = {
   getTransactionsByCategory: Category,
   getCategories: Array<Category>,
   getCategoryByDescription: Category,
+  sumCategoryDebits: Scalars['Float'],
+  sumCategoryDebitsByYearMonth: Scalars['Float'],
 };
 
 
@@ -156,6 +158,18 @@ export type QueryGetTransactionsByCategoryArgs = {
 
 export type QueryGetCategoryByDescriptionArgs = {
   description: Scalars['String']
+};
+
+
+export type QuerySumCategoryDebitsArgs = {
+  id: Scalars['Float']
+};
+
+
+export type QuerySumCategoryDebitsByYearMonthArgs = {
+  month: Scalars['Float'],
+  year: Scalars['Float'],
+  id: Scalars['Float']
 };
 
 export type Transaction = {

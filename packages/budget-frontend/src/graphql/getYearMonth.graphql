@@ -1,4 +1,4 @@
-query getYearMonth {
+query getYearMonth{
   getYearMonth{
     year
     month
