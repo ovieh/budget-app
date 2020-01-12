@@ -1,12 +1,11 @@
-import { Transaction } from './transaction.entity';
-import { EntityRepository, Repository } from 'typeorm';
-import { CreateTransactionDto } from './DTO/create-transaction.dto';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import * as parse from 'csv-parse/lib/sync';
-import * as csv from 'csv-parse';
 import * as moment from 'moment';
-import { Logger, InternalServerErrorException } from '@nestjs/common';
+import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../auth/user.entity';
+import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { YearMonth } from './DTO/year-month.dto';
+import { Transaction } from './transaction.entity';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
@@ -58,7 +57,7 @@ export class TransactionRepository extends Repository<Transaction> {
   async createTransaction(
     createTransactionDto: CreateTransactionDto,
     user: User,
-    ) {
+    ): Promise<Transaction> {
     const {
       accountNumber,
       balance,
@@ -79,6 +78,7 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.sortCode = sortCode;
     transaction.transactionType = transactionType;
     transaction.user = user;
+
     try {
       await transaction.save();
       return transaction;

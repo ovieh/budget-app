@@ -9,13 +9,7 @@ import {
 } from 'typeorm';
 import { Transaction } from '../transaction/transaction.entity';
 import { User } from '../auth/user.entity';
-import {
-  ObjectType,
-  Field,
-  ID,
-  Float,
-  InputType,
-} from 'type-graphql';
+import { ObjectType, Field, ID, Float, InputType } from 'type-graphql';
 
 @ObjectType()
 @InputType('CatIn')
@@ -26,7 +20,7 @@ export class Category extends BaseEntity {
   @Field(type => ID, { nullable: true })
   id: number;
 
-  @Column()
+  @Column({ default: 'uncategorized' })
   @Field(type => String)
   name: string;
 
