@@ -38,7 +38,7 @@ export const Transactions: React.FC<Props> = () => {
     const { data: date } = useGetYearMonthQuery();
 
     const [yearMonth, setYearMonth] = useState<IYearMonth | undefined>({
-        month: date?.getYearMonth[0].month || 2,
+        month: date?.getYearMonth[0].month || 1,
         year: date?.getYearMonth[0].year || 2020,
     });
 
@@ -56,8 +56,8 @@ export const Transactions: React.FC<Props> = () => {
     const [addTransaction] = useCreateTransactionMutation();
 
     const TransactionsColumns = [
-        { Header: 'Date', accessor: 'transactionDate' },
-        { Header: 'Description', accessor: 'transactionDescription' },
+        { Header: 'Date', accessor: 'date' },
+        { Header: 'Description', accessor: 'description' },
         { Header: 'Debit Amount', accessor: 'debitAmount' },
         { Header: 'Credit Amount', accessor: 'creditAmount' },
         { Header: 'Balance', accessor: 'balance' },
@@ -104,23 +104,22 @@ export const Transactions: React.FC<Props> = () => {
                     <Paper style={{ minHeight: '20rem' }}>
                         <Formik
                             initialValues={{
-                                transactionDate: '',
-                                transactionType: '',
+                                date: '',
+                                type: '',
                                 sortCode: '',
-                                transactionDescription: '',
+                                description: '',
                                 accountNumber: '',
                                 debitAmount: '',
                                 creditAmount: '',
                                 balance: '',
                             }}
                             onSubmit={async (values, { setSubmitting }) => {
-                                await addTransaction({
+                                const result = await addTransaction({
                                     variables: {
-                                        transactionDate: values.transactionDate,
-                                        transactionType: values.transactionType,
+                                        date: values.date,
+                                        type: values.type,
                                         sortCode: values.sortCode,
-                                        transactionDescription:
-                                            values.transactionDescription,
+                                        description: values.description,
                                         accountNumber: values.accountNumber,
                                         debitAmount: parseFloat(
                                             values.debitAmount
@@ -140,11 +139,12 @@ export const Transactions: React.FC<Props> = () => {
                                         },
                                     ],
                                 });
+                                console.error(result)
                                 setSubmitting(false);
                             }}
                         >
                             {({ handleSubmit, isSubmitting }) => (
-                                <Form>
+                                <Form onSubmit={handleSubmit}>
                                     <Container>
                                         <Label variant='h6' align='left'>
                                             Enter Transaction
@@ -153,7 +153,7 @@ export const Transactions: React.FC<Props> = () => {
                                             <Grid item xs={12}>
                                                 <Field
                                                     item
-                                                    name='transactionDate'
+                                                    name='date'
                                                     placeholder='Transaction Date'
                                                     as={TextField}
                                                     fullWidth
@@ -164,7 +164,7 @@ export const Transactions: React.FC<Props> = () => {
                                             <Grid item xs={12}>
                                                 <Field
                                                     item
-                                                    name='transactionDescription'
+                                                    name='description'
                                                     placeholder='Transaction Description'
                                                     as={TextField}
                                                     fullWidth
@@ -179,14 +179,18 @@ export const Transactions: React.FC<Props> = () => {
                                                     </InputLabel>
                                                     <Field
                                                         item
-                                                        name='transactionType'
+                                                        name='type'
                                                         // placeholder='Transaction Type'
                                                         as={Select}
                                                         required
                                                         variant='outlined'
                                                         labelId='type'
+                                                        value='DEB'
                                                     >
-                                                        <MenuItem value={'DEB'}>
+                                                        <MenuItem
+                                                            value={'DEB'}
+                                                            selected={true}
+                                                        >
                                                             DEB
                                                         </MenuItem>
                                                         <MenuItem value={'DD'}>
@@ -288,10 +292,10 @@ export const Transactions: React.FC<Props> = () => {
                 <Panel>
                     <Formik
                         initialValues={{
-                            transactionDate: '',
-                            transactionType: '',
+                            date: '',
+                            type: '',
                             sortCode: '',
-                            transactionDescription: '',
+                            description: '',
                             accountNumber: '',
                             debitAmount: '',
                             creditAmount: '',
@@ -300,11 +304,11 @@ export const Transactions: React.FC<Props> = () => {
                         onSubmit={async (values, { setSubmitting }) => {
                             await addTransaction({
                                 variables: {
-                                    transactionDate: values.transactionDate,
-                                    transactionType: values.transactionType,
+                                    date: values.date,
+                                    type: values.type,
                                     sortCode: values.sortCode,
-                                    transactionDescription:
-                                        values.transactionDescription,
+                                    description:
+                                        values.description,
                                     accountNumber: values.accountNumber,
                                     debitAmount: parseFloat(values.debitAmount),
                                     creditAmount: parseFloat(
@@ -323,15 +327,15 @@ export const Transactions: React.FC<Props> = () => {
                             <Form onSubmit={handleSubmit}>
                                 <StyledDiv>
                                     <Field
-                                        name='transactionDate'
+                                        name='date'
                                         placeholder='Transaction Date'
                                     />
                                     <Field
-                                        name='transactionDescription'
+                                        name='description'
                                         placeholder='Description'
                                     />
                                     <Field
-                                        name='transactionType'
+                                        name='type'
                                         placeholder='Transaction Type'
                                     />
                                     <Field

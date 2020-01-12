@@ -1,29 +1,33 @@
-import React from 'react';
-import { useTable } from 'react-table';
+/* eslint-disable indent */
+import { MenuItem, Select } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import React from 'react';
+import { useTable } from 'react-table';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 interface Props {
     columns: any;
     data: any;
+    select?: any;
 }
 
 type column = { Header: string; accessor: any };
 
 type transaction = {
-    transactionDate: string;
-    transactionDescription: string;
+    date: string;
+    description: string;
     debitAmount: number;
     creditAmount: number;
     balance: number;
 };
 
-export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
+export const ReusuableTable: React.FC<Props> = ({ columns, data, select }) => {
     const {
         getTableProps,
         getTableBodyProps,
@@ -55,7 +59,38 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
                         return (
                             <TableRow {...row.getRowProps()}>
                                 {row.cells.map(cell => {
-                                    return (
+                                    return cell.column.id ===
+                                        'category.name' ? (
+                                        <Formik
+                                            initialValues={{
+                                                name: '',
+                                            }}
+                                            onSubmit={async (
+                                                values,
+                                                { setSubmitting }
+                                            ) => {}}
+                                        >
+                                            <TableCell
+                                                align='right'
+                                                {...cell.getCellProps()}
+                                            >
+                                                <Field
+                                                    value={cell.render('Cell')}
+                                                    as={Select}
+                                                    name='category'
+                                                >
+                                                    <MenuItem
+                                                        value={cell.render(
+                                                            'Cell'
+                                                        )}
+                                                    >
+                                                        {cell.render('Cell')}
+                                                    </MenuItem>
+                                                </Field>
+                                                {/* {cell.render('Cell')} */}
+                                            </TableCell>
+                                        </Formik>
+                                    ) : (
                                         <TableCell
                                             align='right'
                                             {...cell.getCellProps()}

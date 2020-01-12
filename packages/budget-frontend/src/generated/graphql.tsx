@@ -86,11 +86,11 @@ export type MutationUploadFileArgs = {
 
 
 export type MutationCreateTransactionArgs = {
-  transactionDate: Scalars['String'],
-  transactionType: Scalars['String'],
+  date: Scalars['String'],
+  type: Scalars['String'],
   sortCode: Scalars['String'],
   accountNumber: Scalars['String'],
-  transactionDescription: Scalars['String'],
+  description: Scalars['String'],
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float']
@@ -175,11 +175,11 @@ export type QuerySumCategoryDebitsByYearMonthArgs = {
 export type Transaction = {
    __typename?: 'Transaction',
   id: Scalars['ID'],
-  transactionDate: Scalars['String'],
-  transactionType: Scalars['String'],
+  date: Scalars['String'],
+  type: Scalars['String'],
   sortCode: Scalars['String'],
   accountNumber: Scalars['String'],
-  transactionDescription: Scalars['String'],
+  description: Scalars['String'],
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float'],
@@ -190,11 +190,11 @@ export type Transaction = {
 
 export type TransactionInput = {
   id: Scalars['ID'],
-  transactionDate: Scalars['String'],
-  transactionType: Scalars['String'],
+  date: Scalars['String'],
+  type: Scalars['String'],
   sortCode: Scalars['String'],
   accountNumber: Scalars['String'],
-  transactionDescription: Scalars['String'],
+  description: Scalars['String'],
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float'],
@@ -237,7 +237,7 @@ export type TransactionByMonthYearQuery = (
   { __typename?: 'Query' }
   & { getTransactionByMonthAndYear: Array<(
     { __typename?: 'Transaction' }
-    & Pick<Transaction, 'id' | 'transactionDate' | 'transactionDescription' | 'debitAmount' | 'creditAmount' | 'balance'>
+    & Pick<Transaction, 'id' | 'date' | 'description' | 'debitAmount' | 'creditAmount' | 'balance'>
     & { category: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'id' | 'name' | 'budget'>
@@ -260,11 +260,11 @@ export type CreateCategoryMutation = (
 );
 
 export type CreateTransactionMutationVariables = {
-  transactionDate: Scalars['String'],
-  transactionType: Scalars['String'],
+  date: Scalars['String'],
+  type: Scalars['String'],
   sortCode: Scalars['String'],
   accountNumber: Scalars['String'],
-  transactionDescription: Scalars['String'],
+  description: Scalars['String'],
   debitAmount: Scalars['Float'],
   creditAmount: Scalars['Float'],
   balance: Scalars['Float']
@@ -283,7 +283,7 @@ export type GetTransactionsQuery = (
   { __typename?: 'Query' }
   & { getTransactions: Array<(
     { __typename?: 'Transaction' }
-    & Pick<Transaction, 'id' | 'transactionDate' | 'creditAmount' | 'debitAmount' | 'balance' | 'transactionDescription'>
+    & Pick<Transaction, 'id' | 'date' | 'creditAmount' | 'debitAmount' | 'balance' | 'description'>
     & { category: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'id' | 'name' | 'budget'>
@@ -365,8 +365,8 @@ export const TransactionByMonthYearDocument = gql`
     query TransactionByMonthYear($month: Float!, $year: Float!) {
   getTransactionByMonthAndYear(month: $month, year: $year) {
     id
-    transactionDate
-    transactionDescription
+    date
+    description
     debitAmount
     creditAmount
     balance
@@ -439,8 +439,8 @@ export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCatego
 export type CreateCategoryMutationResult = ApolloReactCommon.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateTransactionDocument = gql`
-    mutation CreateTransaction($transactionDate: String!, $transactionType: String!, $sortCode: String!, $accountNumber: String!, $transactionDescription: String!, $debitAmount: Float!, $creditAmount: Float!, $balance: Float!) {
-  createTransaction(transactionDate: $transactionDate, transactionType: $transactionType, sortCode: $sortCode, accountNumber: $accountNumber, transactionDescription: $transactionDescription, debitAmount: $debitAmount, creditAmount: $creditAmount, balance: $balance)
+    mutation CreateTransaction($date: String!, $type: String!, $sortCode: String!, $accountNumber: String!, $description: String!, $debitAmount: Float!, $creditAmount: Float!, $balance: Float!) {
+  createTransaction(date: $date, type: $type, sortCode: $sortCode, accountNumber: $accountNumber, description: $description, debitAmount: $debitAmount, creditAmount: $creditAmount, balance: $balance)
 }
     `;
 export type CreateTransactionMutationFn = ApolloReactCommon.MutationFunction<CreateTransactionMutation, CreateTransactionMutationVariables>;
@@ -458,11 +458,11 @@ export type CreateTransactionMutationFn = ApolloReactCommon.MutationFunction<Cre
  * @example
  * const [createTransactionMutation, { data, loading, error }] = useCreateTransactionMutation({
  *   variables: {
- *      transactionDate: // value for 'transactionDate'
- *      transactionType: // value for 'transactionType'
+ *      date: // value for 'date'
+ *      type: // value for 'type'
  *      sortCode: // value for 'sortCode'
  *      accountNumber: // value for 'accountNumber'
- *      transactionDescription: // value for 'transactionDescription'
+ *      description: // value for 'description'
  *      debitAmount: // value for 'debitAmount'
  *      creditAmount: // value for 'creditAmount'
  *      balance: // value for 'balance'
@@ -479,11 +479,11 @@ export const GetTransactionsDocument = gql`
     query getTransactions {
   getTransactions {
     id
-    transactionDate
+    date
     creditAmount
     debitAmount
     balance
-    transactionDescription
+    description
     category {
       id
       name

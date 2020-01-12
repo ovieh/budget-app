@@ -1,8 +1,8 @@
 query TransactionByMonthYear($month: Float!, $year: Float!){
   getTransactionByMonthAndYear(month:$month, year: $year) {
     id
-    transactionDate
-    transactionDescription
+    date
+    description
     debitAmount
     creditAmount
     balance

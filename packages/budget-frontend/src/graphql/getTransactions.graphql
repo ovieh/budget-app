@@ -1,11 +1,11 @@
 query getTransactions {
   getTransactions {
     id
-    transactionDate
+    date
     creditAmount
     debitAmount
     balance
-    transactionDescription
+    description
     category {
       id
       name

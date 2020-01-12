@@ -1,19 +1,19 @@
 mutation CreateTransaction(
-  $transactionDate: String!,
-  $transactionType: String!, 
+  $date: String!,
+  $type: String!, 
   $sortCode: String!,
   $accountNumber: String!,
-  $transactionDescription: String!,
+  $description: String!,
   $debitAmount: Float!,
   $creditAmount: Float!,
   $balance: Float!
 ) {
   createTransaction(
-    transactionDate: $transactionDate,
-    transactionType: $transactionType,
+    date: $date,
+    type: $type,
     sortCode: $sortCode,
     accountNumber: $accountNumber,
-    transactionDescription: $transactionDescription,
+    description: $description,
     debitAmount: $debitAmount,
     creditAmount: $creditAmount,
     balance: $balance
