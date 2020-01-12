@@ -9,7 +9,7 @@ import { RelationColumn } from '../helpers';
 @ObjectType()
 @InputType('TransactionInput')
 @Entity()
-@Unique(['transactionDate', 'balance'])
+@Unique(['date', 'balance'])
 export class  Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(type => ID)
@@ -17,11 +17,11 @@ export class  Transaction extends BaseEntity {
 
   @Column('date')
   @Field()
-  transactionDate: string;
+  date: string;
 
   @Column()
   @Field()
-  transactionType: string;
+  type: string;
 
   @Column()
   @Field()
@@ -33,7 +33,7 @@ export class  Transaction extends BaseEntity {
 
   @Column('text')
   @Field()
-  transactionDescription: string;
+  description: string;
 
   @Column('numeric', { precision: 10, scale: 2 })
   @Field()

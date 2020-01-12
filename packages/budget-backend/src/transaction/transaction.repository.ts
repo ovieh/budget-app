@@ -18,11 +18,11 @@ export class TransactionRepository extends Repository<Transaction> {
     // Rewrite this as stream
     const parsedTransactions = parse(file.buffer.toString(), {
       columns: [
-        'transactionDate',
-        'transactionType',
+        'date',
+        'type',
         'sortCode',
         'accountNumber',
-        'transactionDescription',
+        'description',
         'debitAmount',
         'creditAmount',
         'balance',
@@ -32,7 +32,7 @@ export class TransactionRepository extends Repository<Transaction> {
         if ((context.column === 'debitAmount' || context.column === 'creditAmount') && value === '') {
           return 0;
         // convert date format
-        } else if (context.column === 'transactionDate') {
+        } else if (context.column === 'date') {
           return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
         } else {
           return value;
@@ -62,21 +62,21 @@ export class TransactionRepository extends Repository<Transaction> {
       accountNumber,
       balance,
       creditAmount,
-      transactionDate,
+      date,
       debitAmount,
-      transactionDescription,
+      description,
       sortCode,
-      transactionType } = createTransactionDto;
+      type } = createTransactionDto;
 
     const transaction = new Transaction();
     transaction.accountNumber = accountNumber;
     transaction.balance = balance;
     transaction.creditAmount = creditAmount;
-    transaction.transactionDate = transactionDate;
+    transaction.date = date;
     transaction.debitAmount = debitAmount;
-    transaction.transactionDescription = transactionDescription;
+    transaction.description = description;
     transaction.sortCode = sortCode;
-    transaction.transactionType = transactionType;
+    transaction.type = type;
     transaction.user = user;
 
     try {
@@ -97,7 +97,7 @@ export class TransactionRepository extends Repository<Transaction> {
       const results = await this.createQueryBuilder('transaction')
       .select('transaction')
       .where('transaction.userId = :userId', {userId: user.id})
-      .andWhere(`EXTRACT(Month FROM transaction.transactionDate) = ${month}`)
+      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
       .getMany();
 
       return results;
@@ -117,8 +117,8 @@ export class TransactionRepository extends Repository<Transaction> {
       const results = await this.createQueryBuilder('transaction')
       .select('transaction')
       .where('transaction.userId = :userId', {userId: user.id})
-      .andWhere(`EXTRACT(Year FROM transaction.transactionDate) = ${year}`)
-      .andWhere(`EXTRACT(Month FROM transaction.transactionDate) = ${month}`)
+      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
       .getMany();
 
       return results;
@@ -131,8 +131,8 @@ export class TransactionRepository extends Repository<Transaction> {
   async getYearMonth(user: User): Promise<YearMonth[]> {
     try {
       const results = await this.createQueryBuilder()
-        .select(`EXTRACT(YEAR FROM transaction.transactionDate) as year`)
-        .addSelect(`EXTRACT(MONTH FROM transaction.transactionDate) as month`)
+        .select(`EXTRACT(YEAR FROM transaction.date) as year`)
+        .addSelect(`EXTRACT(MONTH FROM transaction.date) as month`)
         .from(Transaction, 'transaction')
         .where('transaction.userId = :userId', {userId: user.id})
         .groupBy('year')

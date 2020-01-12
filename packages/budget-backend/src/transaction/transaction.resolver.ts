@@ -96,7 +96,7 @@ export class TransactionResolver {
     this.transactionService.createTransaction(createTransactionDto, user);
 
     this.logger.verbose(
-      `Transaction "${createTransactionDto.transactionDescription}" was created`,
+      `Transaction "${createTransactionDto.description}" was created`,
     );
 
     return `Transaction created`;

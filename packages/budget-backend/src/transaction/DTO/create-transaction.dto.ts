@@ -6,11 +6,11 @@ export class CreateTransactionDto {
   @Field(type => String)
   @IsNotEmpty()
   @IsDate()
-  transactionDate: string;
+  date: string;
 
   @IsNotEmpty()
   @Field(type => String)
-  transactionType: string;
+  type: string;
 
   @Field(type => String)
   @IsNotEmpty()
@@ -22,7 +22,7 @@ export class CreateTransactionDto {
 
   @IsNotEmpty()
   @Field(type => String)
-  transactionDescription: string;
+  description: string;
 
   @Field(type => Float)
   @IsCurrency()

@@ -44,7 +44,7 @@ export class TransactionService {
       user,
     );
 
-    const category = await this.categoryService.getCategoryByDescription(result.transactionDescription, user);
+    const category = await this.categoryService.getCategoryByDescription(result.description, user);
 
     if (category) {
       await this.updateCategoryById(result.id, category , user);

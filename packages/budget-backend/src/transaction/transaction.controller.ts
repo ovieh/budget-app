@@ -42,7 +42,7 @@ export class TransactionController {
     @Body() createTransactionDto: CreateTransactionDto,
     @GetUser() user: User,
   ): Promise<Transaction> {
-    this.logger.verbose(`Transaction "${createTransactionDto.transactionDescription}" was created`);
+    this.logger.verbose(`Transaction "${createTransactionDto.description}" was created`);
     return this.transactionService.createTransaction(createTransactionDto, user);
   }
 

@@ -57,7 +57,7 @@ export class CategoryRepository extends Repository<Category> {
       .select('category')
       .leftJoinAndSelect('category.transaction', 'transaction')
       .where('transaction.userId = :userId', { userId: user.id })
-      .andWhere('transaction.transactionDescription = :description', {
+      .andWhere('transaction.description = :description', {
         description,
       });
 
@@ -107,8 +107,8 @@ export class CategoryRepository extends Repository<Category> {
       .leftJoinAndSelect('category.transaction', 'transaction')
       .where('category.id = :id', { id })
       .andWhere('transaction.userId = :userId', { userId: user.id })
-      .andWhere(`EXTRACT(Year FROM transaction.transactionDate) = ${year}`)
-      .andWhere(`EXTRACT(Month FROM transaction.transactionDate) = ${month}`)
+      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
       .select('SUM(transaction.debitAmount)', 'sum')
       .getRawOne();
     return sum || 0;
