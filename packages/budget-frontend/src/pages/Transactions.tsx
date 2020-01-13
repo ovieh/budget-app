@@ -1,13 +1,12 @@
 import React, { Fragment, useState } from 'react';
 import {
     useCreateTransactionMutation,
-    useTransactionByMonthYearQuery,
     TransactionByMonthYearDocument,
     useGetYearMonthQuery,
+    useTransactionByMonthYearQuery,
 } from '../generated/graphql';
 import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { ReusuableTable } from '../components/ReusableTable';
 import { LoggedInNav } from '../components/LoggedInNav';
 import {
     Container,
@@ -22,6 +21,7 @@ import {
     Button,
 } from '@material-ui/core';
 import { YearMonthTab } from '../components/YearMonthTab';
+import { TransactionsTable } from '../components/TransactionsTable';
 
 interface Props {}
 
@@ -35,50 +35,17 @@ const Label = styled(Typography)`
 `;
 
 export const Transactions: React.FC<Props> = () => {
-    const { data: date } = useGetYearMonthQuery();
-
-    const [yearMonth, setYearMonth] = useState<IYearMonth | undefined>({
-        month: date?.getYearMonth[0].month || 1,
-        year: date?.getYearMonth[0].year || 2020,
-    });
-
-    // TODO fix the above
-    console.log(date?.getYearMonth[0].month);
-
-    const { data, error, loading } = useTransactionByMonthYearQuery({
-        skip: !date,
-        variables: {
-            month: yearMonth!.month,
-            year: yearMonth!.year,
-        },
-    });
+    const { data: yearMonth, loading } = useGetYearMonthQuery();
 
     const [addTransaction] = useCreateTransactionMutation();
 
-    const TransactionsColumns = [
-        { Header: 'Date', accessor: 'date' },
-        { Header: 'Description', accessor: 'description' },
-        { Header: 'Debit Amount', accessor: 'debitAmount' },
-        { Header: 'Credit Amount', accessor: 'creditAmount' },
-        { Header: 'Balance', accessor: 'balance' },
-        { Header: 'Category', accessor: 'category.name' },
-    ];
+    const [active, setActive] = useState(0);
 
-    if (error) {
-        return (
-            <pre>
-                Errors:{' '}
-                {error?.graphQLErrors.map(({ message }, i) => (
-                    <span key={i}>{message}</span>
-                ))}
-            </pre>
-        );
+    const [date, setDate] = useState(yearMonth?.getYearMonth[0].month);
+
+    if (loading) {
+        return <div>I'm loading</div>;
     }
-
-    // TODO handle loading better
-    // if (loading) {
-    //     return <div>Loading Transactions</div>;
-    // }
 
     return (
         <Fragment>
@@ -91,11 +58,18 @@ export const Transactions: React.FC<Props> = () => {
             >
                 <Grid item xs={7}>
                     <Paper>
-                        <YearMonthTab setYearMonth={setYearMonth} />
-                        {data && (
-                            <ReusuableTable
-                                columns={TransactionsColumns}
-                                data={data.getTransactionByMonthAndYear}
+                        {yearMonth && (
+                            <YearMonthTab
+                                data={yearMonth}
+                                setDate={setDate}
+                                active={active}
+                                setActive={setActive}
+                            />
+                        )}
+                        {yearMonth && (
+                            <TransactionsTable
+                                yearMonth={yearMonth}
+                                active={active}
                             />
                         )}
                     </Paper>
@@ -114,7 +88,7 @@ export const Transactions: React.FC<Props> = () => {
                                 balance: '',
                             }}
                             onSubmit={async (values, { setSubmitting }) => {
-                                const result = await addTransaction({
+                                await addTransaction({
                                     variables: {
                                         date: values.date,
                                         type: values.type,
@@ -133,13 +107,16 @@ export const Transactions: React.FC<Props> = () => {
                                         {
                                             query: TransactionByMonthYearDocument,
                                             variables: {
-                                                month: yearMonth!.month,
-                                                year: yearMonth!.year,
+                                                month: yearMonth!.getYearMonth[
+                                                    active
+                                                ].month,
+                                                year: yearMonth!.getYearMonth[
+                                                    active
+                                                ].year,
                                             },
                                         },
                                     ],
                                 });
-                                console.error(result)
                                 setSubmitting(false);
                             }}
                         >
@@ -280,94 +257,6 @@ export const Transactions: React.FC<Props> = () => {
                     </Paper>
                 </Grid>
             </Grid>
-            {/* <Wrapper>
-                <Section>
-                    {data && (
-                        <ReusuableTable
-                            columns={TransactionsColumns}
-                            data={data.getTransactions}
-                        />
-                    )}
-                </Section>
-                <Panel>
-                    <Formik
-                        initialValues={{
-                            date: '',
-                            type: '',
-                            sortCode: '',
-                            description: '',
-                            accountNumber: '',
-                            debitAmount: '',
-                            creditAmount: '',
-                            balance: '',
-                        }}
-                        onSubmit={async (values, { setSubmitting }) => {
-                            await addTransaction({
-                                variables: {
-                                    date: values.date,
-                                    type: values.type,
-                                    sortCode: values.sortCode,
-                                    description:
-                                        values.description,
-                                    accountNumber: values.accountNumber,
-                                    debitAmount: parseFloat(values.debitAmount),
-                                    creditAmount: parseFloat(
-                                        values.creditAmount
-                                    ),
-                                    balance: parseFloat(values.balance),
-                                },
-                                refetchQueries: [
-                                    { query: GetTransactionsDocument },
-                                ],
-                            });
-                            setSubmitting(false);
-                        }}
-                    >
-                        {({ handleSubmit, isSubmitting }) => (
-                            <Form onSubmit={handleSubmit}>
-                                <StyledDiv>
-                                    <Field
-                                        name='date'
-                                        placeholder='Transaction Date'
-                                    />
-                                    <Field
-                                        name='description'
-                                        placeholder='Description'
-                                    />
-                                    <Field
-                                        name='type'
-                                        placeholder='Transaction Type'
-                                    />
-                                    <Field
-                                        name='sortCode'
-                                        placeholder='Sortcode'
-                                    />
-                                    <Field
-                                        name='accountNumber'
-                                        placeholder='Account Number'
-                                    />
-                                    <Field
-                                        name='debitAmount'
-                                        placeholder='Debit Amount'
-                                    />
-                                    <Field
-                                        name='creditAmount'
-                                        placeholder='Credit Amount'
-                                    />
-                                    <Field
-                                        name='balance'
-                                        placeholder='Balance'
-                                    />
-                                </StyledDiv>
-
-                                <Button type='submit' disabled={isSubmitting}>
-                                    Submit
-                                </Button>
-                            </Form>
-                        )}
-                    </Formik>
-                </Panel>
-            </Wrapper> */}
         </Fragment>
     );
 };
