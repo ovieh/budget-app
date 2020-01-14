@@ -72,12 +72,14 @@ export class TransactionResolver {
   async getTransactionByMonthAndYear(
     @Args('year') year: number,
     @Args('month') month: number,
+    @Args('pagination') pagination: number,
     @CurrentUser() user: User,
   ) {
     return this.transactionService.getTransactionsByYearAndMonth(
       year,
       month,
       user,
+      pagination,
     );
   }
 

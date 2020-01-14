@@ -53,7 +53,7 @@ type Query {
   me: User
   getTransactions: [Transaction!]!
   getTransactionById(id: String!): Transaction!
-  getTransactionByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
+  getTransactionByMonthAndYear(pagination: Float!, month: Float!, year: Float!): [Transaction!]!
   getYearMonth: [YearMonth!]!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!

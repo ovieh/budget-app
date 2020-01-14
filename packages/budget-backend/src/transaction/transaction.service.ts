@@ -92,11 +92,13 @@ export class TransactionService {
     year: number,
     month: number,
     user: User,
+    pagination: number,
   ): Promise<Transaction[]> {
     return await this.transactionRepository.getTransactionsByYearAndMonth(
       year,
       month,
       user,
+      pagination,
     );
   }
 

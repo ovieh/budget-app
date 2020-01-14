@@ -111,6 +111,7 @@ export class TransactionRepository extends Repository<Transaction> {
     year: number,
     month: number,
     user: User,
+    pagination: number,
   ): Promise<Transaction[]> {
 
     try {
@@ -119,8 +120,9 @@ export class TransactionRepository extends Repository<Transaction> {
       .where('transaction.userId = :userId', {userId: user.id})
       .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
       .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+      .limit(pagination)
+      .offset(pagination)
       .getMany();
-
       return results;
     } catch {
       this.logger.error(`Failed to get results for "${year}/${month}"`);

@@ -90,9 +90,10 @@ export class TransactionController {
   getTransactionsByYearAndMonth(
     @Param('year') year: number,
     @Param('month') month: number,
+    @Param('pagination') pagination: number,
     @GetUser() user: User,
   ): Promise<Transaction[]> {
-    return this.transactionService.getTransactionsByYearAndMonth(year, month, user);
+    return this.transactionService.getTransactionsByYearAndMonth(year, month, user, pagination);
   }
 
 }
