@@ -5,8 +5,9 @@ import { SignIn } from './pages/SignIn';
 import { Home } from './pages/Home';
 
 import { Transactions } from './pages/Transactions';
-import { Dashboard } from './pages/Dashboard';
+// import { Dashboard } from './pages/Dashboard';
 import { useMeQuery } from './generated/graphql';
+import { Categories } from './pages/Categories';
 
 export const Routes: React.FC = () => {
     useMeQuery(); // maybe there's a beter way of doing this?
@@ -18,7 +19,7 @@ export const Routes: React.FC = () => {
                 <Route exact path='/register' component={Register} />
                 <Route exact path='/signin' component={SignIn} />
                 <Route exact path='/transactions' component={Transactions} />
-                <Route exact path='/dashboard' component={Dashboard} />
+                <Route exact path='/categories' component={Categories} />
             </Switch>
         </BrowserRouter>
     );

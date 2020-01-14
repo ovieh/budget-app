@@ -3,7 +3,6 @@ import {
     useCreateTransactionMutation,
     TransactionByMonthYearDocument,
     useGetYearMonthQuery,
-    useTransactionByMonthYearQuery,
 } from '../generated/graphql';
 import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -41,8 +40,6 @@ export const Transactions: React.FC<Props> = () => {
 
     const [active, setActive] = useState(0);
 
-    const [date, setDate] = useState(yearMonth?.getYearMonth[0].month);
-
     if (loading) {
         return <div>I'm loading</div>;
     }
@@ -58,19 +55,20 @@ export const Transactions: React.FC<Props> = () => {
             >
                 <Grid item xs={7}>
                     <Paper>
-                        {yearMonth && (
+                        {yearMonth?.getYearMonth.length && (
                             <YearMonthTab
                                 data={yearMonth}
-                                setDate={setDate}
                                 active={active}
                                 setActive={setActive}
                             />
                         )}
-                        {yearMonth && (
+                        {yearMonth?.getYearMonth.length ? (
                             <TransactionsTable
                                 yearMonth={yearMonth}
                                 active={active}
                             />
+                        ) : (
+                            <div>Why don't you add some transactions?</div>
                         )}
                     </Paper>
                 </Grid>
@@ -88,7 +86,7 @@ export const Transactions: React.FC<Props> = () => {
                                 balance: '',
                             }}
                             onSubmit={async (values, { setSubmitting }) => {
-                                await addTransaction({
+                                const result = await addTransaction({
                                     variables: {
                                         date: values.date,
                                         type: values.type,

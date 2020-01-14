@@ -12,7 +12,7 @@ interface Props {
 
 export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
     const { data, error, loading } = useTransactionByMonthYearQuery({
-        // skip: !date,
+        // skip: !yearMonth.getYearMonth.length,
         variables: {
             month: yearMonth.getYearMonth[active].month,
             year: yearMonth.getYearMonth[active].year,

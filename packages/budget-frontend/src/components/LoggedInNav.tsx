@@ -11,7 +11,7 @@ export const LoggedInNav: React.FC<Props> = () => {
     const LoggedInLinks = [
         { to: '/', name: 'Home' },
         { to: '/transactions', name: 'Transactions' },
-        { to: '/dashboard', name: 'Dashboard' },
+        { to: '/categories', name: 'Categories' },
     ];
 
     if (data) {

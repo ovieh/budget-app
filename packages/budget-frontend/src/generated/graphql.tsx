@@ -227,6 +227,17 @@ export type YearMonth = {
   month: Scalars['Int'],
 };
 
+export type CategoriesQueryVariables = {};
+
+
+export type CategoriesQuery = (
+  { __typename?: 'Query' }
+  & { getCategories: Array<(
+    { __typename?: 'Category' }
+    & Pick<Category, 'name' | 'budget'>
+  )> }
+);
+
 export type TransactionByMonthYearQueryVariables = {
   month: Scalars['Float'],
   year: Scalars['Float']
@@ -361,6 +372,39 @@ export type UpdateTransactionCategoryMutation = (
 );
 
 
+export const CategoriesDocument = gql`
+    query Categories {
+  getCategories {
+    name
+    budget
+  }
+}
+    `;
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCategoriesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+        return ApolloReactHooks.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
+      }
+export function useCategoriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
+        }
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
+export type CategoriesQueryResult = ApolloReactCommon.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
 export const TransactionByMonthYearDocument = gql`
     query TransactionByMonthYear($month: Float!, $year: Float!) {
   getTransactionByMonthAndYear(month: $month, year: $year) {

@@ -4,22 +4,15 @@ import { GetYearMonthQuery } from '../generated/graphql';
 
 // TODO fix horrible typings
 interface Props {
-    setDate: (arg0: any) => any;
     data: GetYearMonthQuery;
     active: number;
     setActive: any;
 }
 
-export const YearMonthTab: React.FC<Props> = ({
-    data,
-    setDate,
-    active,
-    setActive,
-}) => {
+export const YearMonthTab: React.FC<Props> = ({ data, active, setActive }) => {
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         event.preventDefault();
         setActive(newValue);
-        setDate(data.getYearMonth[newValue]);
     };
 
     return (
