@@ -1,8 +1,8 @@
 import React from 'react';
 import { ReusuableTable } from './ReusableTable';
 import {
-    useTransactionByMonthYearQuery,
     GetYearMonthQuery,
+    useTransactionByMonthAndYearQuery,
 } from '../generated/graphql';
 
 interface Props {
@@ -11,11 +11,13 @@ interface Props {
 }
 
 export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
-    const { data, error, loading } = useTransactionByMonthYearQuery({
+    const { data, error, loading } = useTransactionByMonthAndYearQuery({
         // skip: !yearMonth.getYearMonth.length,
         variables: {
             month: yearMonth.getYearMonth[active].month,
             year: yearMonth.getYearMonth[active].year,
+            skip: 0,
+            take: 10,
         },
     });
 

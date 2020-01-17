@@ -1,13 +1,12 @@
-query TransactionByMonthYear($month: Float!, $year: Float!){
-  getTransactionByMonthAndYear(month:$month, year: $year) {
+query TransactionByMonthAndYear($month: Float!, $year: Float!, $skip: Float!, $take: Float!) {
+  getTransactionByMonthAndYear(month: $month , year: $year, skip: $skip, take: $take) {
+   date
     id
-    date
-    description
+    type
     debitAmount
-    creditAmount
     balance
-    category {
-      id
+    description
+    category{
       name
       budget
     }

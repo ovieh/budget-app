@@ -146,6 +146,8 @@ export type QueryGetTransactionByIdArgs = {
 
 
 export type QueryGetTransactionByMonthAndYearArgs = {
+  take: Scalars['Float'],
+  skip: Scalars['Float'],
   month: Scalars['Float'],
   year: Scalars['Float']
 };
@@ -238,20 +240,22 @@ export type CategoriesQuery = (
   )> }
 );
 
-export type TransactionByMonthYearQueryVariables = {
+export type TransactionByMonthAndYearQueryVariables = {
   month: Scalars['Float'],
-  year: Scalars['Float']
+  year: Scalars['Float'],
+  skip: Scalars['Float'],
+  take: Scalars['Float']
 };
 
 
-export type TransactionByMonthYearQuery = (
+export type TransactionByMonthAndYearQuery = (
   { __typename?: 'Query' }
   & { getTransactionByMonthAndYear: Array<(
     { __typename?: 'Transaction' }
-    & Pick<Transaction, 'id' | 'date' | 'description' | 'debitAmount' | 'creditAmount' | 'balance'>
+    & Pick<Transaction, 'date' | 'id' | 'type' | 'debitAmount' | 'balance' | 'description'>
     & { category: Maybe<(
       { __typename?: 'Category' }
-      & Pick<Category, 'id' | 'name' | 'budget'>
+      & Pick<Category, 'name' | 'budget'>
     )> }
   )> }
 );
@@ -405,17 +409,16 @@ export function useCategoriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryH
 export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
 export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
 export type CategoriesQueryResult = ApolloReactCommon.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
-export const TransactionByMonthYearDocument = gql`
-    query TransactionByMonthYear($month: Float!, $year: Float!) {
-  getTransactionByMonthAndYear(month: $month, year: $year) {
-    id
+export const TransactionByMonthAndYearDocument = gql`
+    query TransactionByMonthAndYear($month: Float!, $year: Float!, $skip: Float!, $take: Float!) {
+  getTransactionByMonthAndYear(month: $month, year: $year, skip: $skip, take: $take) {
     date
-    description
+    id
+    type
     debitAmount
-    creditAmount
     balance
+    description
     category {
-      id
       name
       budget
     }
@@ -424,31 +427,33 @@ export const TransactionByMonthYearDocument = gql`
     `;
 
 /**
- * __useTransactionByMonthYearQuery__
+ * __useTransactionByMonthAndYearQuery__
  *
- * To run a query within a React component, call `useTransactionByMonthYearQuery` and pass it any options that fit your needs.
- * When your component renders, `useTransactionByMonthYearQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * To run a query within a React component, call `useTransactionByMonthAndYearQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionByMonthAndYearQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useTransactionByMonthYearQuery({
+ * const { data, loading, error } = useTransactionByMonthAndYearQuery({
  *   variables: {
  *      month: // value for 'month'
  *      year: // value for 'year'
+ *      skip: // value for 'skip'
+ *      take: // value for 'take'
  *   },
  * });
  */
-export function useTransactionByMonthYearQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>) {
-        return ApolloReactHooks.useQuery<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>(TransactionByMonthYearDocument, baseOptions);
+export function useTransactionByMonthAndYearQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<TransactionByMonthAndYearQuery, TransactionByMonthAndYearQueryVariables>) {
+        return ApolloReactHooks.useQuery<TransactionByMonthAndYearQuery, TransactionByMonthAndYearQueryVariables>(TransactionByMonthAndYearDocument, baseOptions);
       }
-export function useTransactionByMonthYearLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>(TransactionByMonthYearDocument, baseOptions);
+export function useTransactionByMonthAndYearLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TransactionByMonthAndYearQuery, TransactionByMonthAndYearQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<TransactionByMonthAndYearQuery, TransactionByMonthAndYearQueryVariables>(TransactionByMonthAndYearDocument, baseOptions);
         }
-export type TransactionByMonthYearQueryHookResult = ReturnType<typeof useTransactionByMonthYearQuery>;
-export type TransactionByMonthYearLazyQueryHookResult = ReturnType<typeof useTransactionByMonthYearLazyQuery>;
-export type TransactionByMonthYearQueryResult = ApolloReactCommon.QueryResult<TransactionByMonthYearQuery, TransactionByMonthYearQueryVariables>;
+export type TransactionByMonthAndYearQueryHookResult = ReturnType<typeof useTransactionByMonthAndYearQuery>;
+export type TransactionByMonthAndYearLazyQueryHookResult = ReturnType<typeof useTransactionByMonthAndYearLazyQuery>;
+export type TransactionByMonthAndYearQueryResult = ApolloReactCommon.QueryResult<TransactionByMonthAndYearQuery, TransactionByMonthAndYearQueryVariables>;
 export const CreateCategoryDocument = gql`
     mutation createCategory($name: String!, $budget: Float!) {
   createCategory(name: $name, budget: $budget) {

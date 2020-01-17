@@ -6,6 +6,7 @@ import {
     Paper,
     TextField,
     Typography,
+    TextFieldProps,
 } from '@material-ui/core';
 import { Field, Form, Formik } from 'formik';
 import React, { FC, Fragment } from 'react';
@@ -58,7 +59,7 @@ export const Categories: FC<Props> = () => {
                 spacing={2}
                 style={{ marginTop: '20px' }}
             >
-                <Grid item xs={7}>
+                <Grid item xs={3}>
                     <Paper>
                         {data?.getCategories.length ? (
                             <CategoriesTable data={data} />

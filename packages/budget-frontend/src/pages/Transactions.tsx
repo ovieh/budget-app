@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import {
     useCreateTransactionMutation,
-    TransactionByMonthYearDocument,
     useGetYearMonthQuery,
+    TransactionByMonthAndYearDocument,
 } from '../generated/graphql';
 import styled from '@emotion/styled/macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -21,6 +21,7 @@ import {
 } from '@material-ui/core';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
+import { getDate } from 'date-fns';
 
 interface Props {}
 
@@ -43,6 +44,8 @@ export const Transactions: React.FC<Props> = () => {
     if (loading) {
         return <div>I'm loading</div>;
     }
+
+    console.log(yearMonth);
 
     return (
         <Fragment>
@@ -86,6 +89,7 @@ export const Transactions: React.FC<Props> = () => {
                                 balance: '',
                             }}
                             onSubmit={async (values, { setSubmitting }) => {
+                                console.log(values);
                                 const result = await addTransaction({
                                     variables: {
                                         date: values.date,
@@ -103,14 +107,12 @@ export const Transactions: React.FC<Props> = () => {
                                     },
                                     refetchQueries: [
                                         {
-                                            query: TransactionByMonthYearDocument,
+                                            query: TransactionByMonthAndYearDocument,
                                             variables: {
-                                                month: yearMonth!.getYearMonth[
-                                                    active
-                                                ].month,
-                                                year: yearMonth!.getYearMonth[
-                                                    active
-                                                ].year,
+                                                month: yearMonth?.getYearMonth.length ? yearMonth!.getYearMonth[active].month : parseFloat(values.date.split('/')[1]),
+                                                year: yearMonth?.getYearMonth.length ? yearMonth!.getYearMonth[active].year : parseFloat(values.date.split('/')[2]),
+                                                skip: 0,
+                                                take: 10,
                                             },
                                         },
                                     ],
@@ -134,6 +136,7 @@ export const Transactions: React.FC<Props> = () => {
                                                     fullWidth
                                                     required
                                                     variant='outlined'
+                                                    label='Transaction Date'
                                                 />
                                             </Grid>
                                             <Grid item xs={12}>
