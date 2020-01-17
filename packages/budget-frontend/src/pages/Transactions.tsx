@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
-import { getDate } from 'date-fns';
+import { CategoryDialog } from '../components/CategoryDialog';
 
 interface Props {}
 
@@ -41,34 +41,34 @@ export const Transactions: React.FC<Props> = () => {
 
     const [active, setActive] = useState(0);
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     if (loading) {
         return <div>I'm loading</div>;
     }
 
-    console.log(yearMonth);
-
     return (
         <Fragment>
             <LoggedInNav />
-            <Grid
-                container
-                justify='space-evenly'
-                spacing={2}
-                style={{ marginTop: '20px' }}
-            >
+            <Grid container justify='space-evenly' spacing={2} style={{ marginTop: '20px' }}>
                 <Grid item xs={7}>
                     <Paper>
                         {yearMonth?.getYearMonth.length && (
-                            <YearMonthTab
-                                data={yearMonth}
-                                active={active}
-                                setActive={setActive}
-                            />
+                            <YearMonthTab data={yearMonth} active={active} setActive={setActive} />
                         )}
                         {yearMonth?.getYearMonth.length ? (
                             <TransactionsTable
                                 yearMonth={yearMonth}
                                 active={active}
+                                handleClickOpen={handleClickOpen}
                             />
                         ) : (
                             <div>Why don't you add some transactions?</div>
@@ -89,30 +89,29 @@ export const Transactions: React.FC<Props> = () => {
                                 balance: '',
                             }}
                             onSubmit={async (values, { setSubmitting }) => {
-                                console.log(values);
-                                const result = await addTransaction({
+                                await addTransaction({
                                     variables: {
                                         date: values.date,
                                         type: values.type,
                                         sortCode: values.sortCode,
                                         description: values.description,
                                         accountNumber: values.accountNumber,
-                                        debitAmount: parseFloat(
-                                            values.debitAmount
-                                        ),
-                                        creditAmount: parseFloat(
-                                            values.creditAmount
-                                        ),
+                                        debitAmount: parseFloat(values.debitAmount),
+                                        creditAmount: parseFloat(values.creditAmount),
                                         balance: parseFloat(values.balance),
                                     },
                                     refetchQueries: [
                                         {
                                             query: TransactionByMonthAndYearDocument,
                                             variables: {
-                                                month: yearMonth?.getYearMonth.length ? yearMonth!.getYearMonth[active].month : parseFloat(values.date.split('/')[1]),
-                                                year: yearMonth?.getYearMonth.length ? yearMonth!.getYearMonth[active].year : parseFloat(values.date.split('/')[2]),
-                                                skip: 0,
-                                                take: 10,
+                                                month: yearMonth?.getYearMonth.length
+                                                    ? yearMonth!.getYearMonth[active].month
+                                                    : parseFloat(values.date.split('/')[1]),
+                                                year: yearMonth?.getYearMonth.length
+                                                    ? yearMonth!.getYearMonth[active].year
+                                                    : parseFloat(values.date.split('/')[2]),
+                                                skip: 0, // hardcoded
+                                                take: 10, // hardcoded
                                             },
                                         },
                                     ],
@@ -152,9 +151,7 @@ export const Transactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <FormControl required>
-                                                    <InputLabel id='type'>
-                                                        Type
-                                                    </InputLabel>
+                                                    <InputLabel id='type'>Type</InputLabel>
                                                     <Field
                                                         item
                                                         name='type'
@@ -165,21 +162,12 @@ export const Transactions: React.FC<Props> = () => {
                                                         labelId='type'
                                                         value='DEB'
                                                     >
-                                                        <MenuItem
-                                                            value={'DEB'}
-                                                            selected={true}
-                                                        >
+                                                        <MenuItem value={'DEB'} selected={true}>
                                                             DEB
                                                         </MenuItem>
-                                                        <MenuItem value={'DD'}>
-                                                            DD
-                                                        </MenuItem>
-                                                        <MenuItem value={'CPT'}>
-                                                            CPT
-                                                        </MenuItem>
-                                                        <MenuItem value={'FPO'}>
-                                                            FPO
-                                                        </MenuItem>
+                                                        <MenuItem value={'DD'}>DD</MenuItem>
+                                                        <MenuItem value={'CPT'}>CPT</MenuItem>
+                                                        <MenuItem value={'FPO'}>FPO</MenuItem>
                                                     </Field>
                                                 </FormControl>
                                             </Grid>
@@ -258,6 +246,7 @@ export const Transactions: React.FC<Props> = () => {
                     </Paper>
                 </Grid>
             </Grid>
+            <CategoryDialog open={open} handleClose={handleClose} />
         </Fragment>
     );
 };

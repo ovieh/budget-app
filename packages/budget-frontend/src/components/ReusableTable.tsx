@@ -1,5 +1,4 @@
 /* eslint-disable indent */
-import { MenuItem, Select } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,12 +8,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import React from 'react';
 import { useTable } from 'react-table';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 interface Props {
     columns: any;
     data: any;
     select?: any;
+    handleClickOpen?: () => void;
 }
 
 type column = { Header: string; accessor: any };
@@ -27,14 +26,11 @@ type transaction = {
     balance: number;
 };
 
-export const ReusuableTable: React.FC<Props> = ({ columns, data, select }) => {
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({ columns, data });
+export const ReusuableTable: React.FC<Props> = ({ columns, data, handleClickOpen }) => {
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+        columns,
+        data,
+    });
 
     return (
         <TableContainer component={Paper}>
@@ -43,10 +39,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, select }) => {
                     {headerGroups.map(headerGroup => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <TableCell
-                                    {...column.getHeaderProps()}
-                                    align='right'
-                                >
+                                <TableCell {...column.getHeaderProps()} align='right'>
                                     {column.render('Header')}
                                 </TableCell>
                             ))}
@@ -59,39 +52,19 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, select }) => {
                         return (
                             <TableRow {...row.getRowProps()}>
                                 {row.cells.map(cell => {
-                                    return cell.column.id ===
-                                        'category.name' ? (
-                                        <Formik
-                                            initialValues={{
-                                                name: '',
-                                            }}
-                                            onSubmit={async (
-                                                values,
-                                                { setSubmitting }
-                                            ) => {}}
+                                    return cell.column.id === 'category.name' ? (
+                                        <TableCell
+                                            key={cell.column.id}
+                                            align='right'
+                                            onClick={handleClickOpen}
+                                            style={{ cursor: 'pointer' }}
+                                            {...cell.getCellProps()}
                                         >
-                                            <TableCell
-                                                align='right'
-                                                {...cell.getCellProps()}
-                                            >
-                                                <Field
-                                                    value={cell.render('Cell')}
-                                                    as={Select}
-                                                    name='category'
-                                                >
-                                                    <MenuItem
-                                                        value={cell.render(
-                                                            'Cell'
-                                                        )}
-                                                    >
-                                                        {cell.render('Cell')}
-                                                    </MenuItem>
-                                                </Field>
-                                                {/* {cell.render('Cell')} */}
-                                            </TableCell>
-                                        </Formik>
+                                            {cell.render('Cell')}
+                                        </TableCell>
                                     ) : (
                                         <TableCell
+                                            key={cell.column.id}
                                             align='right'
                                             {...cell.getCellProps()}
                                         >
