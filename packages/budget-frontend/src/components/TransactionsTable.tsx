@@ -3,13 +3,12 @@ import {
     GetYearMonthQuery,
     useTransactionByMonthAndYearQuery,
     useCategoriesQuery,
-    Category,
     useUpdateTransactionCategoryMutation,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 // import { Formik, Field, FormikProps, Form, FormikValues } from 'formik';
 import { Select, MenuItem } from '@material-ui/core';
-import { Cell, Row, Column, UseColumnsValues } from 'react-table';
+// import { Cell, Row, Column, UseColumnsValues } from 'react-table';
 
 interface Props {
     yearMonth: GetYearMonthQuery;
@@ -43,17 +42,20 @@ export const TransactionsTable: React.FC<Props> = ({
     }
 
     const EditableCell: React.FC<EditableCellTypes> = ({
-        cell: { name: initialValue },
+        cell: { value: initialValue },
+        cell,
         row: {
             index,
             original: { id },
         },
         column,
     }) => {
+
         const { data } = useCategoriesQuery();
         const [updateCategory] = useUpdateTransactionCategoryMutation();
         const [value, setValue] = useState(initialValue);
         const [nameId, setNameId] = useState();
+
 
         const onBlur = () => {
             // Insert stuff here
@@ -65,14 +67,13 @@ export const TransactionsTable: React.FC<Props> = ({
             });
         };
 
-
         const onChange = (e: { target: any }) => {
             setValue(e.target.value);
         };
-        // useEffect(() => {
-        //     setValue(initialValue);
-        //     console.log(value);
-        // }, [initialValue]);
+
+        useEffect(() => {
+            setValue(initialValue);
+        }, [initialValue]);
 
         useEffect(() => {
             data?.getCategories.map(el => {
@@ -83,7 +84,7 @@ export const TransactionsTable: React.FC<Props> = ({
         }, [data, value]);
 
         return (
-            <Select onBlur={onBlur} onChange={onChange} name='category'>
+            <Select onBlur={onBlur} onChange={onChange} name='category' value={initialValue}>
                 {data?.getCategories.map(({ id, name }, i) => (
                     <MenuItem value={name}>{name}</MenuItem>
                 ))}

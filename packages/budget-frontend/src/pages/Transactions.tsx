@@ -21,7 +21,6 @@ import {
 } from '@material-ui/core';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
-import { CategoryDialog } from '../components/CategoryDialog';
 
 interface Props {}
 
@@ -41,19 +40,9 @@ export const Transactions: React.FC<Props> = () => {
 
     const [active, setActive] = useState(0);
 
-    const [open, setOpen] = useState(false);
 
     const [id, setId] = useState();
 
-    // console.log(id);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     if (loading) {
         return <div>I'm loading</div>;
@@ -72,7 +61,7 @@ export const Transactions: React.FC<Props> = () => {
                             <TransactionsTable
                                 yearMonth={yearMonth}
                                 active={active}
-                                handleClickOpen={handleClickOpen}
+                                // handleClickOpen={handleClickOpen}
                                 setId={setId}
                             />
                         ) : (
@@ -251,7 +240,6 @@ export const Transactions: React.FC<Props> = () => {
                     </Paper>
                 </Grid>
             </Grid>
-            <CategoryDialog open={open} handleClose={handleClose} id={id} />
         </Fragment>
     );
 };
