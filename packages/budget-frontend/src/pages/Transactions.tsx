@@ -43,6 +43,10 @@ export const Transactions: React.FC<Props> = () => {
 
     const [open, setOpen] = useState(false);
 
+    const [id, setId] = useState();
+
+    // console.log(id);
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -69,6 +73,7 @@ export const Transactions: React.FC<Props> = () => {
                                 yearMonth={yearMonth}
                                 active={active}
                                 handleClickOpen={handleClickOpen}
+                                setId={setId}
                             />
                         ) : (
                             <div>Why don't you add some transactions?</div>
@@ -246,7 +251,7 @@ export const Transactions: React.FC<Props> = () => {
                     </Paper>
                 </Grid>
             </Grid>
-            <CategoryDialog open={open} handleClose={handleClose} />
+            <CategoryDialog open={open} handleClose={handleClose} id={id} />
         </Fragment>
     );
 };

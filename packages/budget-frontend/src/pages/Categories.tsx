@@ -53,12 +53,7 @@ export const Categories: FC<Props> = () => {
     return (
         <Fragment>
             <LoggedInNav />
-            <Grid
-                container
-                justify='space-evenly'
-                spacing={2}
-                style={{ marginTop: '20px' }}
-            >
+            <Grid container justify='space-evenly' spacing={2} style={{ marginTop: '20px' }}>
                 <Grid item xs={3}>
                     <Paper>
                         {data?.getCategories.length ? (

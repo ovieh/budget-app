@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTable } from 'react-table';
 
 interface Props {
@@ -14,23 +14,20 @@ interface Props {
     data: any;
     select?: any;
     handleClickOpen?: () => void;
+    // setId?: React.Dispatch<any>;
+    setTransactionId?: React.Dispatch<any>;
+    // index: number;
 }
 
-type column = { Header: string; accessor: any };
-
-type transaction = {
-    date: string;
-    description: string;
-    debitAmount: number;
-    creditAmount: number;
-    balance: number;
-};
-
-export const ReusuableTable: React.FC<Props> = ({ columns, data, handleClickOpen }) => {
+export const ReusuableTable: React.FC<Props> = ({ columns, data, setTransactionId }) => {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
         columns,
         data,
     });
+
+    useEffect(() => {
+        // setTransactionId && setTransactionId(rows[index].original['id']);
+    }, []);
 
     return (
         <TableContainer component={Paper}>
@@ -51,27 +48,15 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, handleClickOpen
                         prepareRow(row);
                         return (
                             <TableRow {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return cell.column.id === 'category.name' ? (
-                                        <TableCell
-                                            key={cell.column.id}
-                                            align='right'
-                                            onClick={handleClickOpen}
-                                            style={{ cursor: 'pointer' }}
-                                            {...cell.getCellProps()}
-                                        >
-                                            {cell.render('Cell')}
-                                        </TableCell>
-                                    ) : (
-                                        <TableCell
-                                            key={cell.column.id}
-                                            align='right'
-                                            {...cell.getCellProps()}
-                                        >
-                                            {cell.render('Cell')}
-                                        </TableCell>
-                                    );
-                                })}
+                                {row.cells.map(cell => (
+                                    <TableCell
+                                        key={cell.column.id}
+                                        align='right'
+                                        {...cell.getCellProps()}
+                                    >
+                                        {cell.render('Cell')}
+                                    </TableCell>
+                                ))}
                             </TableRow>
                         );
                     })}

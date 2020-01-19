@@ -236,7 +236,7 @@ export type CategoriesQuery = (
   { __typename?: 'Query' }
   & { getCategories: Array<(
     { __typename?: 'Category' }
-    & Pick<Category, 'name' | 'budget'>
+    & Pick<Category, 'name' | 'budget' | 'id'>
   )> }
 );
 
@@ -381,6 +381,7 @@ export const CategoriesDocument = gql`
   getCategories {
     name
     budget
+    id
   }
 }
     `;

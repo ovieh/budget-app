@@ -2,5 +2,6 @@ query Categories {
   getCategories{
     name 
     budget
+    id
   }
 }

@@ -11,13 +11,15 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { useCategoriesQuery, useUpdateTransactionCategoryMutation } from '../generated/graphql';
+import { Formik } from 'formik';
 
 interface Props {
     open: boolean;
     handleClose: () => void;
+    id: string;
 }
 
-export const CategoryDialog: React.FC<Props> = ({ open, handleClose }) => {
+export const CategoryDialog: React.FC<Props> = ({ open, handleClose, id }) => {
     const { data } = useCategoriesQuery();
     const [updateCategory] = useUpdateTransactionCategoryMutation();
 
@@ -26,6 +28,19 @@ export const CategoryDialog: React.FC<Props> = ({ open, handleClose }) => {
             <Dialog open={open} onClose={handleClose} aria-labelledby='category-dialog'>
                 <DialogTitle id='category-dialog'>Update Category</DialogTitle>
                 <DialogContent>
+                    <Formik
+                        initialValues={{
+                            name: '',
+                        }}
+                        onSubmit={async (values, { setSubmitting }) => {
+                            await updateCategory({
+                                variables: {
+                                    nameId: values.name,
+                                    id,
+                                },
+                            });
+                        }}
+                    ></Formik>
                     <FormControl>
                         <InputLabel id='category-dialog'>Category</InputLabel>
                         <Select labelId='category-dialog' fullWidth>
