@@ -6,23 +6,17 @@ import {
     useUpdateTransactionCategoryMutation,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
-// import { Formik, Field, FormikProps, Form, FormikValues } from 'formik';
 import { Select, MenuItem } from '@material-ui/core';
-// import { Cell, Row, Column, UseColumnsValues } from 'react-table';
+
+
 
 interface Props {
     yearMonth: GetYearMonthQuery;
     active: number;
     handleClickOpen?: () => void;
-    setId?: React.Dispatch<any>;
 }
 
-export const TransactionsTable: React.FC<Props> = ({
-    yearMonth,
-    active,
-    handleClickOpen,
-    setId,
-}) => {
+export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
     const { data, error, loading } = useTransactionByMonthAndYearQuery({
         // skip: !yearMonth.getYearMonth.length,
         variables: {
@@ -38,24 +32,20 @@ export const TransactionsTable: React.FC<Props> = ({
         cell: any;
         row: any;
         column: any;
-        // transactionId: string;
     }
 
     const EditableCell: React.FC<EditableCellTypes> = ({
         cell: { value: initialValue },
-        cell,
         row: {
             index,
             original: { id },
         },
         column,
     }) => {
-
         const { data } = useCategoriesQuery();
         const [updateCategory] = useUpdateTransactionCategoryMutation();
         const [value, setValue] = useState(initialValue);
         const [nameId, setNameId] = useState();
-
 
         const onBlur = () => {
             // Insert stuff here
@@ -104,7 +94,6 @@ export const TransactionsTable: React.FC<Props> = ({
         ],
         []
     );
-    const [transactionId, setTransactionId] = useState();
 
     if (error) {
         return <div>there is an error {JSON.stringify(error)}</div>;
@@ -115,14 +104,7 @@ export const TransactionsTable: React.FC<Props> = ({
     }
 
     return data ? (
-        <ReusuableTable
-            columns={TransactionsColumns}
-            data={data.getTransactionByMonthAndYear}
-            handleClickOpen={handleClickOpen}
-            // setId={setId}
-            setTransactionId={setTransactionId}
-            // index={value}
-        />
+        <ReusuableTable columns={TransactionsColumns} data={data.getTransactionByMonthAndYear} />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );

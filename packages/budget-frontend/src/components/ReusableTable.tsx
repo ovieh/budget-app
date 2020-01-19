@@ -6,28 +6,20 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTable } from 'react-table';
 
 interface Props {
     columns: any;
     data: any;
     select?: any;
-    handleClickOpen?: () => void;
-    // setId?: React.Dispatch<any>;
-    setTransactionId?: React.Dispatch<any>;
-    // index: number;
 }
 
-export const ReusuableTable: React.FC<Props> = ({ columns, data, setTransactionId }) => {
+export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
         columns,
         data,
     });
-
-    useEffect(() => {
-        // setTransactionId && setTransactionId(rows[index].original['id']);
-    }, []);
 
     return (
         <TableContainer component={Paper}>
@@ -36,7 +28,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, setTransactionI
                     {headerGroups.map(headerGroup => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <TableCell {...column.getHeaderProps()} align='right'>
+                                <TableCell {...column.getHeaderProps()} align='left'>
                                     {column.render('Header')}
                                 </TableCell>
                             ))}
@@ -51,7 +43,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, setTransactionI
                                 {row.cells.map(cell => (
                                     <TableCell
                                         key={cell.column.id}
-                                        align='right'
+                                        align='left'
                                         {...cell.getCellProps()}
                                     >
                                         {cell.render('Cell')}

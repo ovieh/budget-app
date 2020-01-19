@@ -40,10 +40,6 @@ export const Transactions: React.FC<Props> = () => {
 
     const [active, setActive] = useState(0);
 
-
-    const [id, setId] = useState();
-
-
     if (loading) {
         return <div>I'm loading</div>;
     }
@@ -58,12 +54,7 @@ export const Transactions: React.FC<Props> = () => {
                             <YearMonthTab data={yearMonth} active={active} setActive={setActive} />
                         )}
                         {yearMonth?.getYearMonth.length ? (
-                            <TransactionsTable
-                                yearMonth={yearMonth}
-                                active={active}
-                                // handleClickOpen={handleClickOpen}
-                                setId={setId}
-                            />
+                            <TransactionsTable yearMonth={yearMonth} active={active} />
                         ) : (
                             <div>Why don't you add some transactions?</div>
                         )}
