@@ -8,8 +8,6 @@ import {
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
 
-
-
 interface Props {
     yearMonth: GetYearMonthQuery;
     active: number;
@@ -76,7 +74,9 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         return (
             <Select onBlur={onBlur} onChange={onChange} name='category' value={initialValue}>
                 {data?.getCategories.map(({ id, name }, i) => (
-                    <MenuItem value={name}>{name}</MenuItem>
+                    <MenuItem value={name} key={i}>
+                        {name}
+                    </MenuItem>
                 ))}
             </Select>
         );

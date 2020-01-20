@@ -21,6 +21,7 @@ import {
 } from '@material-ui/core';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
+import { FileUpload } from '../components/FileUpload';
 
 interface Props {}
 
@@ -62,6 +63,11 @@ export const Transactions: React.FC<Props> = () => {
                 </Grid>
                 <Grid item xs={4}>
                     <Paper style={{ minHeight: '20rem' }}>
+                        {/* <Grid container> */}
+                        <Container>
+                            <FileUpload />
+                        </Container>
+                        {/* </Grid> */}
                         <Formik
                             initialValues={{
                                 date: '',
