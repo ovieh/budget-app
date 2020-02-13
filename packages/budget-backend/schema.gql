@@ -31,6 +31,18 @@ input CatIn {
   user: UserInput
 }
 
+type ChartData {
+  payload: JSONObject!
+}
+
+input DateInput {
+  year: Int!
+  month: Int!
+}
+
+"""Chart Data object scalar type"""
+scalar JSONObject
+
 type LoginResponseDto {
   accessToken: String!
 }
@@ -53,13 +65,14 @@ type Query {
   me: User
   getTransactions: [Transaction!]!
   getTransactionById(id: String!): Transaction!
-  getTransactionByMonthAndYear(take: Float!, skip: Float!, month: Float!, year: Float!): [Transaction!]!
+  getTransactionByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
   getYearMonth: [YearMonth!]!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
   getCategoryByDescription(description: String!): Category!
   sumCategoryDebits(id: Float!): Float!
   sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
+  chartData(dates: [DateInput!]!): ChartData!
 }
 
 type Transaction {

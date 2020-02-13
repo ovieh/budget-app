@@ -10,8 +10,7 @@ import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
 import { YearMonth } from './DTO/year-month.dto';
-import { requiredSubselectionMessage } from 'graphql/validation/rules/ScalarLeafs';
-import { CategoryService } from 'src/category/category.service';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class TransactionService {
@@ -30,9 +29,14 @@ export class TransactionService {
   }
 
   async getTransactionsById(id: string, user: User): Promise<Transaction> {
-    return await this.transactionRepository.findOne({
+    const found =  await this.transactionRepository.findOne({
       where: { id, userId: user.id },
     });
+
+    if (!found) {
+      throw new NotFoundException(`Transaction with ID ${id} is not found`);
+    }
+    return found;
   }
 
   async createTransaction(
@@ -92,15 +96,15 @@ export class TransactionService {
     year: number,
     month: number,
     user: User,
-    skip: number,
-    take: number,
+    // skip: number,
+    // take: number,
   ): Promise<Transaction[]> {
     return await this.transactionRepository.getTransactionsByYearAndMonth(
       year,
       month,
       user,
-      skip,
-      take
+      // skip,
+      // take,
     );
   }
 

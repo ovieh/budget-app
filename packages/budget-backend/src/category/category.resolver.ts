@@ -7,6 +7,8 @@ import { User } from '../auth/user.entity';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
 import { Float } from 'type-graphql';
+import { DateInput } from './date.input';
+import { ChartData } from './chartData.output';
 
 @Resolver(of => Category)
 export class CategoryResolver {
@@ -90,5 +92,41 @@ export class CategoryResolver {
       year,
       month,
     );
+  }
+
+  @Query(returns => ChartData)
+  @UseGuards(GqlAuthGuard)
+  async chartData(
+    @Args({ name: 'dates', type: () => [DateInput] }) dates: DateInput[],
+    @CurrentUser() user: User,
+  ) {
+    const categories = await this.categoryService.findAll(user);
+
+    const byDate = dates.map(async ({ year, month }, index) => {
+      let obj = {};
+      const spendingByCategories = categories.map(async (category, index) => {
+        const result = await this.categoryService.sumCategoryDebitsByYearMonth(
+          category.id,
+          user,
+          year,
+          month,
+        );
+
+        obj = {
+          ...obj,
+          name: `${month}/${year}`,
+          [category.name]: result,
+        };
+        if (Object.keys(obj).length === categories.length ) return obj;
+        
+      });
+
+      return await Promise.all(spendingByCategories).then(result => {
+        return result.filter(el => el !== undefined)
+      });
+    });
+
+    return await Promise.all(byDate).then(result => ({payload: result.flat()}));
+    
   }
 }

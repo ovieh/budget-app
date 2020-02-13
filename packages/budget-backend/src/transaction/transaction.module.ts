@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
 import { CategoryService } from '../category/category.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,7 +14,6 @@ import { CategoryModule } from '../category/category.module';
     AuthModule,
     CategoryModule,
   ],
-  controllers: [TransactionController],
   providers: [TransactionService, TransactionResolver, CategoryService],
 })
 export class TransactionModule {}

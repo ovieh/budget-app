@@ -72,17 +72,14 @@ export class TransactionResolver {
   async getTransactionByMonthAndYear(
     @Args('year') year: number,
     @Args('month') month: number,
-    @Args('skip') skip: number,
-    @Args('take') take: number,
     @CurrentUser() user: User,
   ) {
-    return this.transactionService.getTransactionsByYearAndMonth(
+    const result = await this.transactionService.getTransactionsByYearAndMonth(
       year,
       month,
       user,
-      skip,
-      take,
     );
+    return result;
   }
 
   @Query(returns => [YearMonth])
@@ -136,4 +133,7 @@ export class TransactionResolver {
       id: categoryId,
     });
   }
+
+  // TODO: create resolver that returns chart data (e.g. category spending by month)
+
 }

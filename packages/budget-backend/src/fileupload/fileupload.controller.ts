@@ -12,13 +12,20 @@ export class FileuploadController {
     private fileuploadService: FileuploadService,
     ) {}
 
+  // TODO: handle errors here
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(
+  async uploadFile(
     @UploadedFile() file: Buffer,
     @GetUser() user: User,
-  ) {
-    this.fileuploadService.importFile(file, user);
+  ): Promise<string> {
+    try {
+      await this.fileuploadService.importFile(file, user);
+
+    } catch (error) {
+      return `failed`;
+    }
+    return `File Uploaded`;
   }
 
 }
