@@ -1,5 +1,5 @@
-query TransactionByMonthAndYear($month: Float!, $year: Float!, $skip: Float!, $take: Float!) {
-  getTransactionByMonthAndYear(month: $month , year: $year, skip: $skip, take: $take) {
+query TransactionByMonthAndYear($month: Float!, $year: Float!) {
+  getTransactionByMonthAndYear(month: $month , year: $year) {
    date
     id
     type

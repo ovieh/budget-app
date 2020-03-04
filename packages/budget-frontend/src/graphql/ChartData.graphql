@@ -1,0 +1,5 @@
+query chartData($date: [DateInput!]!) {
+  chartData(dates: $date){
+    payload
+  }
+}

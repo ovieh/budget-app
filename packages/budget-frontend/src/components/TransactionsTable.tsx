@@ -4,6 +4,7 @@ import {
     useTransactionByMonthAndYearQuery,
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
+    Category,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -20,8 +21,6 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         variables: {
             month: yearMonth.getYearMonth[active].month,
             year: yearMonth.getYearMonth[active].year,
-            skip: 0,
-            take: 10,
         },
     });
 
@@ -43,16 +42,16 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         const { data } = useCategoriesQuery();
         const [updateCategory] = useUpdateTransactionCategoryMutation();
         const [value, setValue] = useState(initialValue);
-        const [nameId, setNameId] = useState();
+        const [categoryId, setCategoryId] = useState(0);
 
         const onBlur = () => {
-            // Insert stuff here
-            updateCategory({
-                variables: {
-                    id: id,
-                    nameId: nameId,
-                },
-            });
+            categoryId &&
+                updateCategory({
+                    variables: {
+                        id: id,
+                        categoryId,
+                    },
+                });
         };
 
         const onChange = (e: { target: any }) => {
@@ -62,13 +61,11 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         useEffect(() => {
             setValue(initialValue);
         }, [initialValue]);
-
+        // TODO: fix below, shouldn't need !
         useEffect(() => {
-            data?.getCategories.map(el => {
-                if (el['name'] === value) {
-                    setNameId(el.id);
-                }
-            });
+            data?.getCategories
+                .filter(({ name }: Category) => name === value)
+                .map(({ id }) => setCategoryId(parseInt(id!))); //  TODO: This is bad
         }, [data, value]);
 
         return (
@@ -102,7 +99,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
     if (loading) {
         return <h1>hey i'm loading</h1>;
     }
-
+    console.log(data);
     return data ? (
         <ReusuableTable columns={TransactionsColumns} data={data.getTransactionByMonthAndYear} />
     ) : (

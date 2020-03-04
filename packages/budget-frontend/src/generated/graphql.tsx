@@ -9,6 +9,7 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  JSONObject: any,
   Upload: any,
 };
 
@@ -22,25 +23,24 @@ export type Category = {
   id?: Maybe<Scalars['ID']>,
   name: Scalars['String'],
   budget?: Maybe<Scalars['Float']>,
-  transaction?: Maybe<Array<Transaction>>,
-  user?: Maybe<User>,
-};
-
-export type CategoryInput = {
-  id: Scalars['ID'],
-  name?: Maybe<Scalars['String']>,
-  budget?: Maybe<Scalars['Float']>,
-  transaction?: Maybe<TransactionInput>,
-  user?: Maybe<UserInput>,
 };
 
 export type CatIn = {
   id?: Maybe<Scalars['ID']>,
   name: Scalars['String'],
   budget?: Maybe<Scalars['Float']>,
-  transaction?: Maybe<Array<TransactionInput>>,
-  user?: Maybe<UserInput>,
 };
+
+export type ChartData = {
+   __typename?: 'ChartData',
+  payload: Scalars['JSONObject'],
+};
+
+export type DateInput = {
+  year: Scalars['Int'],
+  month: Scalars['Int'],
+};
+
 
 export type LoginResponseDto = {
    __typename?: 'LoginResponseDto',
@@ -56,7 +56,7 @@ export type Mutation = {
   uploadFile: Scalars['Boolean'],
   createTransaction: Scalars['String'],
   deleteTransaction: Scalars['String'],
-  updateTransactionCategory: Transaction,
+  updateTransactionCategory: Scalars['String'],
   updateCategory: Category,
   createCategory: Category,
   removeCategory: Scalars['String'],
@@ -103,7 +103,7 @@ export type MutationDeleteTransactionArgs = {
 
 
 export type MutationUpdateTransactionCategoryArgs = {
-  name: CategoryInput,
+  categoryId: Scalars['Float'],
   id: Scalars['String']
 };
 
@@ -134,9 +134,10 @@ export type Query = {
   getYearMonth: Array<YearMonth>,
   getTransactionsByCategory: Category,
   getCategories: Array<Category>,
-  getCategoryByDescription: Category,
+  getCategoryByDescription: Scalars['Float'],
   sumCategoryDebits: Scalars['Float'],
   sumCategoryDebitsByYearMonth: Scalars['Float'],
+  chartData: ChartData,
 };
 
 
@@ -146,8 +147,6 @@ export type QueryGetTransactionByIdArgs = {
 
 
 export type QueryGetTransactionByMonthAndYearArgs = {
-  take: Scalars['Float'],
-  skip: Scalars['Float'],
   month: Scalars['Float'],
   year: Scalars['Float']
 };
@@ -172,6 +171,11 @@ export type QuerySumCategoryDebitsByYearMonthArgs = {
   month: Scalars['Float'],
   year: Scalars['Float'],
   id: Scalars['Float']
+};
+
+
+export type QueryChartDataArgs = {
+  dates: Array<DateInput>
 };
 
 export type Transaction = {
@@ -240,11 +244,22 @@ export type CategoriesQuery = (
   )> }
 );
 
+export type ChartDataQueryVariables = {
+  date: Array<DateInput>
+};
+
+
+export type ChartDataQuery = (
+  { __typename?: 'Query' }
+  & { chartData: (
+    { __typename?: 'ChartData' }
+    & Pick<ChartData, 'payload'>
+  ) }
+);
+
 export type TransactionByMonthAndYearQueryVariables = {
   month: Scalars['Float'],
-  year: Scalars['Float'],
-  skip: Scalars['Float'],
-  take: Scalars['Float']
+  year: Scalars['Float']
 };
 
 
@@ -362,17 +377,14 @@ export type RegisterMutation = (
 );
 
 export type UpdateTransactionCategoryMutationVariables = {
-  nameId: Scalars['ID'],
+  categoryId: Scalars['Float'],
   id: Scalars['String']
 };
 
 
 export type UpdateTransactionCategoryMutation = (
   { __typename?: 'Mutation' }
-  & { updateTransactionCategory: (
-    { __typename?: 'Transaction' }
-    & Pick<Transaction, 'id'>
-  ) }
+  & Pick<Mutation, 'updateTransactionCategory'>
 );
 
 
@@ -410,9 +422,42 @@ export function useCategoriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryH
 export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
 export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
 export type CategoriesQueryResult = ApolloReactCommon.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
+export const ChartDataDocument = gql`
+    query chartData($date: [DateInput!]!) {
+  chartData(dates: $date) {
+    payload
+  }
+}
+    `;
+
+/**
+ * __useChartDataQuery__
+ *
+ * To run a query within a React component, call `useChartDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChartDataQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChartDataQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useChartDataQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChartDataQuery, ChartDataQueryVariables>) {
+        return ApolloReactHooks.useQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
+      }
+export function useChartDataLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChartDataQuery, ChartDataQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
+        }
+export type ChartDataQueryHookResult = ReturnType<typeof useChartDataQuery>;
+export type ChartDataLazyQueryHookResult = ReturnType<typeof useChartDataLazyQuery>;
+export type ChartDataQueryResult = ApolloReactCommon.QueryResult<ChartDataQuery, ChartDataQueryVariables>;
 export const TransactionByMonthAndYearDocument = gql`
-    query TransactionByMonthAndYear($month: Float!, $year: Float!, $skip: Float!, $take: Float!) {
-  getTransactionByMonthAndYear(month: $month, year: $year, skip: $skip, take: $take) {
+    query TransactionByMonthAndYear($month: Float!, $year: Float!) {
+  getTransactionByMonthAndYear(month: $month, year: $year) {
     date
     id
     type
@@ -441,8 +486,6 @@ export const TransactionByMonthAndYearDocument = gql`
  *   variables: {
  *      month: // value for 'month'
  *      year: // value for 'year'
- *      skip: // value for 'skip'
- *      take: // value for 'take'
  *   },
  * });
  */
@@ -727,10 +770,8 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UpdateTransactionCategoryDocument = gql`
-    mutation updateTransactionCategory($nameId: ID!, $id: String!) {
-  updateTransactionCategory(name: {id: $nameId}, id: $id) {
-    id
-  }
+    mutation updateTransactionCategory($categoryId: Float!, $id: String!) {
+  updateTransactionCategory(categoryId: $categoryId, id: $id)
 }
     `;
 export type UpdateTransactionCategoryMutationFn = ApolloReactCommon.MutationFunction<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;
@@ -748,7 +789,7 @@ export type UpdateTransactionCategoryMutationFn = ApolloReactCommon.MutationFunc
  * @example
  * const [updateTransactionCategoryMutation, { data, loading, error }] = useUpdateTransactionCategoryMutation({
  *   variables: {
- *      nameId: // value for 'nameId'
+ *      categoryId: // value for 'categoryId'
  *      id: // value for 'id'
  *   },
  * });

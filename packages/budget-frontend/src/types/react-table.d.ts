@@ -5,7 +5,7 @@
 //                 Christian Murphy <https://github.com/ChristianMurphy>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.0
-declare module 'react-table' {
+declare module 'react-table-blah' {
     import { Dispatch, SetStateAction, ReactNode } from 'react';
 
     export interface Cell<D> {
@@ -110,6 +110,7 @@ declare module 'react-table' {
         disableSorting?: boolean;
         defaultSortDesc?: boolean;
         disableMultiSort?: boolean;
+        initialState?: any;
     }
 
     export interface RowsProps {
