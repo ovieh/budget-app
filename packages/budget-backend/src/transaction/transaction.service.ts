@@ -11,6 +11,7 @@ import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
 import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
+import { getConnection } from 'typeorm';
 
 @Injectable()
 export class TransactionService {
@@ -19,6 +20,14 @@ export class TransactionService {
     private transactionRepository: TransactionRepository,
     private categoryService: CategoryService,
   ) {}
+
+  // async importFile(file: Buffer, user: User) {
+  //   // const { id } = await this.categoryService.getCategoryByDescription("TFL TRAVEL CH", user);
+  // }
+
+  async findByIds(ids: string[]): Promise<Transaction[]> {
+    return await this.transactionRepository.findByIds(ids);
+  } 
 
   async getTransaction(user: User): Promise<Transaction[]> {
     return await this.transactionRepository.find({ userId: user.id });
@@ -69,20 +78,37 @@ export class TransactionService {
   }
   async updateCategoryById(
     id: string,
+    // categoryInput: CategoryInput,
+    categoryId: number,
+    user: User,
+  ): Promise<string> {
+    // TODO: Fix this
+    // const category = JSON.parse(JSON.stringify(categoryInput));
+
+    try {
+      this.transactionRepository.updateCategoryById(id, categoryId, user)
+    } catch(error) {
+      throw new InternalServerErrorException(`Could not update transaction with id ${id}`)
+    }
+    return `Updated category for transaction with id ${id}`
+
+  }
+
+  async updateCategoryByIds(
+    ids: string[],
     categoryInput: CategoryInput,
     user: User,
-  ): Promise<Transaction> {
-    const transaction = await this.getTransactionsById(id, user);
+  ): Promise<string> {
     // TODO: Fix this
     const category = JSON.parse(JSON.stringify(categoryInput));
 
-    transaction.categoryId = category.id;
     try {
-      await transaction.save();
-    } catch (error) {
-      throw new InternalServerErrorException('This broke', error);
+      this.transactionRepository.updateCategoryByIds(ids, category.id, user)
+    } catch(error) {
+      throw new InternalServerErrorException(`Could not update transaction with id ${ids}`)
     }
-    return transaction;
+    return `Updated category for transaction with id ${ids}`
+
   }
 
   async getTransactionsByMonth(

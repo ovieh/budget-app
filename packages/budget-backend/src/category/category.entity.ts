@@ -17,30 +17,29 @@ import { ObjectType, Field, ID, Float, InputType } from 'type-graphql';
 @Unique(['name'])
 export class Category extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(type => ID, { nullable: true })
+  @Field(() => ID, { nullable: true })
   id: number;
 
   @Column({ default: 'uncategorized' })
-  @Field(type => String)
+  @Field(() => String)
   name: string;
 
   @Column('numeric', { precision: 10, scale: 2 })
-  @Field(type => Float, { nullable: true })
+  @Field(() => Float, { nullable: true })
   budget: number;
 
-  @OneToMany(
-    type => Transaction,
+  @OneToMany(() => Transaction, 
     transaction => transaction.category,
     { eager: true },
   )
-  @Field(type => [Transaction], { nullable: true })
+  // @Field(() => [Transaction], { nullable: true })
   transaction: Transaction;
 
   @ManyToOne(
-    type => User,
+    () => User,
     user => user.category,
     { eager: false },
   )
-  @Field(type => User, { nullable: true })
+  // @Field(() => User, { nullable: true })
   user: User;
 }

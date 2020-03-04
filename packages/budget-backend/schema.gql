@@ -11,24 +11,12 @@ type Category {
   id: ID
   name: String!
   budget: Float
-  transaction: [Transaction!]
-  user: User
-}
-
-input CategoryInput {
-  id: ID!
-  name: String
-  budget: Float
-  transaction: TransactionInput
-  user: UserInput
 }
 
 input CatIn {
   id: ID
   name: String!
   budget: Float
-  transaction: [TransactionInput!]
-  user: UserInput
 }
 
 type ChartData {
@@ -55,7 +43,7 @@ type Mutation {
   uploadFile(file: Upload!): Boolean!
   createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): String!
   deleteTransaction(id: String!): String!
-  updateTransactionCategory(name: CategoryInput!, id: String!): Transaction!
+  updateTransactionCategory(categoryId: Float!, id: String!): String!
   updateCategory(budget: Float!, name: String!, id: Float!): Category!
   createCategory(name: String!, budget: Float!): Category!
   removeCategory(id: Float!): String!
@@ -69,7 +57,7 @@ type Query {
   getYearMonth: [YearMonth!]!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
-  getCategoryByDescription(description: String!): Category!
+  getCategoryByDescription(description: String!): Float!
   sumCategoryDebits(id: Float!): Float!
   sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
   chartData(dates: [DateInput!]!): ChartData!

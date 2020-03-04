@@ -10,6 +10,7 @@ import { Transaction } from './transaction.entity';
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
+
   async importFile(
     file: Buffer,
     user: User,
@@ -43,7 +44,57 @@ export class TransactionRepository extends Repository<Transaction> {
     // remove first element, which just containers headers
     parsedTransactions.shift();
 
-    const transactions = parsedTransactions.map(transaction => ({...transaction, user}));
+    const transactions = parsedTransactions.map((transaction: Transaction) => ({...transaction, user}));
+
+  //   const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
+  //     if (a.description < b.description) {
+  //       return -1;
+  //     }
+
+  //     if (a.description > b.description) {
+  //       return 1;
+  //     }
+  //     return 0;
+  //   });
+
+  //   const groupedTransactions = sortedTransactions.reduce((obj, transaction) => {
+  //     const description = transaction.description;
+
+  //     if (!obj.hasOwnProperty(description)) {
+  //       obj[description] = [];
+  //     }
+
+  //     obj[description].push(transaction);
+
+  //   return obj;
+  // }, {});
+
+  
+  // const keys = Object.keys(groupedTransactions);
+
+  // I need to get the category based on the key (description)
+  // then i need to add the category to the transaction objects
+
+  // this.categoryService.getCategoryByDescription(transaction.description, user);
+
+  // const result = await this.categoryRepsitory.getCategoryByDescription('TFL TRAVEL CH', user);
+  // console.log(`======================== ${result} =================================`)
+
+  // keys.map(async key => {
+  //   console.log(groupedTransactions[key])
+  //   // const category = await this.categoryRepsitory.getCategoryByDescription(key, user);
+  //   const category = await getRepository(Category)
+  //     .createQueryBuilder('category')
+  //     .le
+  //     .where('')
+  //     .getOne();
+
+  //   // if (category) {
+  //   //   groupedTransactions[key]
+  //   // }
+  // });
+
+
 
     try {
       const transaction =  await this.save(transactions);
@@ -120,6 +171,7 @@ export class TransactionRepository extends Repository<Transaction> {
       .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
       .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
       .orderBy('transaction.date', 'DESC')
+      .cache(true)
       .getMany();
       return results;
     } catch {
@@ -139,12 +191,31 @@ export class TransactionRepository extends Repository<Transaction> {
         .addGroupBy('month')
         .orderBy('year', 'DESC')
         .addOrderBy('month', 'DESC')
+        .cache(true)
         .getRawMany();
       return results;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async updateCategoryById(id: string, categoryId: number, user: User) {
+    await this.createQueryBuilder()
+    .update(Transaction)
+    .set({ categoryId })
+    .where('id = :id', { id })
+    .andWhere('userId = :userId', {userId: user.id})
+    .execute();
+  }
+
+  async updateCategoryByIds(ids: string[], categoryId: number, user: User) {
+    await this.createQueryBuilder()
+    .update(Transaction)
+    .set({ categoryId })
+    .where('ids = :ids', ids)
+    .andWhere('userId = :userId', {userId: user.id})
+    .execute();
   }
 
 }

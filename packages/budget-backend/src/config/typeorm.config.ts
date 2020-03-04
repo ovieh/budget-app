@@ -13,5 +13,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: process.env.DATABASE_URL ? connectionOptions.database : dbConfig.database,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: dbConfig.synchronize,
-  logging: ['error'],
+  logging: ['error', 'query'],
+  cache: true
 };

@@ -52,7 +52,8 @@ export class CategoryRepository extends Repository<Category> {
   async getCategoryByDescription(
     description: string,
     user: User,
-  ): Promise<Category> {
+  ): Promise<number> {
+
     const query = this.createQueryBuilder('category')
       .select('category')
       .leftJoinAndSelect('category.transaction', 'transaction')
@@ -62,8 +63,8 @@ export class CategoryRepository extends Repository<Category> {
       });
 
     try {
-      const categories = await query.getOne();
-      return categories;
+      const category = await query.getOne();
+      return category.id;
     } catch (error) {
       this.logger.error(
         `Failed to get category for description "${description}".`,

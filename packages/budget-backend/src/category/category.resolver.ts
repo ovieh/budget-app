@@ -10,12 +10,12 @@ import { Float } from 'type-graphql';
 import { DateInput } from './date.input';
 import { ChartData } from './chartData.output';
 
-@Resolver(of => Category)
+@Resolver(() => Category)
 export class CategoryResolver {
   private logger = new Logger('Category Resolver');
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Query(returns => Category)
+  @Query(() => Category)
   @UseGuards(GqlAuthGuard)
   getTransactionsByCategory(
     @Args('id', ParseIntPipe) id: number,
@@ -24,24 +24,24 @@ export class CategoryResolver {
     return this.categoryService.getCategoryById(id, user);
   }
 
-  @Query(returns => [Category])
+  @Query(() => [Category])
   @UseGuards(GqlAuthGuard)
   getCategories(@CurrentUser() user: User): Promise<Category[]> {
     return this.categoryService.findAll(user);
   }
 
-  @Mutation(returns => Category)
+  @Mutation(() => Category)
   @UseGuards(GqlAuthGuard)
   updateCategory(
     @Args('id') id: number,
     @Args('name') name: string,
     @Args('budget') budget: number,
     @CurrentUser() user: User,
-  ): Promise<Category> {
+  ) {
     return this.categoryService.updateCategory(id, user, name, budget);
   }
 
-  @Mutation(returns => Category)
+  @Mutation(() => Category)
   @UseGuards(GqlAuthGuard)
   createCategory(
     @Args() createCategoryDto: CreateCategoryDto,
@@ -50,7 +50,7 @@ export class CategoryResolver {
     return this.categoryService.createCategory(createCategoryDto, user);
   }
 
-  @Mutation(returns => String)
+  @Mutation(() => String)
   @UseGuards(GqlAuthGuard)
   async removeCategory(
     @Args('id', ParseIntPipe) id: number,
@@ -60,16 +60,16 @@ export class CategoryResolver {
     return 'Category Removed';
   }
 
-  @Query(returns => Category)
+  @Query(() => Number)
   @UseGuards(GqlAuthGuard)
   getCategoryByDescription(
     @Args('description') description: string,
     @CurrentUser() user: User,
-  ): Promise<Category> {
+  ): Promise<number> {
     return this.categoryService.getCategoryByDescription(description, user);
   }
 
-  @Query(returns => Float)
+  @Query(() => Float)
   @UseGuards(GqlAuthGuard)
   sumCategoryDebits(
     @Args('id', ParseIntPipe) id: number,
@@ -78,7 +78,7 @@ export class CategoryResolver {
     return this.categoryService.sumCategoryDebits(id, user);
   }
 
-  @Query(returns => Float)
+  @Query(() => Float)
   @UseGuards(GqlAuthGuard)
   sumCategoryDebitsByYearMonth(
     @Args('id', ParseIntPipe) id: number,
@@ -94,7 +94,7 @@ export class CategoryResolver {
     );
   }
 
-  @Query(returns => ChartData)
+  @Query(() => ChartData)
   @UseGuards(GqlAuthGuard)
   async chartData(
     @Args({ name: 'dates', type: () => [DateInput] }) dates: DateInput[],
@@ -117,16 +117,16 @@ export class CategoryResolver {
           name: `${month}/${year}`,
           [category.name]: result,
         };
-        if (Object.keys(obj).length === categories.length ) return obj;
-        
+        if (Object.keys(obj).length === categories.length) return obj;
       });
 
       return await Promise.all(spendingByCategories).then(result => {
-        return result.filter(el => el !== undefined)
+        return result.filter(el => el !== undefined);
       });
     });
 
-    return await Promise.all(byDate).then(result => ({payload: result.flat()}));
-    
+    return await Promise.all(byDate).then(result => ({
+      payload: result.flat(),
+    }));
   }
 }

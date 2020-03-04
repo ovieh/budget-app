@@ -17,13 +17,15 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
-import { CategoryInput } from '../category/category.input';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { Category } from '../category/category.entity';
 import { CategoryRepository } from '../category/category.repository';
 import { YearMonth } from './DTO/year-month.dto';
+import { Loader } from 'nestjs-dataloader';
+import DataLoader = require('dataloader');
+import { CategoryLoader } from 'src/category/category.loader';
 
-@Resolver(of => Transaction)
+@Resolver(() => Transaction)
 export class TransactionResolver {
   private logger = new Logger('Transaction Resolver');
   constructor(
@@ -31,7 +33,7 @@ export class TransactionResolver {
     private categoryRepository: CategoryRepository,
   ) {}
 
-  @Query(returns => User, { nullable: true })
+  @Query(() => User, { nullable: true })
   @UseGuards(GqlAuthGuard)
   async me(@CurrentUser() user: User): Promise<User> {
     if (user) {
@@ -40,7 +42,7 @@ export class TransactionResolver {
     return null;
   }
 
-  @Query(returns => [Transaction])
+  @Query(() => [Transaction])
   @UseGuards(GqlAuthGuard)
   async getTransactions(@CurrentUser() user: User): Promise<Transaction[]> {
     const transactions = await this.transactionService.getTransaction(user);
@@ -50,7 +52,7 @@ export class TransactionResolver {
     return transactions;
   }
 
-  @Query(returns => Transaction)
+  @Query(() => Transaction)
   @UseGuards(GqlAuthGuard)
   async getTransactionById(
     @CurrentUser() user: User,
@@ -67,7 +69,7 @@ export class TransactionResolver {
     return transaction;
   }
 
-  @Query(returns => [Transaction])
+  @Query(() => [Transaction])
   @UseGuards(GqlAuthGuard)
   async getTransactionByMonthAndYear(
     @Args('year') year: number,
@@ -82,13 +84,13 @@ export class TransactionResolver {
     return result;
   }
 
-  @Query(returns => [YearMonth])
+  @Query(() => [YearMonth])
   @UseGuards(GqlAuthGuard)
   async getYearMonth(@CurrentUser() user: User) {
     return this.transactionService.getYearMonth(user);
   }
 
-  @Mutation(returns => String)
+  @Mutation(() => String)
   @UseGuards(GqlAuthGuard)
   async createTransaction(
     @CurrentUser() user: User,
@@ -103,7 +105,7 @@ export class TransactionResolver {
     return `Transaction created`;
   }
 
-  @Mutation(returns => String)
+  @Mutation(() => String)
   @UseGuards(GqlAuthGuard)
   deleteTransaction(
     @Args('id', ParseUUIDPipe) id: string,
@@ -112,28 +114,28 @@ export class TransactionResolver {
     this.transactionService.deleteTransactionById(id, user);
   }
 
-  @Mutation(returns => Transaction)
+  @Mutation(() => String)
   @UseGuards(GqlAuthGuard)
   updateTransactionCategory(
     @Args('id') id: string,
-    @Args('name') name: CategoryInput,
+    @Args('categoryId') categoryId: number,
     @CurrentUser() user: User,
-  ): Promise<Transaction> {
-    return this.transactionService.updateCategoryById(id, name, user);
+  ): Promise<string> {
+    return this.transactionService.updateCategoryById(id, categoryId, user);
   }
 
-  @ResolveProperty(returns => Category)
+  // TODO: why isn't this passing the user?
+  @ResolveProperty(() => Category)
   @UseGuards(GqlAuthGuard)
   async category(
     @Parent() transaction: Transaction,
     @CurrentUser() user: User,
+    @Loader(CategoryLoader.name)
+    categoryLoader: DataLoader<Category['id'], Category>,
   ): Promise<Category> {
     const { categoryId } = transaction;
-    return await this.categoryRepository.findOne({
-      id: categoryId,
-    });
+    if (categoryId !== null) {
+      return categoryLoader.load(categoryId);
+    }
   }
-
-  // TODO: create resolver that returns chart data (e.g. category spending by month)
-
 }

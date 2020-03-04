@@ -27,11 +27,11 @@ export class User extends BaseEntity {
   @Column('int', { default: 0 })
   tokenVersion: string;
 
-  @OneToMany(type => Transaction, transaction => transaction.user, { eager: true})
+  @OneToMany(type => Transaction, transaction => transaction.user)
   @Field(type => Transaction)
   transaction: Transaction[];
 
-  @OneToMany(type => Category, category => category.user, { eager: true})
+  @OneToMany(type => Category, category => category.user)
   @Field(type => Category)
   category: Category[];
 

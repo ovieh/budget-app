@@ -13,14 +13,54 @@ export class FileuploadService {
     private categoryService: CategoryService,
   ) {}
 
-  async importFile(file: any, user: User): Promise<Transaction[]> {
+  async importFile(file: any, user: User) {
     const transactions = await this.transactionRepository.importFile(file, user);
 
-    transactions.map(async transaction => {
-      const category = await this.categoryService.getCategoryByDescription(transaction.description, user);
+    // const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
+    //   if (a.description < b.description) {
+    //     return -1;
+    //   }
 
-      if (category) {
-        await this.transactionService.updateCategoryById(transaction.id, category, user);
+    //   if (a.description > b.description) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // });
+
+    // const groupedTransactions = sortedTransactions.reduce((obj, transaction) => {
+    //     const description = transaction.description;
+
+    //     if (!obj.hasOwnProperty(description)) {
+    //       obj[description] = [];
+    //     }
+
+    //     obj[description].push(transaction);
+
+    //   return obj;
+    // }, {});
+
+    
+    // const keys = Object.keys(groupedTransactions);
+
+    // keys.map(async key => {
+    //   const category = await this.categoryService.getCategoryByDescription(key, user);
+    //   // groupedTransactions[key]
+    //   if (category) {
+    //     await this.transactionService.updateCategoryByIds(keys, category, user);
+    //   }
+    // });
+
+    transactions.map(async transaction => {
+      let categoryId: number;
+      try {
+        categoryId = await this.categoryService.getCategoryByDescription(transaction.description, user);
+      } catch(error) {
+        console.log(`this is an error ${error}`)
+        return;
+      }
+      console.log(`============CATEGORY_ID========${categoryId}=========================`)
+      if (categoryId) {
+        await this.transactionService.updateCategoryById(transaction.id, categoryId, user);
 
       }
 

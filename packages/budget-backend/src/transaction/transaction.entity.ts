@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique, ManyToOne } from 'typeorm';
-import { Field, ID, ObjectType, Int, InputType, ArgsType } from 'type-graphql';
+import { Field, ID, ObjectType, InputType } from 'type-graphql';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 
@@ -12,7 +12,7 @@ import { RelationColumn } from '../helpers';
 @Unique(['date', 'balance'])
 export class  Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  @Field(type => ID)
+  @Field(() => ID)
   id: string;
 
   @Column('date')
@@ -47,18 +47,18 @@ export class  Transaction extends BaseEntity {
   @Field()
   balance: number;
 
-  @ManyToOne(type => Category, category => category.transaction, { eager: false })
-  @Field(type => Category, {nullable: true})
+  @ManyToOne(() => Category, category => category.transaction)
+  @Field(() => Category, {nullable: true})
   category: Category;
   @RelationColumn()
   categoryId?: number;
 
-  @ManyToOne(type => User, user => user.transaction, { eager: false })
-  @Field(type => User)
+  @ManyToOne(() => User, user => user.transaction)
+  @Field(() => User)
   user: User;
 
   @Column()
-  @Field(type => ID)
+  @Field(() => ID)
   userId: number;
 
   @BeforeInsert()
