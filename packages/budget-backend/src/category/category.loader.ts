@@ -1,9 +1,8 @@
-import DataLoader = require('dataloader');
+import * as DataLoader from 'dataloader';
 import { Injectable } from '@nestjs/common';
-import { NestDataLoader } from 'nestjs-dataloader'
+import { NestDataLoader } from '@ovieh/nestjs-dataloader';
 import { Category } from './category.entity';
 import { CategoryService } from './category.service';
-
 
 @Injectable()
 export class CategoryLoader implements NestDataLoader<number, Category> {

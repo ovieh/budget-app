@@ -6,7 +6,7 @@ import { AuthModule } from '../auth/auth.module';
 import { CategoryResolver } from './category.resolver';
 import { JSONObjectScalar } from './JSONObject.scalar';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { DataLoaderInterceptor } from 'nestjs-dataloader';
+import { DataLoaderInterceptor } from '@ovieh/nestjs-dataloader';
 import { CategoryLoader } from './category.loader';
 @Module({
   imports: [TypeOrmModule.forFeature([CategoryRepository]), AuthModule],

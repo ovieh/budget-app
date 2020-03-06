@@ -1,6 +1,6 @@
 import DataLoader = require('dataloader');
 import { Injectable } from '@nestjs/common';
-import { NestDataLoader } from 'nestjs-dataloader';
+import { NestDataLoader } from '@ovieh/nestjs-dataloader';
 import { Transaction } from './transaction.entity';
 import { TransactionService } from './transaction.service';
 

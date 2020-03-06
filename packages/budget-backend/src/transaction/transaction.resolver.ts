@@ -21,7 +21,7 @@ import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { Category } from '../category/category.entity';
 import { CategoryRepository } from '../category/category.repository';
 import { YearMonth } from './DTO/year-month.dto';
-import { Loader } from 'nestjs-dataloader';
+import { Loader } from '@ovieh/nestjs-dataloader';
 import DataLoader = require('dataloader');
 import { CategoryLoader } from 'src/category/category.loader';
 
