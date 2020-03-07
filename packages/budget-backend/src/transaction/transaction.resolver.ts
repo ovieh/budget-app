@@ -19,18 +19,16 @@ import { CurrentUser } from '../auth/get-user.decorator';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { Category } from '../category/category.entity';
-import { CategoryRepository } from '../category/category.repository';
 import { YearMonth } from './DTO/year-month.dto';
 import { Loader } from '@ovieh/nestjs-dataloader';
 import DataLoader = require('dataloader');
-import { CategoryLoader } from 'src/category/category.loader';
+import { CategoryLoader } from '../category/category.loader';
 
 @Resolver(() => Transaction)
 export class TransactionResolver {
   private logger = new Logger('Transaction Resolver');
   constructor(
     private readonly transactionService: TransactionService,
-    private categoryRepository: CategoryRepository,
   ) {}
 
   @Query(() => User, { nullable: true })

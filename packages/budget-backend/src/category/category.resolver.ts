@@ -100,33 +100,6 @@ export class CategoryResolver {
     @Args({ name: 'dates', type: () => [DateInput] }) dates: DateInput[],
     @CurrentUser() user: User,
   ) {
-    const categories = await this.categoryService.findAll(user);
-
-    const byDate = dates.map(async ({ year, month }, index) => {
-      let obj = {};
-      const spendingByCategories = categories.map(async (category, index) => {
-        const result = await this.categoryService.sumCategoryDebitsByYearMonth(
-          category.id,
-          user,
-          year,
-          month,
-        );
-
-        obj = {
-          ...obj,
-          name: `${month}/${year}`,
-          [category.name]: result,
-        };
-        if (Object.keys(obj).length === categories.length) return obj;
-      });
-
-      return await Promise.all(spendingByCategories).then(result => {
-        return result.filter(el => el !== undefined);
-      });
-    });
-
-    return await Promise.all(byDate).then(result => ({
-      payload: result.flat(),
-    }));
+    return this.categoryService.chartData(dates, user);
   }
 }

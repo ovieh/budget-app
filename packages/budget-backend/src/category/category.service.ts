@@ -4,6 +4,7 @@ import { Category } from './category.entity';
 import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/user.entity';
+import { DateInput } from './date.input';
 
 @Injectable()
 export class CategoryService {
@@ -92,5 +93,39 @@ export class CategoryService {
     month: number,
   ) {
     return this.categoryRepository.sumCategoryDebitsByYearMonth(id, user, year, month);
+  }
+
+  async chartData(
+    dates: DateInput[],
+    user: User
+  ) {
+    const categories = await this.findAll(user);
+
+    const byDate = dates.map(async ({ year, month }) => {
+      let obj = {};
+      const spendingByCategories = categories.map(async category => {
+        const result = await this.sumCategoryDebitsByYearMonth(
+          category.id,
+          user,
+          year,
+          month,
+        );
+
+        obj = {
+          ...obj,
+          name: `${month}/${year}`,
+          [category.name]: result,
+        };
+        if (Object.keys(obj).length === categories.length) return obj;
+      });
+
+      return await Promise.all(spendingByCategories).then(result => {
+        return result.filter(el => el !== undefined);
+      });
+    });
+
+    return await Promise.all(byDate).then(result => ({
+      payload: result.flat(),
+    }));
   }
 }

@@ -8,5 +8,5 @@ export class DateInput extends BaseEntity {
 
   @Field(type => Int)
   month: number;
-  
+
 }
