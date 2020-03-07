@@ -12,7 +12,9 @@ import { App } from './App';
 import jwtDecode from 'jwt-decode';
 import './index.css';
 
-const cache = new InMemoryCache({});
+const cache = new InMemoryCache({
+    // addTypename: false,
+});
 
 const URL = `${process.env.REACT_APP_API_URL}/graphql`;
 

@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Layout } from '../components/Layout';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
-import { useGetYearMonthQuery, useChartDataQuery } from '../generated/graphql';
+import {
+    useGetYearMonthQuery,
+    useChartDataQuery,
+    ChartData,
+    GetYearMonthQuery,
+    YearMonth,
+} from '../generated/graphql';
 import {
     LineChart,
     CartesianGrid,
@@ -32,58 +38,21 @@ const Table: React.FC = () => {
     );
 };
 
-const Chart: React.FC = () => {
-    // const data = [
-    //     {
-    //         name: 'January 2020',
-    //         transportation: '300.00',
-    //         lunch: '200.00',
-    //         utilities: '300.00',
-    //         color: 'red',
-    //     },
-    //     {
-    //         name: 'February 2020',
-    //         transportation: '254.00',
-    //         lunch: '219.00',
-    //         utilities: '290.00',
-    //         color: 'blue',
-    //     },
-    //     {
-    //         name: 'March 2020',
-    //         transportation: '194.00',
-    //         lunch: '209.00',
-    //         utilities: '97.00',
-    //         color: 'green',
-    //     },
-    // ];
+interface ChartProps {
+    data: any;
+}
+
+const Chart: React.FC<ChartProps> = ({ data: yearMonth }) => {
+    // strip __typename
+    yearMonth.forEach((date: YearMonth) => {
+        delete date.__typename;
+    });
 
     const { data, loading, error } = useChartDataQuery({
         variables: {
-            date: [
-                {
-                    year: 2019,
-                    month: 10,
-                },
-                {
-                    year: 2019,
-                    month: 11,
-                },
-                {
-                    year: 2019,
-                    month: 12,
-                },
-                {
-                    year: 2020,
-                    month: 1,
-                },
-                {
-                    year: 2020,
-                    month: 2,
-                },
-            ],
+            date: yearMonth,
         },
     });
-
     if (loading) return <span>loading</span>;
 
     if (error) return <span>error</span>;
@@ -119,5 +88,15 @@ const Chart: React.FC = () => {
 
 interface Props {}
 export const Transactions: React.FC<Props> = () => {
-    return <Layout main={<Table />} chart={<Chart />} />;
+    const { data, loading, error } = useGetYearMonthQuery();
+
+    if (error) {
+        return <pre>error.message</pre>;
+    }
+
+    if (loading) {
+        return null;
+    }
+
+    return <Layout main={<Table />} chart={<Chart data={data?.getYearMonth} />} />;
 };

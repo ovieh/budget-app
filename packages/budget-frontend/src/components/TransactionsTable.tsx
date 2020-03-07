@@ -99,7 +99,6 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
     if (loading) {
         return <h1>hey i'm loading</h1>;
     }
-    console.log(data);
     return data ? (
         <ReusuableTable columns={TransactionsColumns} data={data.getTransactionByMonthAndYear} />
     ) : (
