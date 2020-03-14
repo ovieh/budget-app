@@ -1,10 +1,9 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique, ManyToOne } from 'typeorm';
-import { Field, ID, ObjectType, InputType } from 'type-graphql';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
-
 import * as uuidv4 from 'uuid/v4';
 import { RelationColumn } from '../helpers';
+import { ObjectType, InputType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
 @InputType('TransactionInput')

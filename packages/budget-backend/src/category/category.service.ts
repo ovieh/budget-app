@@ -16,19 +16,18 @@ export class CategoryService {
   async createCategory(
     createCategoryDto: CreateCategoryDto,
     user: User,
-    ): Promise<Category> {
-    return await this.categoryRepository.createCategory(createCategoryDto, user);
+  ): Promise<Category> {
+    return await this.categoryRepository.createCategory(
+      createCategoryDto,
+      user,
+    );
   }
 
-  async findAll(
-    user: User,
-  ): Promise<Category[]> {
+  async findAll(user: User): Promise<Category[]> {
     return await this.categoryRepository.getCategories(user);
   }
 
-  async find(
-    id: number,
-  ): Promise<Category> {
+  async find(id: number): Promise<Category> {
     return this.categoryRepository.findOne(id);
   }
 
@@ -36,11 +35,10 @@ export class CategoryService {
     return this.categoryRepository.findByIds(ids);
   }
 
-  async getCategoryById(
-    id: number,
-    user: User,
-    ): Promise<Category> {
-    const found = await this.categoryRepository.findOne({ where: { id, userId: user.id }});
+  async getCategoryById(id: number, user: User): Promise<Category> {
+    const found = await this.categoryRepository.findOne({
+      where: { id, userId: user.id },
+    });
     if (!found) {
       throw new NotFoundException(`Category with ${id} not found`);
     }
@@ -60,29 +58,22 @@ export class CategoryService {
 
     await category.save();
     return category;
-
   }
 
-  async getCategoryByDescription(
-    description: string,
-    user: User,
-  ) {
+  async getCategoryByDescription(description: string, user: User) {
     // const { id } = await this.categoryRepository.getCategoryByDescription(description, user);
     // return id;
-    return await this.categoryRepository.getCategoryByDescription(description, user);
+    return await this.categoryRepository.getCategoryByDescription(
+      description,
+      user,
+    );
   }
 
-  async removeCategoryById(
-    id: number,
-    user: User,
-  ): Promise<void> {
+  async removeCategoryById(id: number, user: User): Promise<void> {
     return this.categoryRepository.removeCategoryById(id, user);
   }
 
-  async sumCategoryDebits(
-    id: number,
-    user: User,
-  ): Promise<number> {
+  async sumCategoryDebits(id: number, user: User): Promise<number> {
     return this.categoryRepository.sumCategoryDebits(id, user);
   }
 
@@ -92,40 +83,52 @@ export class CategoryService {
     year: number,
     month: number,
   ) {
-    return this.categoryRepository.sumCategoryDebitsByYearMonth(id, user, year, month);
+    return this.categoryRepository.sumCategoryDebitsByYearMonth(
+      id,
+      user,
+      year,
+      month,
+    );
   }
 
-  async chartData(
-    dates: DateInput[],
-    user: User
-  ) {
+  async chartData(dates: DateInput[], user: User) {
     const categories = await this.findAll(user);
-
     const byDate = dates.map(async ({ year, month }) => {
-      let obj = {};
+      const obj = {
+        name: `${month}/${year}`
+      };
+      const map = new Map();
+      map.set('name', `${month}/${year}`);
+      
       const spendingByCategories = categories.map(async category => {
+
         const result = await this.sumCategoryDebitsByYearMonth(
           category.id,
           user,
           year,
           month,
         );
+        map.set(category.name, result);
 
-        obj = {
-          ...obj,
-          name: `${month}/${year}`,
-          [category.name]: result,
-        };
-        if (Object.keys(obj).length === categories.length) return obj;
+        // obj = {
+        //   ...obj,
+        //   name: `${month}/${year}`,
+        //   [category.name]: result,
+        // };
+        if (!obj.hasOwnProperty(`${category.name}`)) {
+          obj[`${category.name}`] = result;
+        }
+        if (Object.keys(obj).length === categories.length) {
+          return obj;
+        }
       });
-
       return await Promise.all(spendingByCategories).then(result => {
         return result.filter(el => el !== undefined);
       });
     });
 
     return await Promise.all(byDate).then(result => ({
-      payload: result.flat(),
+      payload: result.flat()
     }));
   }
 }

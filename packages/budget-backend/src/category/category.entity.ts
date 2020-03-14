@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Transaction } from '../transaction/transaction.entity';
 import { User } from '../auth/user.entity';
-import { ObjectType, Field, ID, Float, InputType } from 'type-graphql';
+import { ObjectType, InputType, Field, ID, Float } from "@nestjs/graphql";
 
 @ObjectType()
 @InputType('CatIn')

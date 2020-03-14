@@ -1,6 +1,6 @@
 import { IsString, MinLength, MaxLength, Matches } from 'class-validator';
-import { ObjectType, Field } from 'type-graphql';
 import { User } from '../user.entity';
+import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
 export class AuthCredentialsDto {

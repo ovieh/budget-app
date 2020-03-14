@@ -1,11 +1,11 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { ObjectType, Field, Int } from "@nestjs/graphql";
 
 @ObjectType()
 
 export class YearMonth {
-    @Field(type => Int)
+    @Field(() => Int)
     year: number;
 
-    @Field(type => Int)
+    @Field(() => Int)
     month: number;
 }

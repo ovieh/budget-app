@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Float } from '@nestjs/graphql';
 import { Category } from './category.entity';
 import { Logger, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
@@ -6,7 +6,6 @@ import { GqlAuthGuard } from '../auth/gql-auth.guard';
 import { User } from '../auth/user.entity';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
-import { Float } from 'type-graphql';
 import { DateInput } from './date.input';
 import { ChartData } from './chartData.output';
 

@@ -1,12 +1,12 @@
-import { InputType, Field, Int } from "type-graphql";
 import { BaseEntity } from "typeorm";
+import { InputType, Field, Int } from "@nestjs/graphql";
 
 @InputType()
 export class DateInput extends BaseEntity {
-  @Field(type => Int)
+  @Field(() => Int)
   year: number;
 
-  @Field(type => Int)
+  @Field(() => Int)
   month: number;
 
 }

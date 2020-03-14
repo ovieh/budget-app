@@ -1,14 +1,14 @@
 import { IsNotEmpty, IsAlpha, IsCurrency} from 'class-validator';
-import { ArgsType, Field, Float } from 'type-graphql';
+import { Float, Field, ArgsType } from '@nestjs/graphql';
 
 @ArgsType()
 export class CreateCategoryDto {
-  @Field(type => String)
+  @Field(() => String)
   @IsNotEmpty()
   @IsAlpha()
   name: string;
 
-  @Field(type => Float)
+  @Field(() => Float)
   @IsCurrency()
   budget: number;
 
