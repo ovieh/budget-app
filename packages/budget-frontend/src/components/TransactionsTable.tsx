@@ -4,7 +4,6 @@ import {
     useTransactionByMonthAndYearQuery,
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
-    Category,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -64,8 +63,8 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         // TODO: fix below, shouldn't need !
         useEffect(() => {
             data?.getCategories
-                .filter(({ name }: Category) => name === value)
-                .map(({ id }) => setCategoryId(parseInt(id!))); //  TODO: This is bad
+                .filter(({ name }) => name === value)
+                .map(({ id }) => setCategoryId(id!)); //  TODO: This is bad
         }, [data, value]);
 
         return (

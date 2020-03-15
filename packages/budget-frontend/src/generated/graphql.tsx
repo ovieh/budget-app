@@ -4,233 +4,199 @@ import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string,
-  String: string,
-  Boolean: boolean,
-  Int: number,
-  Float: number,
-  JSONObject: any,
-  Upload: any,
-};
-
-export type AuthCredentialsDto = {
-   __typename?: 'AuthCredentialsDto',
-  username: User,
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  JSONObject: any;
+  Upload: any;
 };
 
 export type Category = {
-   __typename?: 'Category',
-  id?: Maybe<Scalars['ID']>,
-  name: Scalars['String'],
-  budget?: Maybe<Scalars['Float']>,
-};
-
-export type CatIn = {
-  id?: Maybe<Scalars['ID']>,
-  name: Scalars['String'],
-  budget?: Maybe<Scalars['Float']>,
+   __typename?: 'Category';
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  budget: Scalars['Float'];
+  transaction: Transaction;
+  user: User;
 };
 
 export type ChartData = {
-   __typename?: 'ChartData',
-  payload: Scalars['JSONObject'],
+   __typename?: 'ChartData';
+  payload: Scalars['JSONObject'];
 };
 
 export type DateInput = {
-  year: Scalars['Int'],
-  month: Scalars['Int'],
+  year: Scalars['Int'];
+  month: Scalars['Int'];
 };
 
 
 export type LoginResponseDto = {
-   __typename?: 'LoginResponseDto',
-  accessToken: Scalars['String'],
+   __typename?: 'LoginResponseDto';
+  accessToken: Scalars['String'];
 };
 
 export type Mutation = {
-   __typename?: 'Mutation',
-  signUp: Scalars['Boolean'],
-  signIn: LoginResponseDto,
-  revokeRefreshToken: Scalars['Boolean'],
-  signOut: Scalars['Boolean'],
-  uploadFile: Scalars['Boolean'],
-  createTransaction: Scalars['String'],
-  deleteTransaction: Scalars['String'],
-  updateTransactionCategory: Scalars['String'],
-  updateCategory: Category,
-  createCategory: Category,
-  removeCategory: Scalars['String'],
+   __typename?: 'Mutation';
+  signUp: Scalars['Boolean'];
+  signIn: LoginResponseDto;
+  revokeRefreshToken: Scalars['Boolean'];
+  signOut: Scalars['Boolean'];
+  uploadFile: Scalars['Boolean'];
+  createTransaction: Scalars['String'];
+  deleteTransaction: Scalars['String'];
+  updateTransactionCategory: Scalars['String'];
+  updateCategory: Category;
+  createCategory: Category;
+  removeCategory: Scalars['String'];
 };
 
 
 export type MutationSignUpArgs = {
-  password: Scalars['String'],
-  username: Scalars['String']
+  password: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
 export type MutationSignInArgs = {
-  password: Scalars['String'],
-  username: Scalars['String']
+  password: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
 export type MutationRevokeRefreshTokenArgs = {
-  userId: Scalars['Float']
+  userId: Scalars['Float'];
 };
 
 
 export type MutationUploadFileArgs = {
-  file: Scalars['Upload']
+  file: Scalars['Upload'];
 };
 
 
 export type MutationCreateTransactionArgs = {
-  date: Scalars['String'],
-  type: Scalars['String'],
-  sortCode: Scalars['String'],
-  accountNumber: Scalars['String'],
-  description: Scalars['String'],
-  debitAmount: Scalars['Float'],
-  creditAmount: Scalars['Float'],
-  balance: Scalars['Float']
+  date: Scalars['String'];
+  type: Scalars['String'];
+  sortCode: Scalars['String'];
+  accountNumber: Scalars['String'];
+  description: Scalars['String'];
+  debitAmount: Scalars['Float'];
+  creditAmount: Scalars['Float'];
+  balance: Scalars['Float'];
 };
 
 
 export type MutationDeleteTransactionArgs = {
-  id: Scalars['String']
+  id: Scalars['String'];
 };
 
 
 export type MutationUpdateTransactionCategoryArgs = {
-  categoryId: Scalars['Float'],
-  id: Scalars['String']
+  categoryId: Scalars['Float'];
+  id: Scalars['String'];
 };
 
 
 export type MutationUpdateCategoryArgs = {
-  budget: Scalars['Float'],
-  name: Scalars['String'],
-  id: Scalars['Float']
+  budget: Scalars['Float'];
+  name: Scalars['String'];
+  id: Scalars['Float'];
 };
 
 
 export type MutationCreateCategoryArgs = {
-  name: Scalars['String'],
-  budget: Scalars['Float']
+  name: Scalars['String'];
+  budget: Scalars['Float'];
 };
 
 
 export type MutationRemoveCategoryArgs = {
-  id: Scalars['Float']
+  id: Scalars['Float'];
 };
 
 export type Query = {
-   __typename?: 'Query',
-  me?: Maybe<User>,
-  getTransactions: Array<Transaction>,
-  getTransactionById: Transaction,
-  getTransactionByMonthAndYear: Array<Transaction>,
-  getYearMonth: Array<YearMonth>,
-  getTransactionsByCategory: Category,
-  getCategories: Array<Category>,
-  getCategoryByDescription: Scalars['Float'],
-  sumCategoryDebits: Scalars['Float'],
-  sumCategoryDebitsByYearMonth: Scalars['Float'],
-  chartData: ChartData,
+   __typename?: 'Query';
+  me?: Maybe<User>;
+  getTransactions: Array<Transaction>;
+  getTransactionById: Transaction;
+  getTransactionByMonthAndYear: Array<Transaction>;
+  getYearMonth: Array<YearMonth>;
+  getTransactionsByCategory: Category;
+  getCategories: Array<Category>;
+  getCategoryByDescription: Scalars['Float'];
+  sumCategoryDebits: Scalars['Float'];
+  sumCategoryDebitsByYearMonth: Scalars['Float'];
+  chartData: ChartData;
 };
 
 
 export type QueryGetTransactionByIdArgs = {
-  id: Scalars['String']
+  id: Scalars['String'];
 };
 
 
 export type QueryGetTransactionByMonthAndYearArgs = {
-  month: Scalars['Float'],
-  year: Scalars['Float']
+  month: Scalars['Float'];
+  year: Scalars['Float'];
 };
 
 
 export type QueryGetTransactionsByCategoryArgs = {
-  id: Scalars['Float']
+  id: Scalars['Float'];
 };
 
 
 export type QueryGetCategoryByDescriptionArgs = {
-  description: Scalars['String']
+  description: Scalars['String'];
 };
 
 
 export type QuerySumCategoryDebitsArgs = {
-  id: Scalars['Float']
+  id: Scalars['Float'];
 };
 
 
 export type QuerySumCategoryDebitsByYearMonthArgs = {
-  month: Scalars['Float'],
-  year: Scalars['Float'],
-  id: Scalars['Float']
+  month: Scalars['Float'];
+  year: Scalars['Float'];
+  id: Scalars['Float'];
 };
 
 
 export type QueryChartDataArgs = {
-  dates: Array<DateInput>
+  dates: Array<DateInput>;
 };
 
 export type Transaction = {
-   __typename?: 'Transaction',
-  id: Scalars['ID'],
-  date: Scalars['String'],
-  type: Scalars['String'],
-  sortCode: Scalars['String'],
-  accountNumber: Scalars['String'],
-  description: Scalars['String'],
-  debitAmount: Scalars['Float'],
-  creditAmount: Scalars['Float'],
-  balance: Scalars['Float'],
-  category?: Maybe<Category>,
-  user: User,
-  userId: Scalars['ID'],
-};
-
-export type TransactionInput = {
-  id: Scalars['ID'],
-  date: Scalars['String'],
-  type: Scalars['String'],
-  sortCode: Scalars['String'],
-  accountNumber: Scalars['String'],
-  description: Scalars['String'],
-  debitAmount: Scalars['Float'],
-  creditAmount: Scalars['Float'],
-  balance: Scalars['Float'],
-  category?: Maybe<CatIn>,
-  user: UserInput,
-  userId: Scalars['ID'],
+   __typename?: 'Transaction';
+  id: Scalars['String'];
+  date: Scalars['String'];
+  type: Scalars['String'];
+  sortCode: Scalars['String'];
+  accountNumber: Scalars['String'];
+  description: Scalars['String'];
+  debitAmount: Scalars['Float'];
+  creditAmount: Scalars['Float'];
+  balance: Scalars['Float'];
+  user: User;
+  userId: Scalars['Float'];
+  category?: Maybe<Category>;
+  categoryId?: Maybe<Scalars['Float']>;
 };
 
 
 export type User = {
-   __typename?: 'User',
-  id: Scalars['ID'],
-  username: Scalars['String'],
-  password: Scalars['String'],
-  transaction: Array<Transaction>,
-  category: Array<Category>,
-};
-
-export type UserInput = {
-  id: Scalars['ID'],
-  username: Scalars['String'],
-  password: Scalars['String'],
-  transaction: Array<TransactionInput>,
-  category: Array<CatIn>,
+   __typename?: 'User';
+  id: Scalars['Float'];
+  username: Scalars['String'];
 };
 
 export type YearMonth = {
-   __typename?: 'YearMonth',
-  year: Scalars['Int'],
-  month: Scalars['Int'],
+   __typename?: 'YearMonth';
+  year: Scalars['Int'];
+  month: Scalars['Int'];
 };
 
 export type CategoriesQueryVariables = {};
@@ -245,7 +211,7 @@ export type CategoriesQuery = (
 );
 
 export type ChartDataQueryVariables = {
-  date: Array<DateInput>
+  date: Array<DateInput>;
 };
 
 
@@ -258,8 +224,8 @@ export type ChartDataQuery = (
 );
 
 export type TransactionByMonthAndYearQueryVariables = {
-  month: Scalars['Float'],
-  year: Scalars['Float']
+  month: Scalars['Float'];
+  year: Scalars['Float'];
 };
 
 
@@ -276,8 +242,8 @@ export type TransactionByMonthAndYearQuery = (
 );
 
 export type CreateCategoryMutationVariables = {
-  name: Scalars['String'],
-  budget: Scalars['Float']
+  name: Scalars['String'];
+  budget: Scalars['Float'];
 };
 
 
@@ -290,14 +256,14 @@ export type CreateCategoryMutation = (
 );
 
 export type CreateTransactionMutationVariables = {
-  date: Scalars['String'],
-  type: Scalars['String'],
-  sortCode: Scalars['String'],
-  accountNumber: Scalars['String'],
-  description: Scalars['String'],
-  debitAmount: Scalars['Float'],
-  creditAmount: Scalars['Float'],
-  balance: Scalars['Float']
+  date: Scalars['String'];
+  type: Scalars['String'];
+  sortCode: Scalars['String'];
+  accountNumber: Scalars['String'];
+  description: Scalars['String'];
+  debitAmount: Scalars['Float'];
+  creditAmount: Scalars['Float'];
+  balance: Scalars['Float'];
 };
 
 
@@ -344,8 +310,8 @@ export type MeQuery = (
 );
 
 export type SignInMutationVariables = {
-  username: Scalars['String'],
-  password: Scalars['String']
+  username: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -366,8 +332,8 @@ export type SignOutMutation = (
 );
 
 export type RegisterMutationVariables = {
-  username: Scalars['String'],
-  password: Scalars['String']
+  username: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -377,8 +343,8 @@ export type RegisterMutation = (
 );
 
 export type UpdateTransactionCategoryMutationVariables = {
-  categoryId: Scalars['Float'],
-  id: Scalars['String']
+  categoryId: Scalars['Float'];
+  id: Scalars['String'];
 };
 
 

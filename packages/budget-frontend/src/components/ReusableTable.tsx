@@ -54,7 +54,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
                 <TableHead>
                     {headerGroups.map(headerGroup => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column: ColumnInstance) => (
+                            {headerGroup.headers.map((column: any) => (
                                 <TableCell {...column.getHeaderProps()} align='left'>
                                     {column.render('Header')}
                                 </TableCell>
@@ -63,7 +63,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data }) => {
                     ))}
                 </TableHead>
                 <TableBody {...getTableBodyProps()}>
-                    {page.map((row: Row, i: number) => {
+                    {page.map((row, i: number) => {
                         prepareRow(row);
                         return (
                             <TableRow {...row.getRowProps()}>

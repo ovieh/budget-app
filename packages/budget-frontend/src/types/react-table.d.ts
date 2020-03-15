@@ -5,7 +5,7 @@
 //                 Christian Murphy <https://github.com/ChristianMurphy>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.0
-declare module 'react-table-blah' {
+declare module 'react-table' {
     import { Dispatch, SetStateAction, ReactNode } from 'react';
 
     export interface Cell<D> {
@@ -23,6 +23,10 @@ declare module 'react-table-blah' {
         getRowProps: () => any;
         original: any;
     }
+
+    export interface ColumnInstance<D extends object = {}>
+        extends Omit<Column<D>, 'id' | 'columns'>,
+            UseTableColumnProps<D> {}
 
     export interface HeaderColumn<D, A extends keyof D = never> {
         /**
