@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Transaction } from '../transaction/transaction.entity';
 import { User } from '../auth/user.entity';
-import { ObjectType, InputType, Field, ID, Float } from "@nestjs/graphql";
+import { ObjectType, InputType, Field, ID, Float, HideField } from "@nestjs/graphql";
 
 @ObjectType()
 @InputType('CatIn')
@@ -28,18 +28,19 @@ export class Category extends BaseEntity {
   @Field(() => Float, { nullable: true })
   budget: number;
 
+  @HideField()
   @OneToMany(() => Transaction, 
     transaction => transaction.category,
     { eager: true },
   )
-  // @Field(() => [Transaction], { nullable: true })
-  transaction: Transaction;
+  transaction?: Transaction;
 
+  @HideField()
   @ManyToOne(
     () => User,
     user => user.category,
     { eager: false },
   )
-  // @Field(() => User, { nullable: true })
+  @HideField()
   user: User;
 }

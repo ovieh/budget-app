@@ -2,7 +2,7 @@ import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany }
 import * as bcrypt from 'bcryptjs';
 import { Transaction } from '../transaction/transaction.entity';
 import { Category } from '../category/category.entity';
-import { ObjectType, InputType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, InputType, Field, ID, HideField } from '@nestjs/graphql';
 
 @ObjectType()
 @InputType('UserInput')
@@ -14,25 +14,26 @@ export class User extends BaseEntity {
   id: number;
 
   @Column()
-  @Field()
   username: string;
 
+  @HideField()
   @Column()
-  @Field()
   password: string;
 
+  @HideField()
   @Column()
   salt: string;
 
+  @HideField()
   @Column('int', { default: 0 })
   tokenVersion: string;
 
+  @HideField()
   @OneToMany(() => Transaction, transaction => transaction.user)
-  @Field(() => Transaction)
   transaction: Transaction[];
 
+  @HideField()
   @OneToMany(() => Category, category => category.user)
-  @Field(() => Category)
   category: Category[];
 
   async validatePassword(password: string): Promise<boolean> {

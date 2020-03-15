@@ -3,8 +3,8 @@ import {
   Query,
   Args,
   Mutation,
-  ResolveProperty,
   Parent,
+  ResolveField,
 } from '@nestjs/graphql';
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
@@ -123,7 +123,7 @@ export class TransactionResolver {
   }
 
   // TODO: why isn't this passing the user?
-  @ResolveProperty(() => Category)
+  @ResolveField(() => Category)
   @UseGuards(GqlAuthGuard)
   async category(
     @Parent() transaction: Transaction,

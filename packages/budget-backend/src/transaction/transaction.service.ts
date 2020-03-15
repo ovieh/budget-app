@@ -11,7 +11,6 @@ import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
 import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
-import { getConnection } from 'typeorm';
 
 @Injectable()
 export class TransactionService {
@@ -27,7 +26,7 @@ export class TransactionService {
 
   async findByIds(ids: string[]): Promise<Transaction[]> {
     return await this.transactionRepository.findByIds(ids);
-  } 
+  }
 
   async getTransaction(user: User): Promise<Transaction[]> {
     return await this.transactionRepository.find({ userId: user.id });
@@ -38,7 +37,7 @@ export class TransactionService {
   }
 
   async getTransactionsById(id: string, user: User): Promise<Transaction> {
-    const found =  await this.transactionRepository.findOne({
+    const found = await this.transactionRepository.findOne({
       where: { id, userId: user.id },
     });
 
@@ -57,10 +56,13 @@ export class TransactionService {
       user,
     );
 
-    const category = await this.categoryService.getCategoryByDescription(result.description, user);
+    const category = await this.categoryService.getCategoryByDescription(
+      result.description,
+      user,
+    );
 
     if (category) {
-      await this.updateCategoryById(result.id, category , user);
+      await this.updateCategoryById(result.id, category, user);
     }
 
     return result;
@@ -86,12 +88,13 @@ export class TransactionService {
     // const category = JSON.parse(JSON.stringify(categoryInput));
 
     try {
-      this.transactionRepository.updateCategoryById(id, categoryId, user)
-    } catch(error) {
-      throw new InternalServerErrorException(`Could not update transaction with id ${id}`)
+      this.transactionRepository.updateCategoryById(id, categoryId, user);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Could not update transaction with id ${id}`,
+      );
     }
-    return `Updated category for transaction with id ${id}`
-
+    return `Updated category for transaction with id ${id}`;
   }
 
   async updateCategoryByIds(
@@ -103,12 +106,13 @@ export class TransactionService {
     const category = JSON.parse(JSON.stringify(categoryInput));
 
     try {
-      this.transactionRepository.updateCategoryByIds(ids, category.id, user)
-    } catch(error) {
-      throw new InternalServerErrorException(`Could not update transaction with id ${ids}`)
+      this.transactionRepository.updateCategoryByIds(ids, category.id, user);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Could not update transaction with id ${ids}`,
+      );
     }
-    return `Updated category for transaction with id ${ids}`
-
+    return `Updated category for transaction with id ${ids}`;
   }
 
   async getTransactionsByMonth(

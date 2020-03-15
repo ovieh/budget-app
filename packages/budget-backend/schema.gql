@@ -3,9 +3,9 @@
 # ------------------------------------------------------
 
 type Category {
-  id: ID
+  id: Float!
   name: String!
-  budget: Float
+  budget: Float!
 }
 
 type ChartData {
@@ -53,7 +53,7 @@ type Query {
 }
 
 type Transaction {
-  id: ID!
+  id: String!
   date: String!
   type: String!
   sortCode: String!
@@ -63,19 +63,17 @@ type Transaction {
   creditAmount: Float!
   balance: Float!
   category: Category
+  categoryId: Float
   user: User!
-  userId: ID!
+  userId: Float!
 }
 
 """Upload custom scalar type"""
 scalar Upload
 
 type User {
-  id: ID!
+  id: Float!
   username: String!
-  password: String!
-  transaction: Transaction!
-  category: Category!
 }
 
 type YearMonth {

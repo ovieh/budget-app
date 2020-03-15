@@ -3,7 +3,7 @@ import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 import * as uuidv4 from 'uuid/v4';
 import { RelationColumn } from '../helpers';
-import { ObjectType, InputType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, InputType, Field, ID, HideField } from '@nestjs/graphql';
 
 @ObjectType()
 @InputType('TransactionInput')
@@ -15,49 +15,39 @@ export class  Transaction extends BaseEntity {
   id: string;
 
   @Column('date')
-  @Field()
   date: string;
 
   @Column()
-  @Field()
   type: string;
 
   @Column()
-  @Field()
   sortCode: string;
 
   @Column()
-  @Field()
   accountNumber: string;
 
   @Column('text')
-  @Field()
   description: string;
 
   @Column('numeric', { precision: 10, scale: 2 })
-  @Field()
   debitAmount: number;
 
   @Column('numeric', { precision: 10, scale: 2 })
-  @Field()
   creditAmount: number;
 
   @Column('numeric', { precision: 10, scale: 2 })
-  @Field()
   balance: number;
 
   @ManyToOne(() => Category, category => category.transaction)
-  @Field(() => Category, {nullable: true})
-  category: Category;
+  category?: Category;
   @RelationColumn()
   categoryId?: number;
 
+  @HideField()
   @ManyToOne(() => User, user => user.transaction)
-  @Field(() => User)
   user: User;
 
   @Column()
-  @Field(() => ID)
   userId: number;
 
   @BeforeInsert()
