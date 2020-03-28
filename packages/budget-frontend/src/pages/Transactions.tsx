@@ -21,8 +21,17 @@ import {
 } from 'recharts';
 
 const Table: React.FC = () => {
-    const { data: yearMonth, loading } = useGetYearMonthQuery();
-    const [active, setActive] = useState(0);
+    const { error, data: yearMonth, loading } = useGetYearMonthQuery();
+
+    const [active, setActive] = useState(yearMonth!.getYearMonth.length - 1);
+
+    if (error) {
+        return <pre>{JSON.stringify(error, null, 2)}</pre>;
+    }
+
+    if (loading) {
+        return null;
+    }
 
     return (
         <>
@@ -61,6 +70,7 @@ const Chart: React.FC<ChartProps> = ({ data: yearMonth }) => {
         ...el,
         color: 'red',
     }));
+
     const colors = ['red', 'pink', 'orange', 'purple', 'blue', 'grey', 'teal'];
     const categories = Object.keys(data?.chartData.payload[0]);
     return (
