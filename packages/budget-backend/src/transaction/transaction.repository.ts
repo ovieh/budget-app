@@ -189,8 +189,8 @@ export class TransactionRepository extends Repository<Transaction> {
         .where('transaction.userId = :userId', {userId: user.id})
         .groupBy('year')
         .addGroupBy('month')
-        .orderBy('year', 'DESC')
-        .addOrderBy('month', 'DESC')
+        .orderBy('year', 'ASC')
+        .addOrderBy('month', 'ASC')
         .cache(true)
         .getRawMany();
       return results;

@@ -3,9 +3,15 @@
 # ------------------------------------------------------
 
 type Category {
-  id: Float!
+  id: ID
   name: String!
-  budget: Float!
+  budget: Float
+}
+
+input CatIn {
+  id: ID
+  name: String!
+  budget: Float
 }
 
 type ChartData {
@@ -53,7 +59,7 @@ type Query {
 }
 
 type Transaction {
-  id: String!
+  id: ID!
   date: String!
   type: String!
   sortCode: String!
@@ -64,7 +70,21 @@ type Transaction {
   balance: Float!
   category: Category
   categoryId: Float
-  user: User!
+  userId: Float!
+}
+
+input TransactionInput {
+  id: ID!
+  date: String!
+  type: String!
+  sortCode: String!
+  accountNumber: String!
+  description: String!
+  debitAmount: Float!
+  creditAmount: Float!
+  balance: Float!
+  category: CatIn
+  categoryId: Float
   userId: Float!
 }
 
@@ -72,7 +92,12 @@ type Transaction {
 scalar Upload
 
 type User {
-  id: Float!
+  id: ID!
+  username: String!
+}
+
+input UserInput {
+  id: ID!
   username: String!
 }
 

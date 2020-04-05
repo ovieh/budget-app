@@ -60,7 +60,9 @@ export class CategoryRepository extends Repository<Category> {
       .where('transaction.userId = :userId', { userId: user.id })
       .andWhere('transaction.description = :description', {
         description,
-      });
+      })
+      .cache(true);
+
 
     try {
       const category = await query.getOne();
@@ -93,6 +95,7 @@ export class CategoryRepository extends Repository<Category> {
       .where('category.id = :id', { id })
       .andWhere('transaction.userId = :userId', { userId: user.id })
       .select('SUM(transaction.debitAmount)', 'sum')
+      .cache(true)
       .getRawOne();
 
     return sum || 0;
@@ -111,6 +114,7 @@ export class CategoryRepository extends Repository<Category> {
       .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
       .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
       .select('SUM(transaction.debitAmount)', 'sum')
+      .cache(true)
       .getRawOne();
     return sum || 0;
   }

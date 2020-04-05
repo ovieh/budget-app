@@ -47,7 +47,7 @@ export class AuthService {
     return { accessToken };
   }
 
-   createRefreshToken = (payload: any) => {
+   createRefreshToken = (payload: { username: string, tokenVersion: string }) => {
     return sign({ username: payload, tokenVersion: payload.tokenVersion }, jwtConfig.secret2, { expiresIn: 604800 });
   }
 

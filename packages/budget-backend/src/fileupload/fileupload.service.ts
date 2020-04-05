@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Transaction } from '../transaction/transaction.entity';
 import { TransactionRepository } from '../transaction/transaction.repository';
 import { User } from '../auth/user.entity';
 import { CategoryService } from 'src/category/category.service';
@@ -58,7 +57,6 @@ export class FileuploadService {
         console.log(`this is an error ${error}`)
         return;
       }
-      console.log(`============CATEGORY_ID========${categoryId}=========================`)
       if (categoryId) {
         await this.transactionService.updateCategoryById(transaction.id, categoryId, user);
 
