@@ -16,6 +16,8 @@ export class TransactionRepository extends Repository<Transaction> {
     user: User,
     ): Promise<Transaction[]> {
 
+      console.log(`-------------------------------------- ${user}`)
+
     // Rewrite this as stream
     const parsedTransactions = parse(file.buffer.toString(), {
       columns: [

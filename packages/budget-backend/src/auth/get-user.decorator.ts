@@ -3,9 +3,11 @@ import { Response } from 'express';
 import { User } from './user.entity';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
+// For REST Controller(s)
 export const GetUser = createParamDecorator(
-  (data, req): User => {
-    return req.user;
+  (data: unknown, ctx: ExecutionContext): User => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user;
   },
 );
 
