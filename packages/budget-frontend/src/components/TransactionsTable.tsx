@@ -64,7 +64,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         useEffect(() => {
             data?.getCategories
                 .filter(({ name }) => name === value)
-                .map(({ id }) => setCategoryId(id!)); //  TODO: This is bad
+                .map(({ id }) => setCategoryId(parseInt(id!))); //  TODO: This is bad
         }, [data, value]);
 
         return (

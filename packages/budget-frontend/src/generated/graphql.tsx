@@ -15,11 +15,15 @@ export type Scalars = {
 
 export type Category = {
    __typename?: 'Category';
-  id: Scalars['Float'];
+  id?: Maybe<Scalars['ID']>;
   name: Scalars['String'];
-  budget: Scalars['Float'];
-  transaction: Transaction;
-  user: User;
+  budget?: Maybe<Scalars['Float']>;
+};
+
+export type CatIn = {
+  id?: Maybe<Scalars['ID']>;
+  name: Scalars['String'];
+  budget?: Maybe<Scalars['Float']>;
 };
 
 export type ChartData = {
@@ -171,7 +175,7 @@ export type QueryChartDataArgs = {
 
 export type Transaction = {
    __typename?: 'Transaction';
-  id: Scalars['String'];
+  id: Scalars['ID'];
   date: Scalars['String'];
   type: Scalars['String'];
   sortCode: Scalars['String'];
@@ -180,16 +184,35 @@ export type Transaction = {
   debitAmount: Scalars['Float'];
   creditAmount: Scalars['Float'];
   balance: Scalars['Float'];
-  user: User;
-  userId: Scalars['Float'];
   category?: Maybe<Category>;
   categoryId?: Maybe<Scalars['Float']>;
+  userId: Scalars['Float'];
+};
+
+export type TransactionInput = {
+  id: Scalars['ID'];
+  date: Scalars['String'];
+  type: Scalars['String'];
+  sortCode: Scalars['String'];
+  accountNumber: Scalars['String'];
+  description: Scalars['String'];
+  debitAmount: Scalars['Float'];
+  creditAmount: Scalars['Float'];
+  balance: Scalars['Float'];
+  category?: Maybe<CatIn>;
+  categoryId?: Maybe<Scalars['Float']>;
+  userId: Scalars['Float'];
 };
 
 
 export type User = {
    __typename?: 'User';
-  id: Scalars['Float'];
+  id: Scalars['ID'];
+  username: Scalars['String'];
+};
+
+export type UserInput = {
+  id: Scalars['ID'];
   username: Scalars['String'];
 };
 
@@ -234,7 +257,7 @@ export type TransactionByMonthAndYearQuery = (
   & { getTransactionByMonthAndYear: Array<(
     { __typename?: 'Transaction' }
     & Pick<Transaction, 'date' | 'id' | 'type' | 'debitAmount' | 'balance' | 'description'>
-    & { category: Maybe<(
+    & { category?: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'name' | 'budget'>
     )> }
@@ -280,7 +303,7 @@ export type GetTransactionsQuery = (
   & { getTransactions: Array<(
     { __typename?: 'Transaction' }
     & Pick<Transaction, 'id' | 'date' | 'creditAmount' | 'debitAmount' | 'balance' | 'description'>
-    & { category: Maybe<(
+    & { category?: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'id' | 'name' | 'budget'>
     )> }
@@ -303,7 +326,7 @@ export type MeQueryVariables = {};
 
 export type MeQuery = (
   { __typename?: 'Query' }
-  & { me: Maybe<(
+  & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
   )> }

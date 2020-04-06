@@ -5,40 +5,27 @@ import { Formik, Form, Field } from 'formik';
 import { setAccessToken } from '../accessToken';
 import { LoggedOutNav } from '../components/LoggedOutNav';
 import { Paper, Button, TextField, Container } from '@material-ui/core';
-import styled from '@emotion/styled/macro';
+import { makeStyles } from '@material-ui/core/styles';
 
 interface Props {}
 
-const PaperStyled = styled(Paper)`
-    margin-top: 10px;
-    /* max-width: 20rem;
-    height: 20rem; */
-`;
-
-const FieldStyled = styled(Field)`
-    /* width: 100%; */
-    padding: 1rem 2rem;
-    box-sizing: border-box;
-`;
-
-const FormStyled = styled(Form)`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
-
-const ButtonStyled = styled(Button)`
-    width: 8rem;
-    height: 2.5rem;
-`;
+const useStyles = makeStyles(theme => ({
+    root: {
+        padding: '10px',
+    },
+    input: {
+        paddingBottom: '5px',
+    },
+}));
 
 export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
+    const classes = useStyles();
     const [signIn] = useSignInMutation();
     return (
         <Fragment>
             <LoggedOutNav />
-            <Container maxWidth='sm'>
-                <PaperStyled elevation={5}>
+            <Container maxWidth='sm' className={classes.root}>
+                <Paper elevation={5}>
                     <Formik
                         initialValues={{
                             password: '',
@@ -55,38 +42,43 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                             history.push('/');
                             response &&
                                 response.data &&
-                                setAccessToken(
-                                    response.data.signIn.accessToken
-                                );
+                                setAccessToken(response.data.signIn.accessToken);
                         }}
                     >
                         {({ handleSubmit, isSubmitting }) => (
-                            <FormStyled onSubmit={handleSubmit}>
-                                <FieldStyled
-                                    as={TextField}
-                                    name='username'
-                                    placeholder='username'
-                                    variant='outlined'
-                                />
-                                <FieldStyled
-                                    as={TextField}
-                                    name='password'
-                                    placeholder='password'
-                                    type='password'
-                                    variant='outlined'
-                                />
-                                <ButtonStyled
-                                    variant='contained'
-                                    type='submit'
-                                    disabled={isSubmitting}
-                                    color='primary'
-                                >
-                                    Sign In
-                                </ButtonStyled>
-                            </FormStyled>
+                            <Container className={classes.root}>
+                                <Form onSubmit={handleSubmit}>
+                                    <Field
+                                        as={TextField}
+                                        name='username'
+                                        placeholder='username'
+                                        variant='outlined'
+                                        fullWidth
+                                        className={classes.input}
+                                    />
+                                    <Field
+                                        as={TextField}
+                                        name='password'
+                                        placeholder='password'
+                                        type='password'
+                                        variant='outlined'
+                                        fullWidth
+                                        className={classes.input}
+                                    />
+                                    <Button
+                                        variant='contained'
+                                        type='submit'
+                                        disabled={isSubmitting}
+                                        color='primary'
+                                        fullWidth
+                                    >
+                                        Sign In
+                                    </Button>
+                                </Form>
+                            </Container>
                         )}
                     </Formik>
-                </PaperStyled>
+                </Paper>
             </Container>
         </Fragment>
     );

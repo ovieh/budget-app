@@ -4,7 +4,9 @@ import { useSignOutMutation } from '../generated/graphql';
 import { Button } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
-interface Props {}
+interface Props {
+    className?: string;
+}
 
 export const LoggedInNav: React.FC<Props> = () => {
     const [signout, { data }] = useSignOutMutation();
@@ -19,7 +21,7 @@ export const LoggedInNav: React.FC<Props> = () => {
     }
 
     return (
-        <ReusableNav links={LoggedInLinks}>
+        <ReusableNav links={LoggedInLinks} >
             <Button onClick={() => signout()}>Sign Out</Button>
         </ReusableNav>
     );

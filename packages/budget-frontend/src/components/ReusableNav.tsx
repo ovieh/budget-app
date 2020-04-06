@@ -18,7 +18,7 @@ const StyledToolbar = styled(Toolbar)`
 `;
 
 export const ReusableNav: React.FC<Props> = ({ links, children }) => (
-    <AppBar position='static' color='inherit'>
+    <AppBar position='fixed' color='inherit'>
         <StyledToolbar>
             <Typography variant='h6'>Budget-App</Typography>
             <div>

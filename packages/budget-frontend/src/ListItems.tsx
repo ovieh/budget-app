@@ -3,7 +3,6 @@ import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import ClassIcon from '@material-ui/icons/Class';
 
-
 export const primaryListItems = (
     <div>
         <ListItem button>

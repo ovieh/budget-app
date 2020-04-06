@@ -71,6 +71,10 @@ const Chart: React.FC<ChartProps> = ({ data: yearMonth }) => {
         color: 'red',
     }));
 
+    if (chartData) {
+        return <span>ain't got nothign</span>;
+    }
+
     const colors = ['red', 'pink', 'orange', 'purple', 'blue', 'grey', 'teal'];
     const categories = Object.keys(data?.chartData.payload[0]);
     return (
@@ -79,7 +83,6 @@ const Chart: React.FC<ChartProps> = ({ data: yearMonth }) => {
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis dataKey='name' />
                 <YAxis />
-                {/* <Tooltip /> */}
                 <Legend height={36} />
                 {categories
                     .filter(el => el !== 'name' && el !== 'color')

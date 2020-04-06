@@ -27,11 +27,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
             {({ handleSubmit, isSubmitting }) => (
                 <Form onSubmit={handleSubmit}>
                     <Field name='username' placeholder='username' />
-                    <Field
-                        type='password'
-                        name='password'
-                        placeholder='password'
-                    />
+                    <Field type='password' name='password' placeholder='password' />
                     <button type='submit' disabled={isSubmitting}>
                         Submit
                     </button>

@@ -1,6 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import {
+    makeStyles,
+    createMuiTheme,
+    ThemeProvider,
+    ThemeProviderProps,
+} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
@@ -19,7 +24,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { teal, deepOrange } from '@material-ui/core/colors';
-import { dark } from '@material-ui/core/styles/createPalette';
 import { primaryListItems } from '../ListItems';
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';

@@ -18,7 +18,11 @@ import {
     InputLabel,
     FormControl,
     Button,
+    makeStyles,
+    AppBar,
+    Toolbar,
 } from '@material-ui/core';
+import Drawer from '@material-ui/core/Drawer';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
 import { FileUpload } from '../components/FileUpload';
@@ -34,7 +38,24 @@ const Label = styled(Typography)`
     padding-top: 20px;
 `;
 
+const drawerWidth = 240;
+
+const useStyles = makeStyles(theme => ({
+    appBar: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+}));
+
 export const OldTransactions: React.FC<Props> = () => {
+    const classes = useStyles();
     const { data: yearMonth, loading } = useGetYearMonthQuery();
     const [active, setActive] = useState(0);
 
@@ -44,9 +65,23 @@ export const OldTransactions: React.FC<Props> = () => {
         return <div>I'm loading</div>;
     }
 
+    console.log(classes)
+
     return (
         <Fragment>
-            <LoggedInNav />
+            <div className={classes.appBar}>
+                <LoggedInNav />
+            </div>
+
+            <Drawer
+                variant='permanent'
+                className={classes.drawer}
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+            >
+                Transaction!!!!
+            </Drawer>
             <Grid container justify='space-evenly' spacing={2} style={{ marginTop: '20px' }}>
                 <Grid item xs={7}>
                     <Paper>
@@ -116,7 +151,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                         <Grid container spacing={2}>
                                             <Grid item xs={12}>
                                                 <Field
-                                                    item
                                                     name='date'
                                                     placeholder='Transaction Date'
                                                     as={TextField}
@@ -128,7 +162,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Field
-                                                    item
                                                     name='description'
                                                     placeholder='Transaction Description'
                                                     as={TextField}
@@ -141,7 +174,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                                 <FormControl required>
                                                     <InputLabel id='type'>Type</InputLabel>
                                                     <Field
-                                                        item
                                                         name='type'
                                                         // placeholder='Transaction Type'
                                                         as={Select}
@@ -161,7 +193,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <Field
-                                                    item
                                                     name='sortCode'
                                                     placeholder='Sort Code'
                                                     as={TextField}
@@ -172,7 +203,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <Field
-                                                    item
                                                     name='accountNumber'
                                                     placeholder='accountNumber'
                                                     as={TextField}
@@ -183,7 +213,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <Field
-                                                    item
                                                     name='debitAmount'
                                                     placeholder='Debit Amount'
                                                     as={TextField}
@@ -194,7 +223,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <Field
-                                                    item
                                                     name='creditAmount'
                                                     placeholder='Credit Amount'
                                                     as={TextField}
@@ -205,7 +233,6 @@ export const OldTransactions: React.FC<Props> = () => {
                                             </Grid>
                                             <Grid item xs={6}>
                                                 <Field
-                                                    item
                                                     name='balance'
                                                     placeholder='balance'
                                                     as={TextField}
