@@ -1,11 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import {
-    makeStyles,
-    createMuiTheme,
-    ThemeProvider,
-    ThemeProviderProps,
-} from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, ThemeProvider, Theme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
@@ -53,7 +48,7 @@ const theme = createMuiTheme({
     },
 });
 
-const useStyles = makeStyles((theme: any) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     root: {
         display: 'flex',
     },

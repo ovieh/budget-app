@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from '@emotion/styled/macro';
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, makeStyles, Theme } from '@material-ui/core';
 interface Props {
     links: link[];
     children?: React.ReactNode;
@@ -12,23 +11,28 @@ type link = {
     name: string;
 };
 
-const StyledToolbar = styled(Toolbar)`
-    display: flex;
-    justify-content: space-between;
-`;
+const useStyles = makeStyles((theme: Theme) => ({
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+    },
+}));
 
-export const ReusableNav: React.FC<Props> = ({ links, children }) => (
-    <AppBar position='fixed' color='inherit'>
-        <StyledToolbar>
-            <Typography variant='h6'>Budget-App</Typography>
-            <div>
-                {links.map((link, index) => (
-                    <Button color='inherit' key={index}>
-                        <Link to={link.to}>{link.name}</Link>
-                    </Button>
-                ))}
-                {children}
-            </div>
-        </StyledToolbar>
-    </AppBar>
-);
+export const ReusableNav: React.FC<Props> = ({ links, children }) => {
+    const classes = useStyles();
+
+    return (
+        <AppBar position='fixed' color='inherit' className={classes.appBar}>
+            <Toolbar>
+                <Typography variant='h6'>Budget-App</Typography>
+                <div>
+                    {links.map((link, index) => (
+                        <Button color='inherit' key={index}>
+                            <Link to={link.to}>{link.name}</Link>
+                        </Button>
+                    ))}
+                    {children}
+                </div>
+            </Toolbar>
+        </AppBar>
+    );
+};
