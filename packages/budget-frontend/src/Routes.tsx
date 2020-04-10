@@ -4,11 +4,11 @@ import { Register } from './pages/Register';
 import { SignIn } from './pages/SignIn';
 import { Home } from './pages/Home';
 
-import { Transactions } from './pages/Transactions';
+import { OldTransactions } from './pages/OldTransactions';
 import { useMeQuery } from './generated/graphql';
 import { Categories } from './pages/Categories';
 import { Dashboard } from './pages/Dashboard';
-import { OldTransactions } from './pages/OldTransactions';
+import { Transactions } from './pages/Transactions';
 
 export const Routes: React.FC = () => {
     useMeQuery(); // maybe there's a beter way of doing this?
