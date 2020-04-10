@@ -9,7 +9,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Chart Data object scalar type */
   JSONObject: any;
+  /** Upload custom scalar type */
   Upload: any;
 };
 
@@ -391,7 +393,7 @@ export const CategoriesDocument = gql`
  * __useCategoriesQuery__
  *
  * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -423,7 +425,7 @@ export const ChartDataDocument = gql`
  * __useChartDataQuery__
  *
  * To run a query within a React component, call `useChartDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useChartDataQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useChartDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -465,7 +467,7 @@ export const TransactionByMonthAndYearDocument = gql`
  * __useTransactionByMonthAndYearQuery__
  *
  * To run a query within a React component, call `useTransactionByMonthAndYearQuery` and pass it any options that fit your needs.
- * When your component renders, `useTransactionByMonthAndYearQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useTransactionByMonthAndYearQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -579,7 +581,7 @@ export const GetTransactionsDocument = gql`
  * __useGetTransactionsQuery__
  *
  * To run a query within a React component, call `useGetTransactionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useGetTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -612,7 +614,7 @@ export const GetYearMonthDocument = gql`
  * __useGetYearMonthQuery__
  *
  * To run a query within a React component, call `useGetYearMonthQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetYearMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useGetYearMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -645,7 +647,7 @@ export const MeDocument = gql`
  * __useMeQuery__
  *
  * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;

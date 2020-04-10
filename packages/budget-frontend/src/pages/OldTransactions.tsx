@@ -30,6 +30,7 @@ import Drawer from '@material-ui/core/Drawer';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
 import { FileUpload } from '../components/FileUpload';
+import { PrimaryList } from '../components/PrimaryList';
 
 interface Props {}
 
@@ -97,13 +98,14 @@ export const OldTransactions: React.FC<Props> = () => {
             >
                 <Toolbar />
                 <div className={classes.drawerContainer}>
-                    <List>
+                    <PrimaryList />
+                    {/* <List>
                         {['Home', 'Transactions', 'Categories'].map((text, i) => (
                             <ListItem button key={text}>
                                 <ListItemText primary={text}></ListItemText>
                             </ListItem>
                         ))}
-                    </List>
+                    </List> */}
                 </div>
             </Drawer>
             <main className={classes.content}>

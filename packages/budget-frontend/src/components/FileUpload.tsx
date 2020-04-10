@@ -38,7 +38,6 @@ export const FileUpload: React.FC<Props> = () => {
                 variant='contained'
                 style={{ marginTop: '10px' }}
                 fullWidth
-                // onClick={() => console.log('hey')}
                 onClick={onUploadButtonClick}
                 type='submit'
             >

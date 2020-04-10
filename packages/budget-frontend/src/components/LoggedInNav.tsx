@@ -11,9 +11,9 @@ interface Props {
 export const LoggedInNav: React.FC<Props> = () => {
     const [signout, { data }] = useSignOutMutation();
     const LoggedInLinks = [
-        { to: '/', name: 'Home' },
-        { to: '/transactions', name: 'Transactions' },
-        { to: '/categories', name: 'Categories' },
+        // { to: '/', name: 'Home' },
+        // { to: '/transactions', name: 'Transactions' },
+        // { to: '/categories', name: 'Categories' },
     ];
 
     if (data) {
@@ -21,7 +21,7 @@ export const LoggedInNav: React.FC<Props> = () => {
     }
 
     return (
-        <ReusableNav links={LoggedInLinks} >
+        <ReusableNav>
             <Button onClick={() => signout()}>Sign Out</Button>
         </ReusableNav>
     );

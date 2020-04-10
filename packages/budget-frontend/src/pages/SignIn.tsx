@@ -12,6 +12,7 @@ interface Props {}
 const useStyles = makeStyles(theme => ({
     root: {
         padding: '10px',
+        marginTop: theme.spacing(6),
     },
     input: {
         paddingBottom: '5px',

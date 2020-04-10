@@ -11,9 +11,19 @@ import { getAccessToken, setAccessToken } from './accessToken';
 import { App } from './App';
 import jwtDecode from 'jwt-decode';
 import './index.css';
+import { ThemeProvider, createMuiTheme, CssBaseline } from '@material-ui/core';
+import { teal, deepOrange } from '@material-ui/core/colors';
 
 const cache = new InMemoryCache({
     // addTypename: false,
+});
+
+const theme = createMuiTheme({
+    palette: {
+        type: 'dark',
+        primary: teal,
+        secondary: deepOrange,
+    },
 });
 
 const URL = `${process.env.REACT_APP_API_URL}/graphql`;
@@ -99,7 +109,11 @@ const client = new ApolloClient({
 
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <App />
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+
+            <App />
+        </ThemeProvider>
     </ApolloProvider>,
     document.getElementById('root')
 );
