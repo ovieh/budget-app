@@ -53,8 +53,8 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
                 });
         };
 
-        const onChange = (e: { target: any }) => {
-            setValue(e.target.value);
+        const onChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+            setValue(e.target.value as number);
         };
 
         useEffect(() => {
@@ -68,9 +68,9 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         }, [data, value]);
 
         return (
-            <Select onBlur={onBlur} onChange={onChange} name='category' value={initialValue}>
-                {data?.getCategories.map(({ id, name }, i) => (
-                    <MenuItem value={name} key={i}>
+            <Select onBlur={onBlur} onChange={onChange} name='category' value={value}>
+                {data?.getCategories.map(({ id, name }) => (
+                    <MenuItem value={name} key={name}>
                         {name}
                     </MenuItem>
                 ))}
