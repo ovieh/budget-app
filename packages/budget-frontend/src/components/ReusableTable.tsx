@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import React from 'react';
-import { useTable, usePagination, Row, ColumnInstance } from 'react-table';
+import { useTable, usePagination, Row, Column } from 'react-table';
 import { TableFooter, TablePagination } from '@material-ui/core';
 
 interface Props {

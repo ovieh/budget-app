@@ -4,7 +4,7 @@ import {
     useGetYearMonthQuery,
     TransactionByMonthAndYearDocument,
 } from '../generated/graphql';
-import styled from '@emotion/styled/macro';
+import clsx from 'clsx';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { LoggedInNav } from '../components/LoggedInNav';
 import {
@@ -19,15 +19,24 @@ import {
     FormControl,
     Button,
     makeStyles,
-    Toolbar,
     Theme,
     createStyles,
 } from '@material-ui/core';
-import Drawer from '@material-ui/core/Drawer';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
 import { FileUpload } from '../components/FileUpload';
 import { PrimaryList } from '../components/PrimaryList';
+import { Drawer } from '../components/Drawer';
+import {
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+    Legend,
+    Tooltip,
+} from 'recharts';
 
 interface Props {}
 
@@ -36,31 +45,27 @@ export interface IYearMonth {
     month: number;
 }
 
-const Label = styled(Typography)`
-    padding-top: 20px;
-`;
-
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: 'flex',
         },
+        label: {
+            paddingTop: theme.spacing(2),
+        },
+        paper: {
+            padding: theme.spacing(2),
+            display: 'flex',
+            overflow: 'auto',
+            flexDirection: 'column',
+        },
+        fixedHeight: {
+            height: 500,
+        },
         // appBar: {
         //     width: `calc(100% - ${drawerWidth}px)`,
         //     marginLeft: drawerWidth,
         // },
-        drawer: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-        drawerPaper: {
-            width: drawerWidth,
-        },
-        drawerContainer: {
-            overflow: 'auto',
-        },
         content: {
             flexGrow: 1,
             padding: theme.spacing(3),
@@ -72,6 +77,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Transactions: React.FC<Props> = () => {
     const classes = useStyles();
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
     const { data: yearMonth, loading } = useGetYearMonthQuery();
     const [active, setActive] = useState(0);
 
@@ -84,17 +91,8 @@ export const Transactions: React.FC<Props> = () => {
     return (
         <div className={classes.root}>
             <LoggedInNav />
-            <Drawer
-                variant='permanent'
-                className={classes.drawer}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <Toolbar />
-                <div className={classes.drawerContainer}>
-                    <PrimaryList />
-                </div>
+            <Drawer>
+                <PrimaryList />
             </Drawer>
             <main className={classes.content}>
                 <Grid container justify='space-evenly' spacing={2} className={classes.content}>
@@ -164,9 +162,13 @@ export const Transactions: React.FC<Props> = () => {
                                 {({ handleSubmit, isSubmitting }) => (
                                     <Form onSubmit={handleSubmit}>
                                         <Container>
-                                            <Label variant='h6' align='left'>
-                                                Enter Transaction
-                                            </Label>
+                                            <Typography
+                                                variant='h6'
+                                                align='left'
+                                                className={classes.label}
+                                            >
+                                                Create New Category
+                                            </Typography>
                                             <Grid container spacing={2}>
                                                 <Grid item xs={12}>
                                                     <Field
@@ -279,8 +281,82 @@ export const Transactions: React.FC<Props> = () => {
                             </Formik>
                         </Paper>
                     </Grid>
+                    <Grid item xs={12}>
+                        <Paper className={fixedHeightPaper}>
+                            <TransactionByCategoryChart data={data} />
+                        </Paper>
+                    </Grid>
                 </Grid>
             </main>
         </div>
     );
 };
+
+interface ChartProps {
+    data: any;
+}
+
+export const TransactionByCategoryChart: React.FC<ChartProps> = ({ data }) => {
+    return (
+        <ResponsiveContainer>
+            <BarChart
+                margin={{
+                    top: 20,
+                    right: 20,
+                    bottom: 20,
+                    left: 20,
+                }}
+                data={data}
+                layout='vertical'
+                // compact
+            >
+                <CartesianGrid strokeDasharray='3 3' />
+                <XAxis type='number' />
+                <YAxis dataKey='name' type='category' />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey='pv' fill='#8884d8' />
+                <Bar dataKey='uv' fill='#82ca9d' />
+            </BarChart>
+        </ResponsiveContainer>
+    );
+};
+
+const data = [
+    {
+        name: 'Page A',
+        uv: 590,
+        pv: 800,
+        amt: 1400,
+    },
+    {
+        name: 'Page B',
+        uv: 868,
+        pv: 967,
+        amt: 1506,
+    },
+    {
+        name: 'Page C',
+        uv: 1397,
+        pv: 1098,
+        amt: 989,
+    },
+    {
+        name: 'Page D',
+        uv: 1480,
+        pv: 1200,
+        amt: 1228,
+    },
+    {
+        name: 'Page E',
+        uv: 1520,
+        pv: 1108,
+        amt: 1100,
+    },
+    {
+        name: 'Page F',
+        uv: 1400,
+        pv: 680,
+        amt: 1700,
+    },
+];
