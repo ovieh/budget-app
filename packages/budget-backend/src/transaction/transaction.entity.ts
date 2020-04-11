@@ -1,4 +1,12 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, BeforeInsert, Unique, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  Unique,
+  ManyToOne,
+} from 'typeorm';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 import * as uuidv4 from 'uuid/v4';
@@ -9,7 +17,7 @@ import { ObjectType, InputType, Field, ID, HideField } from '@nestjs/graphql';
 @InputType('TransactionInput')
 @Entity()
 @Unique(['date', 'balance'])
-export class  Transaction extends BaseEntity {
+export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
@@ -38,13 +46,13 @@ export class  Transaction extends BaseEntity {
   @Column('numeric', { precision: 10, scale: 2 })
   balance: number;
 
-  @ManyToOne(() => Category, category => category.transaction)
+  @ManyToOne(() => Category, (category) => category.transaction)
   category?: Category;
-  @RelationColumn()
+  @RelationColumn({ default: 1 })
   categoryId?: number;
 
   @HideField()
-  @ManyToOne(() => User, user => user.transaction)
+  @ManyToOne(() => User, (user) => user.transaction)
   user: User;
 
   @Column()
