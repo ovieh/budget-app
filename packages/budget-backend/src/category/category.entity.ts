@@ -20,7 +20,7 @@ export class Category extends BaseEntity {
   @Field(() => ID, { nullable: true })
   id: number;
 
-  @Column({ default: 'uncategorized' })
+  @Column()
   @Field(() => String)
   name: string;
 

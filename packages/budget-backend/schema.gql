@@ -56,6 +56,7 @@ type Query {
   sumCategoryDebits(id: Float!): Float!
   sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
   chartData(dates: [DateInput!]!): ChartData!
+  MonthlySpendingChart(date: DateInput!): ChartData!
 }
 
 type Transaction {

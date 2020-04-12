@@ -5,6 +5,7 @@ import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/user.entity';
 import { DateInput } from './date.input';
+import { ChartData } from './chartData.output';
 
 @Injectable()
 export class CategoryService {
@@ -95,13 +96,12 @@ export class CategoryService {
     const categories = await this.findAll(user);
     const byDate = dates.map(async ({ year, month }) => {
       const obj = {
-        name: `${month}/${year}`
+        name: `${month}/${year}`,
       };
       const map = new Map();
       map.set('name', `${month}/${year}`);
-      
-      const spendingByCategories = categories.map(async category => {
 
+      const spendingByCategories = categories.map(async (category) => {
         const result = await this.sumCategoryDebitsByYearMonth(
           category.id,
           user,
@@ -110,11 +110,6 @@ export class CategoryService {
         );
         map.set(category.name, result);
 
-        // obj = {
-        //   ...obj,
-        //   name: `${month}/${year}`,
-        //   [category.name]: result,
-        // };
         if (!obj.hasOwnProperty(`${category.name}`)) {
           obj[`${category.name}`] = result;
         }
@@ -122,13 +117,38 @@ export class CategoryService {
           return obj;
         }
       });
-      return await Promise.all(spendingByCategories).then(result => {
-        return result.filter(el => el !== undefined);
+      return await Promise.all(spendingByCategories).then((result) => {
+        return result.filter((el) => el !== undefined);
       });
     });
 
-    return await Promise.all(byDate).then(result => ({
-      payload: result.flat()
+    return await Promise.all(byDate).then((result) => ({
+      payload: result.flat(),
     }));
+  }
+
+  async MonthlySpendingChart({ year, month }: DateInput, user: User) {
+    const data = [];
+    const categories = await this.findAll(user);
+
+    const result = categories.map(async ({ id }) => {
+      const categorySpending = await this.sumCategoryDebitsByYearMonth(
+        id,
+        user,
+        year,
+        month,
+      );
+      const { name, budget } = await this.getCategoryById(id, user);
+      const obj = {
+        name,
+        budget,
+        actual: categorySpending,
+      };
+      return obj;
+    });
+
+    return await Promise.all(result).then((stuff) => ({ payload: stuff }));
+
+    return data;
   }
 }

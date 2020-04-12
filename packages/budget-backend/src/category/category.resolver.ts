@@ -101,4 +101,15 @@ export class CategoryResolver {
   ) {
     return this.categoryService.chartData(dates, user);
   }
+
+  @Query(() => ChartData )
+  @UseGuards(GqlAuthGuard)
+  async MonthlySpendingChart(
+    @Args({ name: 'date', type: () => DateInput }) date: DateInput,
+    @CurrentUser() user: User,
+  ) {
+    console.log(this.categoryService.MonthlySpendingChart(date, user))
+    return this.categoryService.MonthlySpendingChart(date, user);
+  }
+
 }
