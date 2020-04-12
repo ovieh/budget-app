@@ -1,0 +1,5 @@
+query MonthlySpendingChart($date: DateInput!) {
+	MonthlySpendingChart(date: $date) {
+    payload
+  }
+}

@@ -3,6 +3,8 @@ import {
     useCreateTransactionMutation,
     useGetYearMonthQuery,
     TransactionByMonthAndYearDocument,
+    useMonthlySpendingChartQuery,
+    YearMonth,
 } from '../generated/graphql';
 import clsx from 'clsx';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -36,6 +38,7 @@ import {
     YAxis,
     Legend,
     Tooltip,
+    Label,
 } from 'recharts';
 
 interface Props {}
@@ -96,7 +99,7 @@ export const Transactions: React.FC<Props> = () => {
             </Drawer>
             <main className={classes.content}>
                 <Grid container justify='space-evenly' spacing={2} className={classes.content}>
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                         <Paper>
                             {yearMonth?.getYearMonth.length && (
                                 <YearMonthTab
@@ -179,6 +182,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         required
                                                         variant='outlined'
                                                         label='Transaction Date'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -189,6 +193,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -202,6 +207,7 @@ export const Transactions: React.FC<Props> = () => {
                                                             variant='outlined'
                                                             labelId='type'
                                                             value='DEB'
+                                                            size='small'
                                                         >
                                                             <MenuItem value={'DEB'} selected={true}>
                                                                 DEB
@@ -220,6 +226,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -230,6 +237,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -240,6 +248,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -250,6 +259,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -260,6 +270,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -270,6 +281,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         centerRipple
                                                         color='primary'
                                                         fullWidth
+                                                        size='small'
                                                     >
                                                         Submit
                                                     </Button>
@@ -283,7 +295,12 @@ export const Transactions: React.FC<Props> = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <Paper className={fixedHeightPaper}>
-                            <TransactionByCategoryChart data={data} />
+                            <TransactionByCategoryChart
+                                date={{
+                                    month: yearMonth!.getYearMonth[active].month,
+                                    year: yearMonth!.getYearMonth[active].year,
+                                }}
+                            />
                         </Paper>
                     </Grid>
                 </Grid>
@@ -293,10 +310,24 @@ export const Transactions: React.FC<Props> = () => {
 };
 
 interface ChartProps {
-    data: any;
+    date: YearMonth;
 }
 
-export const TransactionByCategoryChart: React.FC<ChartProps> = ({ data }) => {
+export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
+    const { data, loading, error } = useMonthlySpendingChartQuery({
+        variables: {
+            date,
+        },
+    });
+
+    if (loading) {
+        return <span>loading</span>;
+    }
+
+    if (error) {
+        return <pre>{error.message}</pre>;
+    }
+
     return (
         <ResponsiveContainer>
             <BarChart
@@ -304,19 +335,25 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ data }) => {
                     top: 20,
                     right: 20,
                     bottom: 20,
-                    left: 20,
+                    left: 40,
                 }}
-                data={data}
+                data={data!.MonthlySpendingChart.payload}
                 layout='vertical'
                 // compact
             >
                 <CartesianGrid strokeDasharray='3 3' />
-                <XAxis type='number' />
+                <XAxis type='number'>
+                    <Label
+                        value='Spending per month by category'
+                        offset={0}
+                        position='insideBottom'
+                    />
+                </XAxis>
                 <YAxis dataKey='name' type='category' />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey='pv' fill='#8884d8' />
-                <Bar dataKey='uv' fill='#82ca9d' />
+                <Bar dataKey='budget' fill='#8884d8' />
+                <Bar dataKey='actual' fill='#82ca9d' />
             </BarChart>
         </ResponsiveContainer>
     );
@@ -324,39 +361,23 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ data }) => {
 
 const data = [
     {
-        name: 'Page A',
-        uv: 590,
-        pv: 800,
-        amt: 1400,
+        name: 'groceries',
+        budget: 400,
+        actual: 413,
     },
     {
-        name: 'Page B',
-        uv: 868,
-        pv: 967,
-        amt: 1506,
+        name: 'transportation',
+        budget: 300,
+        actual: 293,
     },
     {
-        name: 'Page C',
-        uv: 1397,
-        pv: 1098,
-        amt: 989,
+        name: 'lunch',
+        budget: 200,
+        actual: 163,
     },
     {
-        name: 'Page D',
-        uv: 1480,
-        pv: 1200,
-        amt: 1228,
-    },
-    {
-        name: 'Page E',
-        uv: 1520,
-        pv: 1108,
-        amt: 1100,
-    },
-    {
-        name: 'Page F',
-        uv: 1400,
-        pv: 680,
-        amt: 1700,
+        name: 'utilities',
+        budget: 250,
+        actual: 313,
     },
 ];

@@ -4,6 +4,7 @@ query TransactionByMonthAndYear($month: Float!, $year: Float!) {
     id
     type
     debitAmount
+    creditAmount
     balance
     description
     category{

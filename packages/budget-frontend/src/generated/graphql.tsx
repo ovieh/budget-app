@@ -135,6 +135,7 @@ export type Query = {
   sumCategoryDebits: Scalars['Float'];
   sumCategoryDebitsByYearMonth: Scalars['Float'];
   chartData: ChartData;
+  MonthlySpendingChart: ChartData;
 };
 
 
@@ -173,6 +174,11 @@ export type QuerySumCategoryDebitsByYearMonthArgs = {
 
 export type QueryChartDataArgs = {
   dates: Array<DateInput>;
+};
+
+
+export type QueryMonthlySpendingChartArgs = {
+  date: DateInput;
 };
 
 export type Transaction = {
@@ -248,6 +254,19 @@ export type ChartDataQuery = (
   ) }
 );
 
+export type MonthlySpendingChartQueryVariables = {
+  date: DateInput;
+};
+
+
+export type MonthlySpendingChartQuery = (
+  { __typename?: 'Query' }
+  & { MonthlySpendingChart: (
+    { __typename?: 'ChartData' }
+    & Pick<ChartData, 'payload'>
+  ) }
+);
+
 export type TransactionByMonthAndYearQueryVariables = {
   month: Scalars['Float'];
   year: Scalars['Float'];
@@ -258,7 +277,7 @@ export type TransactionByMonthAndYearQuery = (
   { __typename?: 'Query' }
   & { getTransactionByMonthAndYear: Array<(
     { __typename?: 'Transaction' }
-    & Pick<Transaction, 'date' | 'id' | 'type' | 'debitAmount' | 'balance' | 'description'>
+    & Pick<Transaction, 'date' | 'id' | 'type' | 'debitAmount' | 'creditAmount' | 'balance' | 'description'>
     & { category?: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'name' | 'budget'>
@@ -446,6 +465,39 @@ export function useChartDataLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type ChartDataQueryHookResult = ReturnType<typeof useChartDataQuery>;
 export type ChartDataLazyQueryHookResult = ReturnType<typeof useChartDataLazyQuery>;
 export type ChartDataQueryResult = ApolloReactCommon.QueryResult<ChartDataQuery, ChartDataQueryVariables>;
+export const MonthlySpendingChartDocument = gql`
+    query MonthlySpendingChart($date: DateInput!) {
+  MonthlySpendingChart(date: $date) {
+    payload
+  }
+}
+    `;
+
+/**
+ * __useMonthlySpendingChartQuery__
+ *
+ * To run a query within a React component, call `useMonthlySpendingChartQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMonthlySpendingChartQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMonthlySpendingChartQuery({
+ *   variables: {
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useMonthlySpendingChartQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>) {
+        return ApolloReactHooks.useQuery<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>(MonthlySpendingChartDocument, baseOptions);
+      }
+export function useMonthlySpendingChartLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>(MonthlySpendingChartDocument, baseOptions);
+        }
+export type MonthlySpendingChartQueryHookResult = ReturnType<typeof useMonthlySpendingChartQuery>;
+export type MonthlySpendingChartLazyQueryHookResult = ReturnType<typeof useMonthlySpendingChartLazyQuery>;
+export type MonthlySpendingChartQueryResult = ApolloReactCommon.QueryResult<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>;
 export const TransactionByMonthAndYearDocument = gql`
     query TransactionByMonthAndYear($month: Float!, $year: Float!) {
   getTransactionByMonthAndYear(month: $month, year: $year) {
@@ -453,6 +505,7 @@ export const TransactionByMonthAndYearDocument = gql`
     id
     type
     debitAmount
+    creditAmount
     balance
     description
     category {
