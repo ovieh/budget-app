@@ -9,7 +9,8 @@ import {
     makeStyles,
     Theme,
 } from '@material-ui/core';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, ErrorMessage } from 'formik';
+import * as yup from 'yup';
 import React, { FC } from 'react';
 import { LoggedInNav } from '../components/LoggedInNav';
 import { ReusuableTable } from '../components/ReusableTable';
@@ -33,6 +34,11 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
     ];
     return <ReusuableTable data={data.getCategories} columns={columns} />;
 };
+
+const CategorySchema = yup.object().shape({
+    name: yup.string().min(2, 'Too Short!').max(70, 'Too long!').required('Requiried'),
+    budget: yup.number().positive('Must be positive').required('Must be a number'),
+});
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -73,7 +79,7 @@ export const Categories: FC<Props> = () => {
             </Drawer>
             <main className={classes.content}>
                 <Grid container justify='space-evenly' spacing={2} style={{ marginTop: '20px' }}>
-                    <Grid item xs={3}>
+                    <Grid item md={3} xs={12}>
                         <Paper>
                             {data?.getCategories.length ? (
                                 <CategoriesTable data={data} />
@@ -82,13 +88,14 @@ export const Categories: FC<Props> = () => {
                             )}
                         </Paper>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item md={3} xs={12}>
                         <Paper>
                             <Formik
                                 initialValues={{
                                     name: '',
                                     budget: '',
                                 }}
+                                validationSchema={CategorySchema}
                                 onSubmit={async (values, { setSubmitting }) => {
                                     await createCategory({
                                         variables: {
@@ -104,7 +111,7 @@ export const Categories: FC<Props> = () => {
                                     setSubmitting(false);
                                 }}
                             >
-                                {({ handleSubmit, isSubmitting }) => (
+                                {({ handleSubmit, isSubmitting, errors }) => (
                                     <Form onSubmit={handleSubmit}>
                                         <Container>
                                             <Typography
@@ -115,7 +122,7 @@ export const Categories: FC<Props> = () => {
                                                 Create New Category
                                             </Typography>
                                             <Grid container spacing={2}>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         item
                                                         name='name'
@@ -124,9 +131,12 @@ export const Categories: FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
+                                                        error={!!errors.name}
                                                     />
+                                                    <ErrorMessage name='name' />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         item
                                                         name='budget'
@@ -135,7 +145,11 @@ export const Categories: FC<Props> = () => {
                                                         fullWidth
                                                         required
                                                         variant='outlined'
+                                                        size='small'
+                                                        error={!!errors.budget}
+
                                                     />
+                                                    <ErrorMessage name='budget' />
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <Button
