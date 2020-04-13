@@ -7,6 +7,7 @@ import {
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
+import { TablePlaceholder } from './TablePlaceholder/TablePlaceholder';
 
 interface Props {
     yearMonth: GetYearMonthQuery;
@@ -96,7 +97,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
     }
 
     if (loading) {
-        return <h1>hey i'm loading</h1>;
+        return <TablePlaceholder />;
     }
     return data ? (
         <ReusuableTable columns={TransactionsColumns} data={data.getTransactionByMonthAndYear} />

@@ -10,7 +10,6 @@ import {
     Legend,
     Tooltip,
     LabelProps,
-    BarProps,
     BarChart as ReBarChart,
 } from 'recharts';
 

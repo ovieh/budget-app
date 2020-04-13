@@ -23,7 +23,6 @@ import {
 } from '../generated/graphql';
 import { Drawer } from '../components/Drawer';
 import { PrimaryList } from '../components/PrimaryList';
-import { ResponsiveContainer } from 'recharts';
 import { PieChart } from '../components/Charts/PieChart/PieChart';
 
 interface CategoriesTableProps {
@@ -74,7 +73,6 @@ export const Categories: FC<Props> = () => {
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     const { data, loading, error } = useCategoriesQuery();
-    console.log(data?.getCategories);
 
     const [createCategory] = useCreateCategoryMutation();
 
@@ -83,14 +81,12 @@ export const Categories: FC<Props> = () => {
         return rest;
     });
 
-    console.log(chartData);
-
     if (error) {
         return <div>error</div>;
     }
 
     if (loading) {
-        return <div>Loading...</div>;
+        return null;
     }
 
     return (
@@ -200,30 +196,3 @@ export const Categories: FC<Props> = () => {
         </div>
     );
 };
-
-const data01 = [
-    {
-        name: 'Group A',
-        value: 400,
-    },
-    {
-        name: 'Group B',
-        value: 300,
-    },
-    {
-        name: 'Group C',
-        value: 300,
-    },
-    {
-        name: 'Group D',
-        value: 200,
-    },
-    {
-        name: 'Group E',
-        value: 278,
-    },
-    {
-        name: 'Group F',
-        value: 189,
-    },
-];

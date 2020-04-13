@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import { Layout } from '../components/Layout';
 import { YearMonthTab } from '../components/YearMonthTab';
 import { TransactionsTable } from '../components/TransactionsTable';
-import {
-    useGetYearMonthQuery,
-    useChartDataQuery,
-    ChartData,
-    GetYearMonthQuery,
-    YearMonth,
-} from '../generated/graphql';
+import { useGetYearMonthQuery, useChartDataQuery, YearMonth } from '../generated/graphql';
 import { LineChart } from '../components/Charts/LineChart/LineChart';
 
 const Table: React.FC = () => {
