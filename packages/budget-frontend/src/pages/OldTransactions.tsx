@@ -9,16 +9,7 @@ import {
     GetYearMonthQuery,
     YearMonth,
 } from '../generated/graphql';
-import {
-    LineChart,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Legend,
-    Line,
-    Tooltip,
-    ResponsiveContainer,
-} from 'recharts';
+import { LineChart } from '../components/Charts/LineChart/LineChart';
 
 const Table: React.FC = () => {
     const { error, data: yearMonth, loading } = useGetYearMonthQuery();
@@ -75,28 +66,8 @@ const Chart: React.FC<ChartProps> = ({ data: yearMonth }) => {
         return <span>ain't got nothign</span>;
     }
 
-    const colors = ['red', 'pink', 'orange', 'purple', 'blue', 'grey', 'teal'];
     const categories = Object.keys(data?.chartData.payload[0]);
-    return (
-        <ResponsiveContainer>
-            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='name' />
-                <YAxis />
-                <Legend height={36} />
-                {categories
-                    .filter(el => el !== 'name' && el !== 'color')
-                    .map((category, i) => (
-                        <Line
-                            type='monotone'
-                            dataKey={category}
-                            key={category}
-                            stroke={colors[i]}
-                        />
-                    ))}
-            </LineChart>
-        </ResponsiveContainer>
-    );
+    return <LineChart data={chartData} categories={categories} />;
 };
 
 interface Props {}

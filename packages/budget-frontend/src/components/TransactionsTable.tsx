@@ -34,7 +34,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         cell: { value: initialValue },
         row: {
             index,
-            original: { id },
+            original: { id = 0 },
         },
         column,
     }) => {
@@ -64,7 +64,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         useEffect(() => {
             data?.getCategories
                 .filter(({ name }) => name === value)
-                .map(({ id }) => setCategoryId(parseInt(id!))); //  TODO: This is bad
+                .map(({ id }) => setCategoryId(Number(id))); //  TODO: This is bad
         }, [data, value]);
 
         return (
@@ -83,9 +83,9 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         () => [
             { Header: 'Date', accessor: 'date' },
             { Header: 'Description', accessor: 'description' },
-            { Header: 'Debit Amount', accessor: 'debitAmount' },
-            { Header: 'Credit Amount', accessor: 'creditAmount' },
-            { Header: 'Balance', accessor: 'balance' },
+            { Header: 'Amount', accessor: 'debitAmount' },
+            // { Header: 'Credit Amount', accessor: 'creditAmount' },
+            // { Header: 'Balance', accessor: 'balance' },
             { Header: 'Category', accessor: 'category.name', Cell: EditableCell },
         ],
         []

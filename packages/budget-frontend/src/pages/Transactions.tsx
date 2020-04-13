@@ -29,17 +29,7 @@ import { TransactionsTable } from '../components/TransactionsTable';
 import { FileUpload } from '../components/FileUpload';
 import { PrimaryList } from '../components/PrimaryList';
 import { Drawer } from '../components/Drawer';
-import {
-    ResponsiveContainer,
-    BarChart,
-    Bar,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Legend,
-    Tooltip,
-    Label,
-} from 'recharts';
+import { BarChart } from '../components/Charts/BarChart/BarChart';
 
 interface Props {}
 
@@ -63,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: 'column',
         },
         fixedHeight: {
-            height: 500,
+            height: 480,
         },
         // appBar: {
         //     width: `calc(100% - ${drawerWidth}px)`,
@@ -98,8 +88,8 @@ export const Transactions: React.FC<Props> = () => {
                 <PrimaryList />
             </Drawer>
             <main className={classes.content}>
-                <Grid container justify='space-evenly' spacing={2} className={classes.content}>
-                    <Grid item xs={8}>
+                <Grid container spacing={2} className={classes.content}>
+                    <Grid item md={6} xs={12}>
                         <Paper>
                             {yearMonth?.getYearMonth.length && (
                                 <YearMonthTab
@@ -115,7 +105,17 @@ export const Transactions: React.FC<Props> = () => {
                             )}
                         </Paper>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item md={6} xs={12}>
+                        <Paper className={fixedHeightPaper}>
+                            <TransactionByCategoryChart
+                                date={{
+                                    month: yearMonth!.getYearMonth[active].month,
+                                    year: yearMonth!.getYearMonth[active].year,
+                                }}
+                            />
+                        </Paper>
+                    </Grid>
+                    <Grid item md={4} xs={12}>
                         <Paper style={{ minHeight: '20rem' }}>
                             {/* <Grid container> */}
                             <Container>
@@ -196,7 +196,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <FormControl required>
                                                         <InputLabel id='type'>Type</InputLabel>
                                                         <Field
@@ -218,7 +218,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         </Field>
                                                     </FormControl>
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         name='sortCode'
                                                         placeholder='Sort Code'
@@ -229,7 +229,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         name='accountNumber'
                                                         placeholder='accountNumber'
@@ -240,7 +240,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         name='debitAmount'
                                                         placeholder='Debit Amount'
@@ -251,7 +251,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         name='creditAmount'
                                                         placeholder='Credit Amount'
@@ -262,7 +262,7 @@ export const Transactions: React.FC<Props> = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={12}>
                                                     <Field
                                                         name='balance'
                                                         placeholder='balance'
@@ -293,16 +293,6 @@ export const Transactions: React.FC<Props> = () => {
                             </Formik>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Paper className={fixedHeightPaper}>
-                            <TransactionByCategoryChart
-                                date={{
-                                    month: yearMonth!.getYearMonth[active].month,
-                                    year: yearMonth!.getYearMonth[active].year,
-                                }}
-                            />
-                        </Paper>
-                    </Grid>
                 </Grid>
             </main>
         </div>
@@ -320,6 +310,8 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
         },
     });
 
+    const label = 'Spending by category';
+
     if (loading) {
         return <span>loading</span>;
     }
@@ -328,33 +320,5 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
         return <pre>{error.message}</pre>;
     }
 
-    return (
-        <ResponsiveContainer>
-            <BarChart
-                margin={{
-                    top: 20,
-                    right: 20,
-                    bottom: 20,
-                    left: 40,
-                }}
-                data={data!.MonthlySpendingChart.payload}
-                layout='vertical'
-                // compact
-            >
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis type='number'>
-                    <Label
-                        value='Spending per month by category'
-                        offset={0}
-                        position='insideBottom'
-                    />
-                </XAxis>
-                <YAxis dataKey='name' type='category' />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey='budget' fill='#8884d8' />
-                <Bar dataKey='actual' fill='#82ca9d' />
-            </BarChart>
-        </ResponsiveContainer>
-    );
+    return <BarChart data={data?.MonthlySpendingChart.payload} value={label} />;
 };
