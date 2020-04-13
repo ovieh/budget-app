@@ -9,6 +9,7 @@ import {
     makeStyles,
     Theme,
 } from '@material-ui/core';
+import clsx from 'clsx';
 import { Field, Form, Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import React, { FC } from 'react';
@@ -22,6 +23,8 @@ import {
 } from '../generated/graphql';
 import { Drawer } from '../components/Drawer';
 import { PrimaryList } from '../components/PrimaryList';
+import { ResponsiveContainer } from 'recharts';
+import { PieChart } from '../components/Charts/PieChart/PieChart';
 
 interface CategoriesTableProps {
     data: CategoriesQuery;
@@ -43,6 +46,7 @@ const CategorySchema = yup.object().shape({
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         display: 'flex',
+        marginTop: theme.spacing(1),
     },
     content: {
         flexGrow: 1,
@@ -52,16 +56,34 @@ const useStyles = makeStyles((theme: Theme) => ({
     label: {
         paddingTop: theme.spacing(2),
     },
+    paper: {
+        padding: theme.spacing(2),
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column',
+    },
+    fixedHeight: {
+        height: 500,
+    },
 }));
 
 interface Props {}
 
 export const Categories: FC<Props> = () => {
     const classes = useStyles();
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     const { data, loading, error } = useCategoriesQuery();
+    console.log(data?.getCategories);
 
     const [createCategory] = useCreateCategoryMutation();
+
+    const chartData = data?.getCategories.map(category => {
+        const { id, __typename, ...rest } = category;
+        return rest;
+    });
+
+    console.log(chartData);
 
     if (error) {
         return <div>error</div>;
@@ -86,6 +108,12 @@ export const Categories: FC<Props> = () => {
                             ) : (
                                 <div>Add some categories, why doesn't you?</div>
                             )}
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                        <Paper className={fixedHeightPaper}>
+                            <PieChart data={chartData} />
                         </Paper>
                     </Grid>
                     <Grid item md={3} xs={12}>
@@ -124,7 +152,6 @@ export const Categories: FC<Props> = () => {
                                             <Grid container spacing={2}>
                                                 <Grid item xs={12}>
                                                     <Field
-                                                        item
                                                         name='name'
                                                         placeholder='Category'
                                                         as={TextField}
@@ -138,7 +165,6 @@ export const Categories: FC<Props> = () => {
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <Field
-                                                        item
                                                         name='budget'
                                                         placeholder='Budget'
                                                         as={TextField}
@@ -147,7 +173,6 @@ export const Categories: FC<Props> = () => {
                                                         variant='outlined'
                                                         size='small'
                                                         error={!!errors.budget}
-
                                                     />
                                                     <ErrorMessage name='budget' />
                                                 </Grid>
@@ -175,3 +200,30 @@ export const Categories: FC<Props> = () => {
         </div>
     );
 };
+
+const data01 = [
+    {
+        name: 'Group A',
+        value: 400,
+    },
+    {
+        name: 'Group B',
+        value: 300,
+    },
+    {
+        name: 'Group C',
+        value: 300,
+    },
+    {
+        name: 'Group D',
+        value: 200,
+    },
+    {
+        name: 'Group E',
+        value: 278,
+    },
+    {
+        name: 'Group F',
+        value: 189,
+    },
+];

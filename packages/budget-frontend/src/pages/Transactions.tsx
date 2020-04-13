@@ -358,26 +358,3 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
         </ResponsiveContainer>
     );
 };
-
-const data = [
-    {
-        name: 'groceries',
-        budget: 400,
-        actual: 413,
-    },
-    {
-        name: 'transportation',
-        budget: 300,
-        actual: 293,
-    },
-    {
-        name: 'lunch',
-        budget: 200,
-        actual: 163,
-    },
-    {
-        name: 'utilities',
-        budget: 250,
-        actual: 313,
-    },
-];
