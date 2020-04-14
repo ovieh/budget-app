@@ -2,11 +2,10 @@ import { Tab, Tabs } from '@material-ui/core';
 import React from 'react';
 import { GetYearMonthQuery } from '../generated/graphql';
 
-// TODO fix horrible typings
 interface Props {
     data: GetYearMonthQuery;
     active: number;
-    setActive: any;
+    setActive: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const YearMonthTab: React.FC<Props> = ({ data, active, setActive }) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     useCreateTransactionMutation,
     useGetYearMonthQuery,
@@ -76,6 +76,10 @@ export const Transactions: React.FC<Props> = () => {
     const [active, setActive] = useState(0);
 
     const [addTransaction] = useCreateTransactionMutation();
+
+    useEffect(() => {
+        yearMonth && setActive(yearMonth?.getYearMonth.length - 1);
+    }, [yearMonth]);
 
     if (loading) {
         return <div>I'm loading</div>;

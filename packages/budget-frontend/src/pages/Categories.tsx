@@ -5,7 +5,6 @@ import {
     Paper,
     TextField,
     Typography,
-    TextFieldProps,
     makeStyles,
     Theme,
 } from '@material-ui/core';
