@@ -38,7 +38,7 @@ type Mutation {
   uploadFile(file: Upload!): Boolean!
   createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): String!
   deleteTransaction(id: String!): String!
-  updateTransactionCategory(categoryId: Float!, id: String!): String!
+  updateTransactionCategory(categoryId: Float!, id: String!): Transaction!
   updateCategory(budget: Float!, name: String!, id: Float!): Category!
   createCategory(name: String!, budget: Float!): Category!
   removeCategory(id: Float!): String!

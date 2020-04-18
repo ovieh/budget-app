@@ -112,13 +112,13 @@ export class TransactionResolver {
     this.transactionService.deleteTransactionById(id, user);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Transaction)
   @UseGuards(GqlAuthGuard)
   updateTransactionCategory(
     @Args('id') id: string,
     @Args('categoryId') categoryId: number,
     @CurrentUser() user: User,
-  ): Promise<string> {
+  ): Promise<Transaction> {
     return this.transactionService.updateCategoryById(id, categoryId, user);
   }
 

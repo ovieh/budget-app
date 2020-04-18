@@ -11,7 +11,7 @@ export class CategoryLoader implements NestDataLoader<number, Category> {
   generateDataLoader(): DataLoader<number, Category> {
     return new DataLoader<number, Category>(async (keys: number[]) => {
       const data = await this.categoryService.findByIds(keys);
-      return keys.map(key => data.find(entity => entity.id === key));
+      return keys.map(key => data.find((entity: Category) => entity.id === key));
     });
   }
 }

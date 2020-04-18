@@ -200,13 +200,24 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  async updateCategoryById(id: string, categoryId: number, user: User) {
-    await this.createQueryBuilder()
-    .update(Transaction)
-    .set({ categoryId })
-    .where('id = :id', { id })
-    .andWhere('userId = :userId', {userId: user.id})
-    .execute();
+  // TODO: Fix
+  async updateCategoryById(id: string, categoryId: number, user: User): Promise<Transaction> {
+    try {
+      const transaction = await this.createQueryBuilder()
+      // .select('transaction')
+      .update(Transaction)
+      .set({ categoryId })
+      .where('id = :id', { id })
+      .andWhere('userId = :userId', {userId: user.id})
+      // .execute();
+      .select('transaction')
+      .getOne();
+      return transaction;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+
   }
 
   async updateCategoryByIds(ids: string[], categoryId: number, user: User) {

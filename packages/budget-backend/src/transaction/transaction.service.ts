@@ -83,18 +83,18 @@ export class TransactionService {
     // categoryInput: CategoryInput,
     categoryId: number,
     user: User,
-  ): Promise<string> {
+  ): Promise<Transaction> {
     // TODO: Fix this
     // const category = JSON.parse(JSON.stringify(categoryInput));
 
     try {
-      this.transactionRepository.updateCategoryById(id, categoryId, user);
+      return this.transactionRepository.updateCategoryById(id, categoryId, user);
     } catch (error) {
       throw new InternalServerErrorException(
         `Could not update transaction with id ${id}`,
       );
     }
-    return `Updated category for transaction with id ${id}`;
+    // return id;
   }
 
   async updateCategoryByIds(
