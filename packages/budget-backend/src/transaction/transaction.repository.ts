@@ -200,19 +200,18 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  // TODO: Fix
+  // TODO: Figure out way to do this in one db request
   async updateCategoryById(id: string, categoryId: number, user: User): Promise<Transaction> {
     try {
-      const transaction = await this.createQueryBuilder()
-      // .select('transaction')
+      this.createQueryBuilder()
       .update(Transaction)
       .set({ categoryId })
       .where('id = :id', { id })
       .andWhere('userId = :userId', {userId: user.id})
-      // .execute();
-      .select('transaction')
-      .getOne();
-      return transaction;
+      .execute();
+
+
+      return this.findOne(id);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
