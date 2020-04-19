@@ -3,6 +3,7 @@ import { User } from './user.entity';
 import { AuthCredentialsDto } from './DTO/auth-credentials.dto';
 import { ConflictException, InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { Category } from '../category/category.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -13,10 +14,16 @@ export class UserRepository extends Repository<User> {
     user.username = username;
     user.salt = await bcrypt.genSalt();
 
+    const category = new Category();
+    category.name = 'Uncategorized';
+    category.budget = 0;
+    category.user = user;
+
     user.password = await this.hashPassword(password, user.salt);
 
     try {
       await user.save();
+      await category.save();
 
     } catch (error) {
       if (error.code === '23505') {
