@@ -15,10 +15,6 @@ import { BarChart } from '../../components/Charts/BarChart/BarChart';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
 
 interface Props {}
-export interface IYearMonth {
-    year: number;
-    month: number;
-}
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: 'column',
         },
         fixedHeight: {
-            height: 480,
+            height: 482,
         },
         // appBar: {
         //     width: `calc(100% - ${drawerWidth}px)`,
@@ -43,8 +39,8 @@ const useStyles = makeStyles((theme: Theme) =>
         // },
         content: {
             flexGrow: 1,
-            padding: theme.spacing(3),
-            marginTop: theme.spacing(),
+            padding: theme.spacing(1),
+            marginTop: theme.spacing(3),
         },
         // mainGrid: mar
     })
@@ -72,27 +68,35 @@ export const Transactions: React.FC<Props> = () => {
                 <PrimaryList />
             </Drawer>
             <main className={classes.content}>
-                <Grid container spacing={2} className={classes.content}>
-                    <Grid container direction='column'>
-                        <Grid item md={6} xs={9}>
-                            <Paper>
-                                {yearMonth?.getYearMonth.length && (
-                                    <YearMonthTab
-                                        data={yearMonth}
-                                        active={active}
-                                        setActive={setActive}
-                                    />
-                                )}
-                                {yearMonth?.getYearMonth.length ? (
-                                    <TransactionsTable yearMonth={yearMonth} active={active} />
-                                ) : (
-                                    <div>Why don't you add some transactions?</div>
-                                )}
-                            </Paper>
+                <Grid container spacing={2} className={classes.content} wrap='wrap-reverse'>
+                    <Grid item md={7} xs={9}>
+                        <Grid container direction='column' spacing={1}>
+                            <Grid item md={12}>
+                                <Paper>
+                                    {yearMonth?.getYearMonth.length && (
+                                        <YearMonthTab
+                                            data={yearMonth}
+                                            active={active}
+                                            setActive={setActive}
+                                        />
+                                    )}
+                                    {yearMonth?.getYearMonth.length ? (
+                                        <TransactionsTable yearMonth={yearMonth} active={active} />
+                                    ) : (
+                                        <div>Why don't you add some transactions?</div>
+                                    )}
+                                </Paper>
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                                <TransactionForm
+                                    year={yearMonth!.getYearMonth[active].year}
+                                    month={yearMonth!.getYearMonth[active].month}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid item md={6} xs={9}>
+                    <Grid item md={5} xs={9}>
                         <Paper className={fixedHeightPaper}>
                             {yearMonth?.getYearMonth[active]?.month ? (
                                 <TransactionByCategoryChart
@@ -103,12 +107,6 @@ export const Transactions: React.FC<Props> = () => {
                                 />
                             ) : null}
                         </Paper>
-                    </Grid>
-                    <Grid item md={4} xs={9}>
-                        <TransactionForm
-                            year={yearMonth!.getYearMonth[active].year}
-                            month={yearMonth!.getYearMonth[active].month}
-                        />
                     </Grid>
                 </Grid>
             </main>

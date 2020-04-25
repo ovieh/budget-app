@@ -7,11 +7,12 @@ interface Props {}
 export const TablePlaceholder: React.FC<Props> = () => {
     return (
         <Box>
-            <Skeleton height={80} />
-            <Skeleton height={80} />
-            <Skeleton height={80} />
-            <Skeleton height={80} />
-            <Skeleton height={80} />
+            <Skeleton height={72} />
+            <Skeleton height={72} />
+            <Skeleton height={72} />
+            <Skeleton height={72} />
+            <Skeleton height={72} />
+            <Skeleton height={72} />
         </Box>
     );
 };
