@@ -85,6 +85,16 @@ export const Transactions: React.FC<Props> = () => {
         return <div>I'm loading</div>;
     }
 
+    // if (yearMonth.getYearMonth[active].month === undefined) {
+    //     console.log(`failure`);
+    //     return <div>Add some transactions!</div>;
+    // }
+
+    // const date: YearMonth = {
+    //     month: yearMonth?.getYearMonth[active]?.month,
+    //     year: yearMonth?.getYearMonth[active]?.year,
+    // };
+
     return (
         <div className={classes.root}>
             <LoggedInNav />
@@ -111,12 +121,14 @@ export const Transactions: React.FC<Props> = () => {
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <Paper className={fixedHeightPaper}>
-                            <TransactionByCategoryChart
-                                date={{
-                                    month: yearMonth!.getYearMonth[active].month,
-                                    year: yearMonth!.getYearMonth[active].year,
-                                }}
-                            />
+                            {yearMonth?.getYearMonth[active]?.month ? (
+                                <TransactionByCategoryChart
+                                    date={{
+                                        month: yearMonth!.getYearMonth[active].month,
+                                        year: yearMonth!.getYearMonth[active].year,
+                                    }}
+                                />
+                            ) : null}
                         </Paper>
                     </Grid>
                     <Grid item md={4} xs={12}>
@@ -308,7 +320,9 @@ interface ChartProps {
 }
 
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
+    // date = { year: 2019, month: 9 };
     const { data, loading, error } = useMonthlySpendingChartQuery({
+        // skip: !!date,
         variables: {
             date,
         },

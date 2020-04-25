@@ -1,3 +1,5 @@
 mutation updateTransactionCategory($categoryId: Float!, $id: String! ){
-  updateTransactionCategory(categoryId: $categoryId, id: $id)
+  updateTransactionCategory(categoryId: $categoryId, id: $id) {
+    id
+  }
 }

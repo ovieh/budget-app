@@ -35,7 +35,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         cell: { value: initialValue },
         row: {
             index,
-            original: { id = 0 },
+            original: { id },
         },
         column,
     }) => {
@@ -48,7 +48,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
             categoryId &&
                 updateCategory({
                     variables: {
-                        id: id,
+                        id,
                         categoryId,
                     },
                 });

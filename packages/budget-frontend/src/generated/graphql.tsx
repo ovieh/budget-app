@@ -53,7 +53,7 @@ export type Mutation = {
   uploadFile: Scalars['Boolean'];
   createTransaction: Scalars['String'];
   deleteTransaction: Scalars['String'];
-  updateTransactionCategory: Scalars['String'];
+  updateTransactionCategory: Transaction;
   updateCategory: Category;
   createCategory: Category;
   removeCategory: Scalars['String'];
@@ -277,7 +277,7 @@ export type TransactionByMonthAndYearQuery = (
   { __typename?: 'Query' }
   & { getTransactionByMonthAndYear: Array<(
     { __typename?: 'Transaction' }
-    & Pick<Transaction, 'date' | 'id' | 'type' | 'debitAmount' | 'creditAmount' | 'balance' | 'description'>
+    & Pick<Transaction, 'id' | 'date' | 'debitAmount' | 'description'>
     & { category?: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'name' | 'budget'>
@@ -394,7 +394,10 @@ export type UpdateTransactionCategoryMutationVariables = {
 
 export type UpdateTransactionCategoryMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateTransactionCategory'>
+  & { updateTransactionCategory: (
+    { __typename?: 'Transaction' }
+    & Pick<Transaction, 'id'>
+  ) }
 );
 
 
@@ -501,12 +504,9 @@ export type MonthlySpendingChartQueryResult = ApolloReactCommon.QueryResult<Mont
 export const TransactionByMonthAndYearDocument = gql`
     query TransactionByMonthAndYear($month: Float!, $year: Float!) {
   getTransactionByMonthAndYear(month: $month, year: $year) {
-    date
     id
-    type
+    date
     debitAmount
-    creditAmount
-    balance
     description
     category {
       name
@@ -815,7 +815,9 @@ export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMu
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UpdateTransactionCategoryDocument = gql`
     mutation updateTransactionCategory($categoryId: Float!, $id: String!) {
-  updateTransactionCategory(categoryId: $categoryId, id: $id)
+  updateTransactionCategory(categoryId: $categoryId, id: $id) {
+    id
+  }
 }
     `;
 export type UpdateTransactionCategoryMutationFn = ApolloReactCommon.MutationFunction<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;
