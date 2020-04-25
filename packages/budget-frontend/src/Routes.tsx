@@ -8,7 +8,7 @@ import { OldTransactions } from './pages/OldTransactions';
 import { useMeQuery } from './generated/graphql';
 import { Categories } from './pages/Categories';
 import { Dashboard } from './pages/Dashboard';
-import { Transactions } from './pages/Transactions';
+import { Transactions } from './pages/Transactions/Transactions';
 
 export const Routes: React.FC = () => {
     useMeQuery(); // maybe there's a beter way of doing this?

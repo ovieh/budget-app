@@ -3,7 +3,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core';
 import MuDrawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
