@@ -1,5 +1,5 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
-import * as parse from 'csv-parse/lib/sync';
+import * as parse from 'csv-parse';
 import * as moment from 'moment';
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../auth/user.entity';
@@ -15,9 +15,9 @@ export class TransactionRepository extends Repository<Transaction> {
     file: Buffer,
     user: User,
     ): Promise<Transaction[]> {
-
-    // Rewrite this as stream
-    const parsedTransactions = parse(file.buffer.toString(), {
+    const output = [];
+    const parser = parse({
+      delimiter: ',',
       columns: [
         'date',
         'type',
@@ -41,10 +41,24 @@ export class TransactionRepository extends Repository<Transaction> {
       },
     });
 
-    // remove first element, which just containers headers
-    parsedTransactions.shift();
+    parser.on('readable', () => {
+      let record: any;
+      while (record = parser.read()) {
+        output.push(record);
+      }
+    });
 
-    const transactions = parsedTransactions.map((transaction: Transaction) => ({...transaction, user}));
+    parser.on('error', err => {
+      console.error(err.message);
+    });
+
+    parser.write(file.buffer);
+    parser.end();
+
+    // remove first element, which just containers headers
+    output.shift();
+    
+    const transactions = output.map((transaction: Transaction) => ({...transaction, user}))
 
   //   const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
   //     if (a.description < b.description) {
