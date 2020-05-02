@@ -15,7 +15,7 @@ export class TransactionRepository extends Repository<Transaction> {
     file: Buffer,
     user: User,
     ): Promise<Transaction[]> {
-    const output = [];
+    const transactions: Transaction[] = [];
     const parser = parse({
       delimiter: ',',
       columns: [
@@ -42,9 +42,10 @@ export class TransactionRepository extends Repository<Transaction> {
     });
 
     parser.on('readable', () => {
-      let record: any;
-      while (record = parser.read()) {
-        output.push(record);
+      let transaction: Transaction;
+      while (transaction = parser.read()) {
+        transaction.userId = user.id;
+        transactions.push(transaction);
       }
     });
 
@@ -56,9 +57,8 @@ export class TransactionRepository extends Repository<Transaction> {
     parser.end();
 
     // remove first element, which just containers headers
-    output.shift();
+    transactions.shift();
     
-    const transactions = output.map((transaction: Transaction) => ({...transaction, user}))
 
   //   const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
   //     if (a.description < b.description) {

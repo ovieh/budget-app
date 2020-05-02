@@ -108,7 +108,6 @@ export class CategoryResolver {
     @Args({ name: 'date', type: () => DateInput }) date: DateInput,
     @CurrentUser() user: User,
   ) {
-    console.log(this.categoryService.MonthlySpendingChart(date, user))
     return this.categoryService.MonthlySpendingChart(date, user);
   }
 
