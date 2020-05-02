@@ -2,61 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: ID!
+  username: String!
+}
+
 type Category {
   id: ID
   name: String!
   budget: Float
-}
-
-input CatIn {
-  id: ID
-  name: String!
-  budget: Float
-}
-
-type ChartData {
-  payload: JSONObject!
-}
-
-input DateInput {
-  year: Int!
-  month: Int!
-}
-
-"""Chart Data object scalar type"""
-scalar JSONObject
-
-type LoginResponseDto {
-  accessToken: String!
-}
-
-type Mutation {
-  signUp(password: String!, username: String!): Boolean!
-  signIn(password: String!, username: String!): LoginResponseDto!
-  revokeRefreshToken(userId: Float!): Boolean!
-  signOut: Boolean!
-  uploadFile(file: Upload!): Boolean!
-  createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): String!
-  deleteTransaction(id: String!): String!
-  updateTransactionCategory(categoryId: Float!, id: String!): Transaction!
-  updateCategory(budget: Float!, name: String!, id: Float!): Category!
-  createCategory(name: String!, budget: Float!): Category!
-  removeCategory(id: Float!): String!
-}
-
-type Query {
-  me: User
-  getTransactions: [Transaction!]!
-  getTransactionById(id: String!): Transaction!
-  getTransactionByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
-  getYearMonth: [YearMonth!]!
-  getTransactionsByCategory(id: Float!): Category!
-  getCategories: [Category!]!
-  getCategoryByDescription(description: String!): Float!
-  sumCategoryDebits(id: Float!): Float!
-  sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
-  chartData(dates: [DateInput!]!): ChartData!
-  MonthlySpendingChart(date: DateInput!): ChartData!
 }
 
 type Transaction {
@@ -74,6 +28,33 @@ type Transaction {
   userId: Float!
 }
 
+type LoginResponseDto {
+  accessToken: String!
+}
+
+type YearMonth {
+  year: Int!
+  month: Int!
+}
+
+type ChartData {
+  payload: JSONObject!
+}
+
+"""Chart Data object scalar type"""
+scalar JSONObject
+
+input UserInput {
+  id: ID!
+  username: String!
+}
+
+input CatIn {
+  id: ID
+  name: String!
+  budget: Float
+}
+
 input TransactionInput {
   id: ID!
   date: String!
@@ -89,20 +70,39 @@ input TransactionInput {
   userId: Float!
 }
 
-"""Upload custom scalar type"""
-scalar Upload
-
-type User {
-  id: ID!
-  username: String!
+type Query {
+  me: User
+  getTransactions: [Transaction!]!
+  getTransactionById(id: String!): Transaction!
+  getTransactionByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
+  getYearMonth: [YearMonth!]!
+  getTransactionsByCategory(id: Float!): Category!
+  getCategories: [Category!]!
+  getCategoryByDescription(description: String!): Float!
+  sumCategoryDebits(id: Float!): Float!
+  sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
+  chartData(dates: [DateInput!]!): ChartData!
+  MonthlySpendingChart(date: DateInput!): ChartData!
 }
 
-input UserInput {
-  id: ID!
-  username: String!
-}
-
-type YearMonth {
+input DateInput {
   year: Int!
   month: Int!
 }
+
+type Mutation {
+  signUp(password: String!, username: String!): Boolean!
+  signIn(password: String!, username: String!): LoginResponseDto!
+  revokeRefreshToken(userId: Float!): Boolean!
+  signOut: Boolean!
+  uploadFile(file: Upload!): Boolean!
+  createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): String!
+  deleteTransaction(id: String!): String!
+  updateTransactionCategory(categoryId: Float!, id: String!): Transaction!
+  updateCategory(budget: Float!, name: String!, id: Float!): Category!
+  createCategory(name: String!, budget: Float!): Category!
+  removeCategory(id: Float!): String!
+}
+
+"""Upload custom scalar type"""
+scalar Upload
