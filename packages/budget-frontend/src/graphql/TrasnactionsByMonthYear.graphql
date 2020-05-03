@@ -1,5 +1,5 @@
-query TransactionByMonthAndYear($month: Float!, $year: Float!) {
-    getTransactionByMonthAndYear(month: $month, year: $year) {
+query TransactionsByMonthAndYear($month: Float!, $year: Float!) {
+    getTransactionsByMonthAndYear(month: $month, year: $year) {
         id
         date
         debitAmount

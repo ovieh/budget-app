@@ -17,9 +17,9 @@ import {
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FileUpload } from '../../../../components/FileUpload';
 import {
-    TransactionByMonthAndYearDocument,
     useCreateTransactionMutation,
     YearMonth,
+    DebitsByMonthAndYearDocument,
 } from '../../../../generated/graphql';
 // import { TextField } from '../../../../components/Form/TextField/TextField';
 
@@ -74,7 +74,7 @@ export const TransactionForm: React.FC<YearMonth> = ({ month, year }) => {
                         },
                         refetchQueries: [
                             {
-                                query: TransactionByMonthAndYearDocument,
+                                query: DebitsByMonthAndYearDocument,
                                 variables: {
                                     month: month ? month : parseFloat(values.date.split('/')[1]),
                                     year: year ? year : parseFloat(values.date.split('/')[2]),

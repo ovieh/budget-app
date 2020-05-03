@@ -1,0 +1,12 @@
+query DebitsByMonthAndYear($month: Float!, $year: Float!) {
+    getDebitsByMonthAndYear(month: $month, year: $year) {
+        id
+        description
+        debitAmount
+        date
+        category {
+            name
+            budget
+        }
+    }
+}

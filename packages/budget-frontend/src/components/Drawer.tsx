@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    children: React.ReactElement;
+    children: React.ReactChild[] | React.ReactChild;
 }
 
 export const Drawer: React.FC<Props> = ({ children }) => {

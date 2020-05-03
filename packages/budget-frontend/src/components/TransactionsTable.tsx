@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import {
     GetYearMonthQuery,
-    useTransactionByMonthAndYearQuery,
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
+    useDebitsByMonthAndYearQuery,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
-    const { data, error, loading } = useTransactionByMonthAndYearQuery({
+    const { data, error, loading } = useDebitsByMonthAndYearQuery({
         // skip: !yearMonth.getYearMonth.length,
         variables: {
             month: yearMonth.getYearMonth[active].month,
@@ -100,7 +100,7 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
         return <TablePlaceholder />;
     }
     return data ? (
-        <ReusuableTable columns={TransactionsColumns} data={data.getTransactionByMonthAndYear} />
+        <ReusuableTable columns={TransactionsColumns} data={data.getDebitsByMonthAndYear} />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );

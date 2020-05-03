@@ -6,7 +6,7 @@ import {
 } from '../../generated/graphql';
 import clsx from 'clsx';
 import { LoggedInNav } from '../../components/LoggedInNav';
-import { Grid, Paper, makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Grid, Paper, makeStyles, Theme, createStyles, Divider } from '@material-ui/core';
 import { YearMonthTab } from '../../components/YearMonthTab';
 import { TransactionsTable } from '../../components/TransactionsTable';
 import { PrimaryList } from '../../components/PrimaryList';
@@ -66,6 +66,7 @@ export const Transactions: React.FC<Props> = () => {
             <LoggedInNav />
             <Drawer>
                 <PrimaryList />
+                <Divider />
             </Drawer>
             <main className={classes.content}>
                 <Grid container spacing={2} className={classes.content} wrap='wrap-reverse'>
