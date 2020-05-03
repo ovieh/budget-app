@@ -50,7 +50,8 @@ export class TransactionRepository extends Repository<Transaction> {
     });
 
     parser.on('error', err => {
-      console.error(err.message);
+      this.logger.error(`Failed to parse transactions.`);
+      throw new InternalServerErrorException(err.message);
     });
 
     parser.write(file.buffer);
@@ -194,6 +195,54 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
+  async getCreditsByYearAndMonth(
+    year: number,
+    month: number,
+    user: User,
+  ): Promise<Transaction[]> {
+
+    try {
+      const results = await this.createQueryBuilder('transaction')
+      .select('transaction')
+      .where('transaction.userId = :userId', {userId: user.id})
+      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+      .andWhere(`transaction.creditAmount > 0`)
+      .andWhere(`transaction.debitAmount <= 0`)
+      .orderBy('transaction.date', 'DESC')
+      .cache(true)
+      .getMany();
+      return results;
+    } catch {
+      this.logger.error(`Failed to get results for "${year}/${month}"`);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getDebitsByYearAndMonth(
+    year: number,
+    month: number,
+    user: User,
+  ): Promise<Transaction[]> {
+
+    try {
+      const results = await this.createQueryBuilder('transaction')
+      .select('transaction')
+      .where('transaction.userId = :userId', {userId: user.id})
+      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+      .andWhere(`transaction.creditAmount <= 0`)
+      .andWhere(`transaction.debitAmount > 0`)
+      .orderBy('transaction.date', 'DESC')
+      .cache(true)
+      .getMany();
+      return results;
+    } catch {
+      this.logger.error(`Failed to get results for "${year}/${month}"`);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getYearMonth(user: User): Promise<YearMonth[]> {
     try {
       const results = await this.createQueryBuilder()
@@ -214,7 +263,7 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  // TODO: Figure out way to do this in one db request
+  // TODO: Figure out way to do this in one db transasction
   async updateCategoryById(id: string, categoryId: number, user: User): Promise<Transaction> {
     try {
       this.createQueryBuilder()

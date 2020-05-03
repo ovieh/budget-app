@@ -34,7 +34,7 @@ describe('TransactionService', () => {
       ],
     }).compile();
 
-    transactionService = await module.get<TransactionService>(
+    transactionService = module.get<TransactionService>(
       TransactionService,
     );
     transactionRepository = await module.get<TransactionRepository>(

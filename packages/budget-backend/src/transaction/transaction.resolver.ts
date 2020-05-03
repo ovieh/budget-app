@@ -69,12 +69,42 @@ export class TransactionResolver {
 
   @Query(() => [Transaction])
   @UseGuards(GqlAuthGuard)
-  async getTransactionByMonthAndYear(
+  async getTransactionsByMonthAndYear(
     @Args('year') year: number,
     @Args('month') month: number,
     @CurrentUser() user: User,
   ) {
     const result = await this.transactionService.getTransactionsByYearAndMonth(
+      year,
+      month,
+      user,
+    );
+    return result;
+  }
+
+  @Query(() => [Transaction])
+  @UseGuards(GqlAuthGuard)
+  async getCreditsByMonthAndYear(
+    @Args('year') year: number,
+    @Args('month') month: number,
+    @CurrentUser() user: User,
+  ) {
+    const result = await this.transactionService.getCreditsByYearAndMonth(
+      year,
+      month,
+      user,
+    );
+    return result;
+  }
+
+  @Query(() => [Transaction])
+  @UseGuards(GqlAuthGuard)
+  async getDebitsByMonthAndYear(
+    @Args('year') year: number,
+    @Args('month') month: number,
+    @CurrentUser() user: User,
+  ) {
+    const result = await this.transactionService.getDebitsByYearAndMonth(
       year,
       month,
       user,

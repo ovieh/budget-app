@@ -138,6 +138,30 @@ export class TransactionService {
     );
   }
 
+  async getCreditsByYearAndMonth(
+    year: number,
+    month: number,
+    user: User,
+  ): Promise<Transaction[]> {
+    return await this.transactionRepository.getCreditsByYearAndMonth(
+      year,
+      month,
+      user,
+    );
+  }
+
+  async getDebitsByYearAndMonth(
+    year: number,
+    month: number,
+    user: User,
+  ): Promise<Transaction[]> {
+    return await this.transactionRepository.getDebitsByYearAndMonth(
+      year,
+      month,
+      user,
+    );
+  }
+
   async getYearMonth(user: User): Promise<YearMonth[]> {
     return await this.transactionRepository.getYearMonth(user);
   }
