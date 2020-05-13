@@ -10,7 +10,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "esModuleInterop": false
+    "esModuleInterop": false,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", "dist"]
 }

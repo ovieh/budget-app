@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
-import * as uuidv4 from 'uuid/v4';
+import { v4 as uuidv4} from 'uuid';
 import { RelationColumn } from '../helpers';
 import { ObjectType, InputType, Field, ID, HideField } from '@nestjs/graphql';
 
