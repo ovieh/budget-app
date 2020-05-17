@@ -12,7 +12,7 @@ import { App } from './App';
 import jwtDecode from 'jwt-decode';
 import './index.css';
 import { ThemeProvider, createMuiTheme, CssBaseline } from '@material-ui/core';
-import { teal, deepOrange } from '@material-ui/core/colors';
+import { teal, orange } from '@material-ui/core/colors';
 
 const cache = new InMemoryCache({
     // addTypename: false,
@@ -22,7 +22,7 @@ const theme = createMuiTheme({
     palette: {
         type: 'dark',
         primary: teal,
-        secondary: deepOrange,
+        secondary: orange,
     },
 });
 

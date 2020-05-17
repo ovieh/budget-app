@@ -6,13 +6,23 @@ import {
 } from '../../generated/graphql';
 import clsx from 'clsx';
 import { LoggedInNav } from '../../components/LoggedInNav';
-import { Grid, Paper, makeStyles, Theme, createStyles, Divider } from '@material-ui/core';
+import {
+    Grid,
+    Paper,
+    makeStyles,
+    Theme,
+    createStyles,
+    Divider,
+    Typography,
+    Select,
+} from '@material-ui/core';
 import { YearMonthTab } from '../../components/YearMonthTab';
 import { TransactionsTable } from '../../components/TransactionsTable';
 import { PrimaryList } from '../../components/PrimaryList';
 import { Drawer } from '../../components/Drawer';
 import { BarChart } from '../../components/Charts/BarChart/BarChart';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
+import { DashboardContext } from '../../components/DashboardContext';
 
 interface Props {}
 
@@ -104,6 +114,11 @@ export const Transactions: React.FC<Props> = () => {
                                     }}
                                 />
                             ) : null}
+                        </Paper>
+                    </Grid>
+                    <Grid item md={5} xs={9}>
+                        <Paper className={classes.paper}>
+                            <DashboardContext />
                         </Paper>
                     </Grid>
                 </Grid>

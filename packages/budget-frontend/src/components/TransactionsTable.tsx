@@ -5,6 +5,7 @@ import {
     useUpdateTransactionCategoryMutation,
     useDebitsByMonthAndYearQuery,
     CategoriesDocument,
+    DebitsByMonthAndYearDocument,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -54,7 +55,11 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
                     },
                     refetchQueries: [
                         {
-                            query: CategoriesDocument,
+                            query: DebitsByMonthAndYearDocument,
+                            variables: {
+                                month: yearMonth.getYearMonth[active].month,
+                                year: yearMonth.getYearMonth[active].year,
+                            },
                         },
                     ],
                 });
