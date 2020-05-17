@@ -41,9 +41,9 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                 <YAxis dataKey='name' type='category' />
                 <Tooltip />
                 <Legend />
-                {/* <Bar dataKey='actual' fill='#82ca9d' stackId='stack' />
-                <Bar dataKey='budget' fill='#8884d8' stackId='stack' /> */}
-                <Bar
+                <Bar dataKey='actual' fill='#82ca9d' stackId='stack' />
+                <Bar dataKey='budget' fill='#8884d8' stackId='stack' />
+                {/* <Bar
                     dataKey='budget'
                     shape={
                         <CustomBarWithTarget
@@ -56,7 +56,7 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                         />
                     }
                     isAnimationActive={false}
-                />
+                /> */}
             </ReBarChart>
         </ResponsiveContainer>
     );
@@ -67,7 +67,7 @@ const CustomBarWithTarget = (props: any) => {
 
     let totalHeight = y + height;
     let targetY = totalHeight - (height / amt) * t;
-    console.log(height);
+
     return (
         <svg>
             <rect x={x} y={y} width={width} height={height} stroke='none' fill={fill} />

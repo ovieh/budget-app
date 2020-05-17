@@ -31,15 +31,15 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export const TransactionForm: React.FC<YearMonth> = ({ month, year }) => {
+export const TransactionForm: React.FC<{}> = () => {
     const classes = useStyles();
     const [addTransaction] = useCreateTransactionMutation();
 
     const FormFields = [
-        { name: 'date', placeholder: 'Transaction Date' },
-        { name: 'description', placeholder: 'Transaction Description' },
-        { name: 'debitAmount', placeholder: 'Amount' },
-        { name: 'balance', placeholder: 'Balance' },
+        { name: 'date', placeholder: 'Transaction Date', type: 'date' },
+        { name: 'description', placeholder: 'Transaction Description', type: 'text' },
+        { name: 'debitAmount', placeholder: 'Amount', type: 'text' },
+        { name: 'balance', placeholder: 'Balance', type: 'text' },
     ];
 
     return (
@@ -61,6 +61,11 @@ export const TransactionForm: React.FC<YearMonth> = ({ month, year }) => {
                     balance: '',
                 }}
                 onSubmit={async (values, { setSubmitting }) => {
+                    const date = new Date(values.date);
+                    // adding 1 is cRazY !!!
+                    const month = date.getMonth() + 1;
+                    const year = date.getFullYear();
+
                     await addTransaction({
                         variables: {
                             date: values.date,
@@ -72,12 +77,13 @@ export const TransactionForm: React.FC<YearMonth> = ({ month, year }) => {
                             creditAmount: parseFloat(values.creditAmount),
                             balance: parseFloat(values.balance),
                         },
+                        awaitRefetchQueries: true,
                         refetchQueries: [
                             {
                                 query: DebitsByMonthAndYearDocument,
                                 variables: {
-                                    month: month ? month : parseFloat(values.date.split('/')[1]),
-                                    year: year ? year : parseFloat(values.date.split('/')[2]),
+                                    month,
+                                    year,
                                 },
                             },
                         ],
@@ -92,7 +98,7 @@ export const TransactionForm: React.FC<YearMonth> = ({ month, year }) => {
                                 Create New Category
                             </Typography>
                             <Grid container spacing={2}>
-                                {FormFields.map(({ name, placeholder }) => (
+                                {FormFields.map(({ name, placeholder, type }) => (
                                     <Grid item xs={12} key={name}>
                                         <Field
                                             name={name}
@@ -103,6 +109,10 @@ export const TransactionForm: React.FC<YearMonth> = ({ month, year }) => {
                                             size='small'
                                             label={placeholder}
                                             as={TextField}
+                                            type={type}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
                                         />
                                     </Grid>
                                 ))}

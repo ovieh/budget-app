@@ -89,10 +89,7 @@ export const Transactions: React.FC<Props> = () => {
                                 </Paper>
                             </Grid>
                             <Grid item md={6} xs={12}>
-                                <TransactionForm
-                                    year={yearMonth!.getYearMonth[active].year}
-                                    month={yearMonth!.getYearMonth[active].month}
-                                />
+                                <TransactionForm />
                             </Grid>
                         </Grid>
                     </Grid>

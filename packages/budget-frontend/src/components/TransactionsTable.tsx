@@ -4,6 +4,7 @@ import {
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
     useDebitsByMonthAndYearQuery,
+    CategoriesDocument,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -51,6 +52,11 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
                         id,
                         categoryId,
                     },
+                    refetchQueries: [
+                        {
+                            query: CategoriesDocument,
+                        },
+                    ],
                 });
         };
 
