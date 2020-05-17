@@ -88,7 +88,11 @@ export class TransactionService {
     // const category = JSON.parse(JSON.stringify(categoryInput));
 
     try {
-      return this.transactionRepository.updateCategoryById(id, categoryId, user);
+      return this.transactionRepository.updateCategoryById(
+        id,
+        categoryId,
+        user,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         `Could not update transaction with id ${id}`,
@@ -164,5 +168,17 @@ export class TransactionService {
 
   async getYearMonth(user: User): Promise<YearMonth[]> {
     return await this.transactionRepository.getYearMonth(user);
+  }
+
+  async sumDebitsByYearMonth(
+    user: User,
+    year: number,
+    month: number,
+  ): Promise<number> {
+    return this.transactionRepository.sumDebitsByYearMonth(
+      user,
+      year,
+      month,
+    );
   }
 }

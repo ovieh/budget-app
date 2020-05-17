@@ -11,10 +11,7 @@ import { Transaction } from './transaction.entity';
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
 
-  async importFile(
-    file: Buffer,
-    user: User,
-    ): Promise<Transaction[]> {
+  async importFile(file: Buffer, user: User): Promise<Transaction[]> {
     const transactions: Transaction[] = [];
     const parser = parse({
       delimiter: ',',
@@ -30,9 +27,13 @@ export class TransactionRepository extends Repository<Transaction> {
       ],
       cast: (value, context) => {
         // Casts empty debits / credits as 0
-        if ((context.column === 'debitAmount' || context.column === 'creditAmount') && value === '') {
+        if (
+          (context.column === 'debitAmount' ||
+            context.column === 'creditAmount') &&
+          value === ''
+        ) {
           return 0;
-        // convert date format
+          // convert date format
         } else if (context.column === 'date') {
           return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
         } else {
@@ -43,13 +44,13 @@ export class TransactionRepository extends Repository<Transaction> {
 
     parser.on('readable', () => {
       let transaction: Transaction;
-      while (transaction = parser.read()) {
+      while ((transaction = parser.read())) {
         transaction.userId = user.id;
         transactions.push(transaction);
       }
     });
 
-    parser.on('error', err => {
+    parser.on('error', (err) => {
       this.logger.error(`Failed to parse transactions.`);
       throw new InternalServerErrorException(err.message);
     });
@@ -59,60 +60,56 @@ export class TransactionRepository extends Repository<Transaction> {
 
     // remove first element, which just containers headers
     transactions.shift();
-    
 
-  //   const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
-  //     if (a.description < b.description) {
-  //       return -1;
-  //     }
+    //   const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
+    //     if (a.description < b.description) {
+    //       return -1;
+    //     }
 
-  //     if (a.description > b.description) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   });
+    //     if (a.description > b.description) {
+    //       return 1;
+    //     }
+    //     return 0;
+    //   });
 
-  //   const groupedTransactions = sortedTransactions.reduce((obj, transaction) => {
-  //     const description = transaction.description;
+    //   const groupedTransactions = sortedTransactions.reduce((obj, transaction) => {
+    //     const description = transaction.description;
 
-  //     if (!obj.hasOwnProperty(description)) {
-  //       obj[description] = [];
-  //     }
+    //     if (!obj.hasOwnProperty(description)) {
+    //       obj[description] = [];
+    //     }
 
-  //     obj[description].push(transaction);
+    //     obj[description].push(transaction);
 
-  //   return obj;
-  // }, {});
+    //   return obj;
+    // }, {});
 
-  
-  // const keys = Object.keys(groupedTransactions);
+    // const keys = Object.keys(groupedTransactions);
 
-  // I need to get the category based on the key (description)
-  // then i need to add the category to the transaction objects
+    // I need to get the category based on the key (description)
+    // then i need to add the category to the transaction objects
 
-  // this.categoryService.getCategoryByDescription(transaction.description, user);
+    // this.categoryService.getCategoryByDescription(transaction.description, user);
 
-  // const result = await this.categoryRepsitory.getCategoryByDescription('TFL TRAVEL CH', user);
-  // console.log(`======================== ${result} =================================`)
+    // const result = await this.categoryRepsitory.getCategoryByDescription('TFL TRAVEL CH', user);
+    // console.log(`======================== ${result} =================================`)
 
-  // keys.map(async key => {
-  //   console.log(groupedTransactions[key])
-  //   // const category = await this.categoryRepsitory.getCategoryByDescription(key, user);
-  //   const category = await getRepository(Category)
-  //     .createQueryBuilder('category')
-  //     .le
-  //     .where('')
-  //     .getOne();
+    // keys.map(async key => {
+    //   console.log(groupedTransactions[key])
+    //   // const category = await this.categoryRepsitory.getCategoryByDescription(key, user);
+    //   const category = await getRepository(Category)
+    //     .createQueryBuilder('category')
+    //     .le
+    //     .where('')
+    //     .getOne();
 
-  //   // if (category) {
-  //   //   groupedTransactions[key]
-  //   // }
-  // });
-
-
+    //   // if (category) {
+    //   //   groupedTransactions[key]
+    //   // }
+    // });
 
     try {
-      const transaction =  await this.save(transactions);
+      const transaction = await this.save(transactions);
       return transaction;
     } catch (error) {
       this.logger.error(`Failed to save transaction.`);
@@ -123,7 +120,7 @@ export class TransactionRepository extends Repository<Transaction> {
   async createTransaction(
     createTransactionDto: CreateTransactionDto,
     user: User,
-    ): Promise<Transaction> {
+  ): Promise<Transaction> {
     const {
       accountNumber,
       balance,
@@ -132,7 +129,8 @@ export class TransactionRepository extends Repository<Transaction> {
       debitAmount,
       description,
       sortCode,
-      type } = createTransactionDto;
+      type,
+    } = createTransactionDto;
 
     const transaction = new Transaction();
     transaction.accountNumber = accountNumber;
@@ -151,20 +149,18 @@ export class TransactionRepository extends Repository<Transaction> {
     } catch (error) {
       this.logger.error(error);
     }
-
   }
 
   async getTransactionsByMonth(
     month: number,
     user: User,
   ): Promise<Transaction[]> {
-
     try {
       const results = await this.createQueryBuilder('transaction')
-      .select('transaction')
-      .where('transaction.userId = :userId', {userId: user.id})
-      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
-      .getMany();
+        .select('transaction')
+        .where('transaction.userId = :userId', { userId: user.id })
+        .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+        .getMany();
 
       return results;
     } catch {
@@ -178,16 +174,15 @@ export class TransactionRepository extends Repository<Transaction> {
     month: number,
     user: User,
   ): Promise<Transaction[]> {
-
     try {
       const results = await this.createQueryBuilder('transaction')
-      .select('transaction')
-      .where('transaction.userId = :userId', {userId: user.id})
-      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
-      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
-      .orderBy('transaction.date', 'DESC')
-      .cache(true)
-      .getMany();
+        .select('transaction')
+        .where('transaction.userId = :userId', { userId: user.id })
+        .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+        .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+        .orderBy('transaction.date', 'DESC')
+        .cache(true)
+        .getMany();
       return results;
     } catch {
       this.logger.error(`Failed to get results for "${year}/${month}"`);
@@ -200,18 +195,17 @@ export class TransactionRepository extends Repository<Transaction> {
     month: number,
     user: User,
   ): Promise<Transaction[]> {
-
     try {
       const results = await this.createQueryBuilder('transaction')
-      .select('transaction')
-      .where('transaction.userId = :userId', {userId: user.id})
-      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
-      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
-      .andWhere(`transaction.creditAmount > 0`)
-      .andWhere(`transaction.debitAmount <= 0`)
-      .orderBy('transaction.date', 'DESC')
-      .cache(true)
-      .getMany();
+        .select('transaction')
+        .where('transaction.userId = :userId', { userId: user.id })
+        .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+        .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+        .andWhere(`transaction.creditAmount > 0`)
+        .andWhere(`transaction.debitAmount <= 0`)
+        .orderBy('transaction.date', 'DESC')
+        .cache(true)
+        .getMany();
       return results;
     } catch {
       this.logger.error(`Failed to get results for "${year}/${month}"`);
@@ -224,18 +218,17 @@ export class TransactionRepository extends Repository<Transaction> {
     month: number,
     user: User,
   ): Promise<Transaction[]> {
-
     try {
       const results = await this.createQueryBuilder('transaction')
-      .select('transaction')
-      .where('transaction.userId = :userId', {userId: user.id})
-      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
-      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
-      .andWhere(`transaction.creditAmount <= 0`)
-      .andWhere(`transaction.debitAmount > 0`)
-      .orderBy('transaction.date', 'DESC')
-      .cache(true)
-      .getMany();
+        .select('transaction')
+        .where('transaction.userId = :userId', { userId: user.id })
+        .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+        .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+        .andWhere(`transaction.creditAmount <= 0`)
+        .andWhere(`transaction.debitAmount > 0`)
+        .orderBy('transaction.date', 'DESC')
+        .cache(true)
+        .getMany();
       return results;
     } catch {
       this.logger.error(`Failed to get results for "${year}/${month}"`);
@@ -249,7 +242,7 @@ export class TransactionRepository extends Repository<Transaction> {
         .select(`EXTRACT(YEAR FROM transaction.date) as year`)
         .addSelect(`EXTRACT(MONTH FROM transaction.date) as month`)
         .from(Transaction, 'transaction')
-        .where('transaction.userId = :userId', {userId: user.id})
+        .where('transaction.userId = :userId', { userId: user.id })
         .groupBy('year')
         .addGroupBy('month')
         .orderBy('year', 'ASC')
@@ -264,31 +257,47 @@ export class TransactionRepository extends Repository<Transaction> {
   }
 
   // TODO: Figure out way to do this in one db transasction
-  async updateCategoryById(id: string, categoryId: number, user: User): Promise<Transaction> {
+  async updateCategoryById(
+    id: string,
+    categoryId: number,
+    user: User,
+  ): Promise<Transaction> {
     try {
       this.createQueryBuilder()
-      .update(Transaction)
-      .set({ categoryId })
-      .where('id = :id', { id })
-      .andWhere('userId = :userId', {userId: user.id})
-      .execute();
-
+        .update(Transaction)
+        .set({ categoryId })
+        .where('id = :id', { id })
+        .andWhere('userId = :userId', { userId: user.id })
+        .execute();
 
       return this.findOne(id);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
-
   }
 
   async updateCategoryByIds(ids: string[], categoryId: number, user: User) {
     await this.createQueryBuilder()
-    .update(Transaction)
-    .set({ categoryId })
-    .where('ids = :ids', ids)
-    .andWhere('userId = :userId', {userId: user.id})
-    .execute();
+      .update(Transaction)
+      .set({ categoryId })
+      .where('ids = :ids', ids)
+      .andWhere('userId = :userId', { userId: user.id })
+      .execute();
   }
 
+  async sumDebitsByYearMonth(
+    user: User,
+    year: number,
+    month: number,
+  ): Promise<number> {
+    const { sum } = await this.createQueryBuilder('transaction')
+      .where('transaction.userId = :userId', { userId: user.id })
+      .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
+      .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+      .select('SUM(transaction.debitAmount)', 'sum')
+      .cache(true)
+      .getRawOne();
+    return sum || 0;
+  }
 }

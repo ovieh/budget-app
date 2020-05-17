@@ -128,7 +128,6 @@ export class CategoryService {
   }
 
   async MonthlySpendingChart({ year, month }: DateInput, user: User) {
-    const data = [];
     const categories = await this.findAll(user);
 
     const result = categories.map(async ({ id }) => {
@@ -147,8 +146,7 @@ export class CategoryService {
       return obj;
     });
 
-    return await Promise.all(result).then((stuff) => ({ payload: stuff }));
+    return await Promise.all(result).then((payload) => ({ payload }));
 
-    return data;
   }
 }

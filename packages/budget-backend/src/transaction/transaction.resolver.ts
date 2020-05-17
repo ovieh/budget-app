@@ -5,6 +5,7 @@ import {
   Mutation,
   Parent,
   ResolveField,
+  Float,
 } from '@nestjs/graphql';
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
@@ -14,6 +15,7 @@ import {
   UseGuards,
   Logger,
   ParseUUIDPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
@@ -27,9 +29,7 @@ import { CategoryLoader } from '../category/category.loader';
 @Resolver(() => Transaction)
 export class TransactionResolver {
   private logger = new Logger('Transaction Resolver');
-  constructor(
-    private readonly transactionService: TransactionService,
-  ) {}
+  constructor(private readonly transactionService: TransactionService) {}
 
   @Query(() => User, { nullable: true })
   @UseGuards(GqlAuthGuard)
@@ -150,6 +150,16 @@ export class TransactionResolver {
     @CurrentUser() user: User,
   ): Promise<Transaction> {
     return this.transactionService.updateCategoryById(id, categoryId, user);
+  }
+
+  @Query(() => Float)
+  @UseGuards(GqlAuthGuard)
+  sumDebitsByYearMonth(
+    @Args('year', ParseIntPipe) year: number,
+    @Args('month', ParseIntPipe) month: number,
+    @CurrentUser() user: User,
+  ): Promise<number> {
+    return this.transactionService.sumDebitsByYearMonth(user, year, month);
   }
 
   // TODO: why isn't this passing the user?
