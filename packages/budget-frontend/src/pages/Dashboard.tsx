@@ -15,11 +15,8 @@ const Transactions = () => {
 
     return (
         <>
-            {yearMonth?.getYearMonth.length && (
-                <YearMonthTab data={yearMonth} active={active} setActive={setActive} />
-            )}
             {yearMonth?.getYearMonth.length ? (
-                <TransactionsTable yearMonth={yearMonth} active={active} />
+                <TransactionsTable year={2019} month={9} />
             ) : (
                 <div>Why don't you add some transactions?</div>
             )}

@@ -1,28 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import {
-    useGetYearMonthQuery,
-    useMonthlySpendingChartQuery,
-    YearMonth,
-} from '../../generated/graphql';
+import { createStyles, Divider, Grid, makeStyles, Paper, Theme } from '@material-ui/core';
 import clsx from 'clsx';
-import { LoggedInNav } from '../../components/LoggedInNav';
-import {
-    Grid,
-    Paper,
-    makeStyles,
-    Theme,
-    createStyles,
-    Divider,
-    Typography,
-    Select,
-} from '@material-ui/core';
-import { YearMonthTab } from '../../components/YearMonthTab';
-import { TransactionsTable } from '../../components/TransactionsTable';
-import { PrimaryList } from '../../components/PrimaryList';
-import { Drawer } from '../../components/Drawer';
+import gql from 'graphql-tag';
+import React, { useEffect, useState } from 'react';
 import { BarChart } from '../../components/Charts/BarChart/BarChart';
-import { TransactionForm } from './Components/TransactionForm/TransactionForm';
 import { DashboardContext } from '../../components/DashboardContext';
+import { Drawer } from '../../components/Drawer';
+import { LoggedInNav } from '../../components/LoggedInNav';
+import { PrimaryList } from '../../components/PrimaryList';
+import { TransactionsTable } from '../../components/TransactionsTable';
+import { useMonthlySpendingChartQuery, YearMonth } from '../../generated/graphql';
+import { TransactionForm } from './Components/TransactionForm/TransactionForm';
+import { useQuery } from '@apollo/react-hooks';
 
 interface Props {}
 
@@ -60,16 +48,24 @@ export const Transactions: React.FC<Props> = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-    const { data: yearMonth, loading } = useGetYearMonthQuery();
-    const [active, setActive] = useState(0);
+    const GET_ACTIVE_DATE = gql`
+        query GetActiveDate {
+            activeDate @client
+        }
+    `;
 
-    useEffect(() => {
-        yearMonth && setActive(yearMonth?.getYearMonth.length - 1);
-    }, [yearMonth]);
+    const { data: yearMonth } = useQuery(GET_ACTIVE_DATE);
 
-    if (loading) {
-        return <div>I'm loading</div>;
-    }
+    // if (loading) {
+    //     return <div>I'm loading</div>;
+    // }
+
+    // if (error) {
+    //     return <pre>{JSON.stringify(error, null, 2)}</pre>;
+    // }
+
+    const year = parseInt(yearMonth.activeDate.split('/')[1]);
+    const month = parseInt(yearMonth.activeDate.split('/')[0]);
 
     return (
         <div className={classes.root}>
@@ -84,18 +80,7 @@ export const Transactions: React.FC<Props> = () => {
                         <Grid container direction='column' spacing={1}>
                             <Grid item md={12}>
                                 <Paper>
-                                    {yearMonth?.getYearMonth.length && (
-                                        <YearMonthTab
-                                            data={yearMonth}
-                                            active={active}
-                                            setActive={setActive}
-                                        />
-                                    )}
-                                    {yearMonth?.getYearMonth.length ? (
-                                        <TransactionsTable yearMonth={yearMonth} active={active} />
-                                    ) : (
-                                        <div>Why don't you add some transactions?</div>
-                                    )}
+                                    <TransactionsTable year={year} month={month} />
                                 </Paper>
                             </Grid>
                             <Grid item md={6} xs={12}>
@@ -106,14 +91,12 @@ export const Transactions: React.FC<Props> = () => {
 
                     <Grid item md={5} xs={9}>
                         <Paper className={fixedHeightPaper}>
-                            {yearMonth?.getYearMonth[active]?.month ? (
-                                <TransactionByCategoryChart
-                                    date={{
-                                        month: yearMonth!.getYearMonth[active].month,
-                                        year: yearMonth!.getYearMonth[active].year,
-                                    }}
-                                />
-                            ) : null}
+                            <TransactionByCategoryChart
+                                date={{
+                                    month,
+                                    year,
+                                }}
+                            />
                         </Paper>
                     </Grid>
                     <Grid item md={5} xs={9}>
@@ -132,6 +115,7 @@ interface ChartProps {
 }
 
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
+
     const { data, loading, error } = useMonthlySpendingChartQuery({
         // skip: !!date,
         variables: {

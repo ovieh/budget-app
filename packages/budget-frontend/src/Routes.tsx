@@ -4,7 +4,6 @@ import { Register } from './pages/Register';
 import { SignIn } from './pages/SignIn';
 import { Home } from './pages/Home';
 
-import { OldTransactions } from './pages/OldTransactions';
 import { useMeQuery } from './generated/graphql';
 import { Categories } from './pages/Categories';
 import { Dashboard } from './pages/Dashboard';
@@ -20,7 +19,6 @@ export const Routes: React.FC = () => {
                 <Route exact path='/register' component={Register} />
                 <Route exact path='/signin' component={SignIn} />
                 <Route exact path='/transactions' component={Transactions} />
-                <Route exact path='/oldtransactions' component={OldTransactions} />
                 <Route exact path='/categories' component={Categories} />
                 <Route exact path='/dashboard' component={Dashboard} />
             </Switch>

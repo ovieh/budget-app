@@ -13,9 +13,21 @@ import jwtDecode from 'jwt-decode';
 import './index.css';
 import { ThemeProvider, createMuiTheme, CssBaseline } from '@material-ui/core';
 import { teal, orange } from '@material-ui/core/colors';
+import gql from 'graphql-tag';
 
 const cache = new InMemoryCache({
     // addTypename: false,
+});
+
+cache.writeQuery({
+    query: gql`
+        query GetActiveDate {
+            activeDate
+        }
+    `,
+    data: {
+        activeDate: '9/2019',
+    },
 });
 
 const theme = createMuiTheme({

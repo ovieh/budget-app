@@ -12,19 +12,21 @@ import { Select, MenuItem } from '@material-ui/core';
 import { TablePlaceholder } from './TablePlaceholder/TablePlaceholder';
 
 interface Props {
-    yearMonth: GetYearMonthQuery;
-    active: number;
+    year: number;
+    month: number;
+    // active: number;
     handleClickOpen?: () => void;
 }
 
-export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
+export const TransactionsTable: React.FC<Props> = ({ year, month }) => {
     const { data, error, loading } = useDebitsByMonthAndYearQuery({
         // skip: !yearMonth.getYearMonth.length,
         variables: {
-            month: yearMonth.getYearMonth[active].month,
-            year: yearMonth.getYearMonth[active].year,
+            month,
+            year,
         },
     });
+
 
     // TODO: Figure out these types
     interface EditableCellTypes {
@@ -57,8 +59,8 @@ export const TransactionsTable: React.FC<Props> = ({ yearMonth, active }) => {
                         {
                             query: DebitsByMonthAndYearDocument,
                             variables: {
-                                month: yearMonth.getYearMonth[active].month,
-                                year: yearMonth.getYearMonth[active].year,
+                                month,
+                                year,
                             },
                         },
                     ],
