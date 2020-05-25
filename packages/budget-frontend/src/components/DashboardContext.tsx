@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useApolloClient } from '@apollo/react-hooks';
 import format from 'date-fns/format';
-import { Typography, Select, makeStyles, createStyles, Theme, MenuItem } from '@material-ui/core';
+import {
+    Typography,
+    Select,
+    makeStyles,
+    createStyles,
+    Theme,
+    MenuItem,
+    FormControl,
+    InputLabel,
+} from '@material-ui/core';
 import {
     useSumDebitsByYearMonthQuery,
     useGetYearMonthQuery,
@@ -55,14 +64,14 @@ export const DashboardContext: React.FC<Props> = () => {
                 </Typography>
             </div>
 
-            <Income year={year} month={month} />
+            <Expenses year={year} month={month} />
             <Typography variant='h5'>Income: l33t</Typography>
             <SelectDate year={year} month={month} dates={YearMonth?.getYearMonth} />
         </div>
     );
 };
 
-const Income: React.FC<{ year: number; month: number }> = ({ year, month }) => {
+const Expenses: React.FC<{ year: number; month: number }> = ({ year, month }) => {
     const { data, loading } = useSumDebitsByYearMonthQuery({
         variables: {
             year,
@@ -76,11 +85,20 @@ const Income: React.FC<{ year: number; month: number }> = ({ year, month }) => {
     return <Typography variant='h5'>Expenses: {data?.sumDebitsByYearMonth}</Typography>;
 };
 
+const useFormStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        select: {
+            fontSize: 25,
+        },
+    })
+);
+
 const SelectDate: React.FC<{ year: number; month: number; dates?: YearMonth[] }> = ({
     month,
     year,
     dates,
 }) => {
+    const classes = useFormStyles();
     const client = useApolloClient();
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -101,12 +119,17 @@ const SelectDate: React.FC<{ year: number; month: number; dates?: YearMonth[] }>
     }, [activeDate, client]);
 
     return (
-        <Select value={activeDate} onChange={handleChange}>
-            {dates?.map(({ year, month }, i) => (
-                <MenuItem key={i} value={`${month}/${year}`}>
-                    {`${month}/${year}`}
-                </MenuItem>
-            ))}
-        </Select>
+        <FormControl>
+            <InputLabel shrink id='month-year'>
+                Month / Year
+            </InputLabel>
+            <Select value={activeDate} onChange={handleChange} className={classes.select}>
+                {dates?.map(({ year, month }, i) => (
+                    <MenuItem className={classes.select} key={i} value={`${month}/${year}`}>
+                        {`${month}/${year}`}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
     );
 };

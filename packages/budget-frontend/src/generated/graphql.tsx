@@ -16,20 +16,20 @@ export type Scalars = {
 };
 
 export type User = {
-   __typename?: 'User';
+  __typename?: 'User';
   id: Scalars['ID'];
   username: Scalars['String'];
 };
 
 export type Category = {
-   __typename?: 'Category';
+  __typename?: 'Category';
   id?: Maybe<Scalars['ID']>;
   name: Scalars['String'];
   budget?: Maybe<Scalars['Float']>;
 };
 
 export type Transaction = {
-   __typename?: 'Transaction';
+  __typename?: 'Transaction';
   id: Scalars['ID'];
   date: Scalars['String'];
   type: Scalars['String'];
@@ -45,18 +45,18 @@ export type Transaction = {
 };
 
 export type LoginResponseDto = {
-   __typename?: 'LoginResponseDto';
+  __typename?: 'LoginResponseDto';
   accessToken: Scalars['String'];
 };
 
 export type YearMonth = {
-   __typename?: 'YearMonth';
+  __typename?: 'YearMonth';
   year: Scalars['Int'];
   month: Scalars['Int'];
 };
 
 export type ChartData = {
-   __typename?: 'ChartData';
+  __typename?: 'ChartData';
   payload: Scalars['JSONObject'];
 };
 
@@ -88,7 +88,7 @@ export type TransactionInput = {
 };
 
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   me?: Maybe<User>;
   getTransactions: Array<Transaction>;
   getTransactionById: Transaction;
@@ -173,7 +173,7 @@ export type DateInput = {
 };
 
 export type Mutation = {
-   __typename?: 'Mutation';
+  __typename?: 'Mutation';
   signUp: Scalars['Boolean'];
   signIn: LoginResponseDto;
   revokeRefreshToken: Scalars['Boolean'];
