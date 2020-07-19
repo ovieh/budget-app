@@ -73,7 +73,7 @@ export class TransactionResolver {
     @Args('year') year: number,
     @Args('month') month: number,
     @CurrentUser() user: User,
-  ): Promise<Transaction[]> {
+  ) {
     const result = await this.transactionService.getTransactionsByYearAndMonth(
       year,
       month,
@@ -88,7 +88,7 @@ export class TransactionResolver {
     @Args('year') year: number,
     @Args('month') month: number,
     @CurrentUser() user: User,
-  ): Promise<Transaction[]>  {
+  ) {
     const result = await this.transactionService.getCreditsByYearAndMonth(
       year,
       month,
@@ -103,7 +103,7 @@ export class TransactionResolver {
     @Args('year') year: number,
     @Args('month') month: number,
     @CurrentUser() user: User,
-  ): Promise<Transaction[]>  {
+  ) {
     const result = await this.transactionService.getDebitsByYearAndMonth(
       year,
       month,
@@ -114,7 +114,7 @@ export class TransactionResolver {
 
   @Query(() => [YearMonth])
   @UseGuards(GqlAuthGuard)
-  async getYearMonth(@CurrentUser() user: User): Promise<YearMonth[]> {
+  async getYearMonth(@CurrentUser() user: User) {
     return this.transactionService.getYearMonth(user);
   }
 

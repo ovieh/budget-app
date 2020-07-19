@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as config from 'config';
 import * as helmet from 'helmet';
@@ -11,6 +11,12 @@ async function bootstrap() {
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || serverConfig.port;
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
 
   if (process.env.NODE_ENV === 'development') {
     app.enableCors({ origin: 'http://localhost:5000', credentials: true });

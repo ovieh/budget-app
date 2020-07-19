@@ -11,6 +11,8 @@ import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
 import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
+import { CreateMonthDto } from 'src/month/DTO/create-month.dto';
+import { MonthService } from 'src/month/month.service';
 
 @Injectable()
 export class TransactionService {
@@ -18,6 +20,7 @@ export class TransactionService {
     @InjectRepository(TransactionRepository)
     private transactionRepository: TransactionRepository,
     private categoryService: CategoryService,
+    private monthService: MonthService,
   ) {}
 
   // async importFile(file: Buffer, user: User) {
@@ -51,21 +54,31 @@ export class TransactionService {
     createTransactionDto: CreateTransactionDto,
     user: User,
   ): Promise<Transaction> {
-    const result = await this.transactionRepository.createTransaction(
+    const transaction = await this.transactionRepository.createTransaction(
       createTransactionDto,
       user,
     );
 
     const category = await this.categoryService.getCategoryByDescription(
-      result.description,
+      transaction.description,
       user,
     );
 
     if (category) {
-      await this.updateCategoryById(result.id, category, user);
+      await this.updateCategoryById(transaction.id, category, user);
     }
 
-    return result;
+    const d = new Date(transaction.date);
+    const date = {
+      month: d.getMonth() + 1,
+      year: d.getFullYear(),
+      transaction
+    };
+
+    transaction.month = await this.monthService.createMonth(date, user);
+    await transaction.save();
+
+    return transaction;
   }
 
   async deleteTransactionById(id: string, user: User): Promise<void> {
@@ -175,10 +188,10 @@ export class TransactionService {
     year: number,
     month: number,
   ): Promise<number> {
-    return this.transactionRepository.sumDebitsByYearMonth(
-      user,
-      year,
-      month,
-    );
+    return this.transactionRepository.sumDebitsByYearMonth(user, year, month);
+  }
+
+  async createMonth(createMonthDto: CreateMonthDto, user: User) {
+    return this.monthService.createMonth(createMonthDto, user);
   }
 }

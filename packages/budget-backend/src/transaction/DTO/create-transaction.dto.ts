@@ -1,42 +1,38 @@
-import { IsDate, IsNotEmpty, IsCurrency} from 'class-validator';
+import { IsDate, IsNotEmpty, IsCurrency, IsNumber, IsString} from 'class-validator';
 import { ArgsType, Field, Float } from '@nestjs/graphql';
 
 @ArgsType()
 export class CreateTransactionDto {
   @Field(() => String)
-  @IsNotEmpty()
-  @IsDate()
+  @IsString()
   date: string;
-
-  @IsNotEmpty()
+  
   @Field(() => String)
+  @IsString()
   type: string;
 
   @Field(() => String)
-  @IsNotEmpty()
+  @IsString()
   sortCode: string;
 
   @Field(() => String)
-  @IsNotEmpty()
+  @IsString()
   accountNumber: string;
 
-  @IsNotEmpty()
   @Field(() => String)
+  @IsString()
   description: string;
 
   @Field(() => Float)
-  @IsCurrency()
-  @IsNotEmpty()
+  @IsNumber()  
   debitAmount: number;
 
   @Field(() => Float)
-  @IsCurrency()
-  @IsNotEmpty()
+  @IsNumber()  
   creditAmount: number;
 
   @Field(() => Float)
-  @IsCurrency()
-  @IsNotEmpty()
+  @IsNumber()  
   balance: number;
 
 }

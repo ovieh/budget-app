@@ -13,6 +13,16 @@ type Category {
   budget: Float
 }
 
+type Month {
+  id: Int!
+  month: Int
+  date: String!
+  year: Float!
+  categories: [Category!]!
+  transactions: [Transaction!]
+  userId: Float!
+}
+
 type Transaction {
   id: ID!
   date: String!
@@ -86,6 +96,10 @@ type Query {
   sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
   chartData(dates: [DateInput!]!): ChartData!
   MonthlySpendingChart(date: DateInput!): ChartData!
+  getMonths: [Month!]!
+  getMonthByIds(ids: [Int!]!): [Month!]!
+  sortedMonths: [Month!]!
+  MonthByDate(offset: Int!, limit: Int!, year: Int, month: Int): [Month!]!
 }
 
 input DateInput {
@@ -105,6 +119,7 @@ type Mutation {
   updateCategory(budget: Float!, name: String!, id: Float!): Category!
   createCategory(name: String!, budget: Float!): Category!
   removeCategory(id: Float!): String!
+  createMonth(month: Int!, year: Int!, transaction: ID!): Month!
 }
 
 """Upload custom scalar type"""

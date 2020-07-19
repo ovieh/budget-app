@@ -277,7 +277,7 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  async updateCategoryByIds(ids: string[], categoryId: number, user: User) {
+  async updateCategoryByIds(ids: string[], categoryId: number, user: User): Promise<void> {
     await this.createQueryBuilder()
       .update(Transaction)
       .set({ categoryId })

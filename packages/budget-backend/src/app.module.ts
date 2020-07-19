@@ -11,7 +11,9 @@ import { AppController } from './app/app.controller';
 import { AuthService } from './auth/auth.service';
 import { UserRepository } from './auth/user.repository';
 import { JwtModule } from '@nestjs/jwt';
+import { MonthModule } from './month/month.module';
 import * as config from 'config';
+import { join } from 'path';
 
 const jwtConfig = config.get('jwt');
 
@@ -20,7 +22,7 @@ const jwtConfig = config.get('jwt');
     TypeOrmModule.forRoot(typeOrmConfig),
     UploadScalar,
     GraphQLModule.forRoot({
-      autoSchemaFile: 'schema.gql',
+      autoSchemaFile: join(process.cwd(), 'schema.gql'),
       context: ({ req, res }) => ({ req, res }),
       uploads: {
         maxFileSize: 1000000,
@@ -31,6 +33,7 @@ const jwtConfig = config.get('jwt');
     FileuploadModule,
     TransactionModule,
     CategoryModule,
+    MonthModule,
     AuthModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || jwtConfig.secret,

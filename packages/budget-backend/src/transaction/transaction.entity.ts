@@ -6,12 +6,14 @@ import {
   BeforeInsert,
   Unique,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { RelationColumn } from '../helpers';
 import { ObjectType, InputType, Field, ID, HideField } from '@nestjs/graphql';
+import { Month } from '../month/month.entity';
 
 @ObjectType()
 @InputType('TransactionInput')
@@ -52,6 +54,10 @@ export class Transaction extends BaseEntity {
   categoryId?: number;
 
   @HideField()
+  @ManyToOne(() => Month, (month) => month.transactions)
+  month: Month;
+
+  @HideField()
   @ManyToOne(() => User, (user) => user.transaction)
   user: User;
 
@@ -59,7 +65,7 @@ export class Transaction extends BaseEntity {
   userId: number;
 
   @BeforeInsert()
-  addId() {
+  addId(): void {
     this.id = uuidv4();
   }
 }

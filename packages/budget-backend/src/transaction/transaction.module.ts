@@ -10,18 +10,23 @@ import { CategoryModule } from '../category/category.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DataLoaderInterceptor } from '@ovieh/nestjs-dataloader';
 import { TransactionLoader } from './transaction.loader.';
+import { MonthRepository } from '../month/month.repository';
+import { MonthService } from '../month/month.service';
+import { MonthModule } from '../month/month.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TransactionRepository, CategoryRepository]),
+    TypeOrmModule.forFeature([TransactionRepository, CategoryRepository, MonthRepository]),
     AuthModule,
     CategoryModule,
+    MonthModule,
   ],
   providers: [
     TransactionService,
     TransactionResolver,
     CategoryService,
     TransactionLoader,
+    MonthService,
     { provide: APP_INTERCEPTOR, useClass: DataLoaderInterceptor },
   ],
 })
