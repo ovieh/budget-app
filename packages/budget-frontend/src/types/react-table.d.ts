@@ -8,12 +8,16 @@
 declare module 'react-table' {
     import { Dispatch, SetStateAction, ReactNode } from 'react';
 
-    export interface Cell<D> {
+    export type StringKey<D> = Extract<keyof D, string>;
+    export type IdType<D> = StringKey<D> | string;
+    export type CellValue<V = any> = V;
+
+    export interface Cell<D extends object> {
         render: (type: string) => any;
         getCellProps: () => any;
         column: Column<D>;
         row: Row<D>;
-        state: any;
+        state: TableState<D>;
         value: any;
     }
 
@@ -49,15 +53,13 @@ declare module 'react-table' {
         defaultSortDesc?: boolean;
     }
 
-    export interface Column<D, A extends keyof D = never>
-        extends HeaderColumn<D, A> {
+    export interface Column<D, A extends keyof D = never> extends HeaderColumn<D, A> {
         id: string | number;
     }
 
     export type Page<D> = Row<D>[];
 
-    export interface EnhancedColumn<D, A extends keyof D = never>
-        extends Column<D, A> {
+    export interface EnhancedColumn<D, A extends keyof D = never> extends Column<D, A> {
         render: (type: string) => any;
         getHeaderProps: (userProps?: any) => any;
         getSortByToggleProps: (userProps?: any) => any;
@@ -107,7 +109,7 @@ declare module 'react-table' {
     export interface TableOptions<D> {
         data: D[];
         columns: HeaderColumn<D>[];
-        state?: [any, Dispatch<SetStateAction<any>>];
+        state?: any;
         debug?: boolean;
         sortByFn?: (a: any, b: any, desc: boolean) => 0 | 1 | -1;
         manualSorting?: boolean;
@@ -115,6 +117,9 @@ declare module 'react-table' {
         defaultSortDesc?: boolean;
         disableMultiSort?: boolean;
         initialState?: any;
+        manualPagination?: boolean;
+        pageCount?: number;
+
     }
 
     export interface RowsProps {
@@ -155,18 +160,11 @@ declare module 'react-table' {
         setAllFilters: () => any;
     }
 
-    export function useTable<D>(
-        props: TableOptions<D>,
-        ...plugins: any[]
-    ): TableInstance<D>;
+    export function useTable<D>(props: TableOptions<D>, ...plugins: any[]): TableInstance<D>;
 
-    export function useColumns<D>(
-        props: TableOptions<D>
-    ): TableOptions<D> & UseColumnsValues<D>;
+    export function useColumns<D>(props: TableOptions<D>): TableOptions<D> & UseColumnsValues<D>;
 
-    export function useRows<D>(
-        props: TableOptions<D>
-    ): TableOptions<D> & UseRowsValues<D>;
+    export function useRows<D>(props: TableOptions<D>): TableOptions<D> & UseRowsValues<D>;
 
     export function useFilters<D>(
         props: TableOptions<D>
@@ -180,13 +178,9 @@ declare module 'react-table' {
         rows: Row<D>[];
     };
 
-    export function useGroupBy<D>(
-        props: TableOptions<D>
-    ): TableOptions<D> & { rows: Row<D>[] };
+    export function useGroupBy<D>(props: TableOptions<D>): TableOptions<D> & { rows: Row<D>[] };
 
-    export function usePagination<D>(
-        props: TableOptions<D>
-    ): UsePaginationValues<D>;
+    export function usePagination<D>(props: TableOptions<D>): UsePaginationValues<D>;
 
     export function useFlexLayout<D>(props: TableOptions<D>): TableOptions<D>;
 
@@ -204,8 +198,20 @@ declare module 'react-table' {
         options?: {
             reducer?: (oldState: any, newState: any, type: string) => any;
             useState?: [any, Dispatch<SetStateAction<any>>];
-        }
-    ): any;
+        },
+        pageIndex?: number
+    );
+
+    export interface TableState<D extends object = {}> {
+        hiddenColumns?: Array<IdType<D>>;
+        initialState?: any;
+        overriddenState?: any;
+        options?: {
+            reducer?: (oldState: any, newState: any, type: string) => any;
+            useState?: [any, Dispatch<SetStateAction<any>>];
+        };
+        pageIndex?: number;
+    }
 
     export const actions: any;
 }

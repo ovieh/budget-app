@@ -1,6 +1,0 @@
-query getYearMonth{
-  getYearMonth{
-    year
-    month
-  }
-}

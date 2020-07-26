@@ -10,7 +10,6 @@ import { PrimaryList } from '../../components/PrimaryList';
 import { TransactionsTable } from '../../components/TransactionsTable';
 import { useMonthlySpendingChartQuery, YearMonth } from '../../generated/graphql';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
-import { useQuery } from '@apollo/react-hooks';
 
 interface Props {}
 
@@ -48,13 +47,6 @@ export const Transactions: React.FC<Props> = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-    const GET_ACTIVE_DATE = gql`
-        query GetActiveDate {
-            activeDate @client
-        }
-    `;
-
-    const { data: yearMonth } = useQuery(GET_ACTIVE_DATE);
 
     // if (loading) {
     //     return <div>I'm loading</div>;
@@ -64,8 +56,6 @@ export const Transactions: React.FC<Props> = () => {
     //     return <pre>{JSON.stringify(error, null, 2)}</pre>;
     // }
 
-    const year = parseInt(yearMonth.activeDate.split('/')[1]);
-    const month = parseInt(yearMonth.activeDate.split('/')[0]);
 
     return (
         <div className={classes.root}>
@@ -80,7 +70,7 @@ export const Transactions: React.FC<Props> = () => {
                         <Grid container direction='column' spacing={1}>
                             <Grid item md={12}>
                                 <Paper>
-                                    <TransactionsTable year={year} month={month} />
+                                    <TransactionsTable />
                                 </Paper>
                             </Grid>
                             <Grid item md={6} xs={12}>
@@ -91,18 +81,18 @@ export const Transactions: React.FC<Props> = () => {
 
                     <Grid item md={5} xs={9}>
                         <Paper className={fixedHeightPaper}>
-                            <TransactionByCategoryChart
+                            {/* <TransactionByCategoryChart
                                 date={{
                                     month,
                                     year,
                                 }}
-                            />
+                            /> */}
                         </Paper>
                     </Grid>
                     <Grid item md={5} xs={9}>
-                        <Paper className={classes.paper}>
+                        {/* <Paper className={classes.paper}>
                             <DashboardContext />
-                        </Paper>
+                        </Paper> */}
                     </Grid>
                 </Grid>
             </main>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useApolloClient } from '@apollo/react-hooks';
 import format from 'date-fns/format';
 import {
     Typography,
@@ -13,10 +12,10 @@ import {
 } from '@material-ui/core';
 import {
     useSumDebitsByYearMonthQuery,
-    useGetYearMonthQuery,
+    // useGetYearMonthQuery,
     YearMonth,
 } from '../generated/graphql';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useApolloClient } from '@apollo/client';
 import gql from 'graphql-tag';
 
 interface Props {}
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const DashboardContext: React.FC<Props> = () => {
     const classes = useStyles();
-    const { data: YearMonth, loading } = useGetYearMonthQuery();
+    // const { data: YearMonth, loading } = useGetYearMonthQuery();
     const GET_ACTIVE_DATE = gql`
         {
             activeDate @client
@@ -43,9 +42,9 @@ export const DashboardContext: React.FC<Props> = () => {
 
     const { data: active } = useQuery(GET_ACTIVE_DATE);
 
-    if (loading) {
-        return <div>loading</div>;
-    }
+    // if (loading) {
+    //     return <div>loading</div>;
+    // }
 
     const year = parseInt(active.activeDate.split('/')[1]);
 
@@ -66,7 +65,7 @@ export const DashboardContext: React.FC<Props> = () => {
 
             <Expenses year={year} month={month} />
             <Typography variant='h5'>Income: l33t</Typography>
-            <SelectDate year={year} month={month} dates={YearMonth?.getYearMonth} />
+            {/* <SelectDate year={year} month={month} dates={YearMonth?.getYearMonth} /> */}
         </div>
     );
 };

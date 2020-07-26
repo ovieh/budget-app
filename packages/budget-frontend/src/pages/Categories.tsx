@@ -33,7 +33,8 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
         { Header: 'Category', accessor: 'name' },
         { Header: 'Budget', accessor: 'budget' },
     ];
-    return <ReusuableTable data={data.getCategories} columns={columns} />;
+    return null;
+    // return <ReusuableTable data={data.getCategories} columns={columns} pageCount={1} />;
 };
 
 const CategorySchema = yup.object().shape({

@@ -1,32 +1,31 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import {
-    GetYearMonthQuery,
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
     useDebitsByMonthAndYearQuery,
     CategoriesDocument,
     DebitsByMonthAndYearDocument,
+    useTransactionsByMonthAndYearQuery,
+    TransactionsByMonthAndYearQuery,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
 import { TablePlaceholder } from './TablePlaceholder/TablePlaceholder';
 
 interface Props {
-    year: number;
-    month: number;
     // active: number;
     handleClickOpen?: () => void;
 }
 
-export const TransactionsTable: React.FC<Props> = ({ year, month }) => {
-    const { data, error, loading } = useDebitsByMonthAndYearQuery({
-        // skip: !yearMonth.getYearMonth.length,
+export const TransactionsTable: React.FC<Props> = () => {
+    const { data, loading, error, fetchMore } = useTransactionsByMonthAndYearQuery({
         variables: {
-            month,
-            year,
+            limit: 5,
+            page: 1,
         },
+        fetchPolicy: 'cache-and-network',
+        notifyOnNetworkStatusChange: true,
     });
-
 
     // TODO: Figure out these types
     interface EditableCellTypes {
@@ -58,10 +57,7 @@ export const TransactionsTable: React.FC<Props> = ({ year, month }) => {
                     refetchQueries: [
                         {
                             query: DebitsByMonthAndYearDocument,
-                            variables: {
-                                month,
-                                year,
-                            },
+                            variables: {},
                         },
                     ],
                 });
@@ -91,16 +87,34 @@ export const TransactionsTable: React.FC<Props> = ({ year, month }) => {
             </Select>
         );
     };
+    
+    const onLoadMore = async ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
+        pageIndex > 0 &&
+            (await fetchMore({
+                variables: {
+                    page: pageIndex + 1,
+                    limit: 5,
+                },
+                updateQuery: (prev: any, { fetchMoreResult }: any) => {
+                    if (!fetchMoreResult) return prev.MonthByDate.data;
+
+                    const MonthByDate = Object.assign({}, prev.MonthByDate, {
+                        data: [...prev.MonthByDate.data, ...fetchMoreResult.MonthByDate.data],
+                        page: fetchMoreResult.MonthByDate.page,
+                    });
+
+                    return { MonthByDate };
+                },
+            }));
+    };
 
     // Not sure useMemo is necessary?
     const TransactionsColumns = useMemo(
         () => [
             { Header: 'Date', accessor: 'date' },
-            { Header: 'Description', accessor: 'description' },
-            { Header: 'Amount', accessor: 'debitAmount' },
-            // { Header: 'Credit Amount', accessor: 'creditAmount' },
-            // { Header: 'Balance', accessor: 'balance' },
-            { Header: 'Category', accessor: 'category.name', Cell: EditableCell },
+            { Header: 'Description', accessor: 'transactions[0].description' },
+            { Header: 'Amount', accessor: 'transactions[0].debitAmount' },
+            { Header: 'Category', accessor: 'categories[0].name', Cell: EditableCell },
         ],
         []
     );
@@ -112,8 +126,15 @@ export const TransactionsTable: React.FC<Props> = ({ year, month }) => {
     if (loading) {
         return <TablePlaceholder />;
     }
+
     return data ? (
-        <ReusuableTable columns={TransactionsColumns} data={data.getDebitsByMonthAndYear} />
+        <ReusuableTable
+            columns={TransactionsColumns}
+            data={data.MonthByDate.data}
+            pageCount={data.MonthByDate.pageCount}
+            onLoadMore={(data: any) => onLoadMore(data)}
+            count={data.MonthByDate.totalCount}
+        />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );

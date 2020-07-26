@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
+import {
+    ApolloProvider,
+    InMemoryCache,
+    ApolloClient,
+    HttpLink,
+    ApolloLink,
+    Observable,
+} from '@apollo/client';
 import { onError } from 'apollo-link-error';
-import { ApolloLink, Observable } from 'apollo-link';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { getAccessToken, setAccessToken } from './accessToken';
 import { App } from './App';
@@ -13,21 +16,9 @@ import jwtDecode from 'jwt-decode';
 import './index.css';
 import { ThemeProvider, createMuiTheme, CssBaseline } from '@material-ui/core';
 import { teal, orange } from '@material-ui/core/colors';
-import gql from 'graphql-tag';
 
 const cache = new InMemoryCache({
     // addTypename: false,
-});
-
-cache.writeQuery({
-    query: gql`
-        query GetActiveDate {
-            activeDate
-        }
-    `,
-    data: {
-        activeDate: '9/2019',
-    },
 });
 
 const theme = createMuiTheme({
@@ -105,7 +96,7 @@ const client = new ApolloClient({
                 console.warn('Your refresh token is invalid. Try to relogin');
                 console.error(err);
             },
-        }),
+        }) as any, // TODO: Figure why this is needed
         onError(({ graphQLErrors, networkError }) => {
             console.log(graphQLErrors);
             console.log(networkError);
