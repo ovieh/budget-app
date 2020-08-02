@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTable, usePagination, Row, Column } from 'react-table';
 import { TableFooter, TablePagination } from '@material-ui/core';
 import { TransactionsByMonthAndYearQuery } from '../generated/graphql';
@@ -16,8 +16,9 @@ interface Props {
     data: any;
     pageCount: number;
     count: number;
-
     onLoadMore: Function;
+    page: number;
+    controlledPageIndex: number;
 }
 
 export const ReusuableTable: React.FC<Props> = ({
@@ -26,8 +27,10 @@ export const ReusuableTable: React.FC<Props> = ({
     onLoadMore,
     pageCount: controlledPageCount,
     count = 0,
+    page: currentPage,
+    controlledPageIndex,
 }) => {
-    const [currentPage, setCurrentPage] = React.useState(0);
+    // const [currentPage, setCurrentPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const {
@@ -43,32 +46,44 @@ export const ReusuableTable: React.FC<Props> = ({
         state: { pageIndex, pageSize },
         setPageSize,
         gotoPage,
+        // controlledPageIndex,
     } = useTable(
         {
+            useControlledState: (state: any) => {
+                return React.useMemo(
+                    () => ({
+                        ...state,
+
+                        pageIndex: controlledPageIndex,
+                    }),
+
+                    [state, controlledPageIndex]
+                );
+            },
             columns,
             data,
-            initialState: { pageIndex: 0, pageSize: 5 },
+            initialState: { pageSize: 5 },
             manualPagination: true,
             pageCount: controlledPageCount,
         },
         usePagination
     );
-
-    useEffect(() => {
-        onLoadMore({ pageIndex, pageSize });
-    }, [pageIndex, onLoadMore, pageSize]);
-
+    console.log('currentpage', currentPage);
+    console.log('pageindex', pageIndex);
+    // useEffect(() => {
+    //     onLoadMore({ pageIndex, pageSize });
+    // }, [pageIndex, onLoadMore, pageSize]);
 
     const handleChangePage = (event: unknown, newPage: number) => {
-        nextPage();
-        gotoPage(pageIndex + 1);
-        setCurrentPage(pageIndex + 1);
+        onLoadMore({ pageIndex: 1, pageSize: 5 });
+        // nextPage();
+        gotoPage(2);
     };
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPageSize(parseInt(event.target.value, 10));
-        setCurrentPage(0);
+        // setCurrentPage(0);
     };
 
     return (

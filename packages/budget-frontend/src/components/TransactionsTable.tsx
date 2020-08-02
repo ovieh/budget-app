@@ -87,26 +87,30 @@ export const TransactionsTable: React.FC<Props> = () => {
             </Select>
         );
     };
-    
-    const onLoadMore = async ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
-        pageIndex > 0 &&
-            (await fetchMore({
-                variables: {
-                    page: pageIndex + 1,
-                    limit: 5,
-                },
-                updateQuery: (prev: any, { fetchMoreResult }: any) => {
-                    if (!fetchMoreResult) return prev.MonthByDate.data;
 
-                    const MonthByDate = Object.assign({}, prev.MonthByDate, {
-                        data: [...prev.MonthByDate.data, ...fetchMoreResult.MonthByDate.data],
-                        page: fetchMoreResult.MonthByDate.page,
-                    });
+    const onLoadMore = useCallback(
+        ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
+            pageIndex > 0 &&
+                fetchMore({
+                    variables: {
+                        page: pageIndex + 1,
+                        limit: 5,
+                    },
+                    updateQuery: (prev: any, { fetchMoreResult }: any) => {
+                        if (!fetchMoreResult) return prev.MonthByDate.data;
 
-                    return { MonthByDate };
-                },
-            }));
-    };
+                        const MonthByDate = Object.assign({}, prev.MonthByDate, {
+                            data: [...prev.MonthByDate.data, ...fetchMoreResult.MonthByDate.data],
+                            page: fetchMoreResult.MonthByDate.page,
+                        });
+
+                        return { MonthByDate };
+                    },
+                });
+            console.log(pageIndex);
+        },
+        [fetchMore]
+    );
 
     // Not sure useMemo is necessary?
     const TransactionsColumns = useMemo(
@@ -127,6 +131,8 @@ export const TransactionsTable: React.FC<Props> = () => {
         return <TablePlaceholder />;
     }
 
+    console.log(data);
+
     return data ? (
         <ReusuableTable
             columns={TransactionsColumns}
@@ -134,6 +140,8 @@ export const TransactionsTable: React.FC<Props> = () => {
             pageCount={data.MonthByDate.pageCount}
             onLoadMore={(data: any) => onLoadMore(data)}
             count={data.MonthByDate.totalCount}
+            page={data.MonthByDate.page - 1}
+            controlledPageIndex={data.MonthByDate.page - 1}
         />
     ) : (
         <h1>i'm waiting for data!!!</h1>

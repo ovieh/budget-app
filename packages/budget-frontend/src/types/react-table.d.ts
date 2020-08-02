@@ -119,6 +119,8 @@ declare module 'react-table' {
         initialState?: any;
         manualPagination?: boolean;
         pageCount?: number;
+        controlledPageIndex?: number;
+        useControlledState: any;
 
     }
 
@@ -193,7 +195,9 @@ declare module 'react-table' {
     };
 
     export function useTableState(
-        initialState?: any,
+        initialState?: {
+            pageIndex?: number;
+        },
         overriddenState?: any,
         options?: {
             reducer?: (oldState: any, newState: any, type: string) => any;
