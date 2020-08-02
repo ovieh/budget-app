@@ -1,19 +1,16 @@
-query TransactionsByMonthAndYear($year: Int, $month: Int, $limit: Int!, $page: Int!) {
-  MonthByDate(year: $year, month: $month, limit: $limit, page: $page) {
-    totalCount
-    page
-    limit
-    pageCount
-    data {
+query TransactionsByMonthAndYear($year: Int, $month: Int) {
+  MonthByDate(year: $year, month: $month) {
       date
       transactions {
         debitAmount
+        id
         date
         description
-      }
-      categories {
-        name
+        category {
+          id
+          budget
+          name
+        }
       }
     }
-  }
 }

@@ -7,6 +7,7 @@ import {
     DebitsByMonthAndYearDocument,
     useTransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearQuery,
+    TransactionsByMonthAndYearDocument,
 } from '../generated/graphql';
 import { ReusuableTable } from './ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -18,13 +19,8 @@ interface Props {
 }
 
 export const TransactionsTable: React.FC<Props> = () => {
-    const { data, loading, error, fetchMore } = useTransactionsByMonthAndYearQuery({
-        variables: {
-            limit: 5,
-            page: 1,
-        },
+    const { data, loading, error } = useTransactionsByMonthAndYearQuery({
         fetchPolicy: 'cache-and-network',
-        notifyOnNetworkStatusChange: true,
     });
 
     // TODO: Figure out these types
@@ -37,8 +33,7 @@ export const TransactionsTable: React.FC<Props> = () => {
     const EditableCell: React.FC<EditableCellTypes> = ({
         cell: { value: initialValue },
         row: {
-            index,
-            original: { id },
+            original: { transactions },
         },
         column,
     }) => {
@@ -48,19 +43,18 @@ export const TransactionsTable: React.FC<Props> = () => {
         const [categoryId, setCategoryId] = useState(0);
 
         const onBlur = () => {
-            categoryId &&
-                updateCategory({
-                    variables: {
-                        id,
-                        categoryId,
+            updateCategory({
+                variables: {
+                    id: transactions[0].id,
+                    categoryId,
+                },
+                refetchQueries: [
+                    {
+                        query: TransactionsByMonthAndYearDocument,
+                        variables: {},
                     },
-                    refetchQueries: [
-                        {
-                            query: DebitsByMonthAndYearDocument,
-                            variables: {},
-                        },
-                    ],
-                });
+                ],
+            });
         };
 
         const onChange = (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -88,37 +82,13 @@ export const TransactionsTable: React.FC<Props> = () => {
         );
     };
 
-    const onLoadMore = useCallback(
-        ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
-            pageIndex > 0 &&
-                fetchMore({
-                    variables: {
-                        page: pageIndex + 1,
-                        limit: 5,
-                    },
-                    updateQuery: (prev: any, { fetchMoreResult }: any) => {
-                        if (!fetchMoreResult) return prev.MonthByDate.data;
-
-                        const MonthByDate = Object.assign({}, prev.MonthByDate, {
-                            data: [...prev.MonthByDate.data, ...fetchMoreResult.MonthByDate.data],
-                            page: fetchMoreResult.MonthByDate.page,
-                        });
-
-                        return { MonthByDate };
-                    },
-                });
-            console.log(pageIndex);
-        },
-        [fetchMore]
-    );
-
     // Not sure useMemo is necessary?
     const TransactionsColumns = useMemo(
         () => [
             { Header: 'Date', accessor: 'date' },
             { Header: 'Description', accessor: 'transactions[0].description' },
             { Header: 'Amount', accessor: 'transactions[0].debitAmount' },
-            { Header: 'Category', accessor: 'categories[0].name', Cell: EditableCell },
+            { Header: 'Category', accessor: 'transactions[0].category.name', Cell: EditableCell },
         ],
         []
     );
@@ -131,18 +101,8 @@ export const TransactionsTable: React.FC<Props> = () => {
         return <TablePlaceholder />;
     }
 
-    console.log(data);
-
     return data ? (
-        <ReusuableTable
-            columns={TransactionsColumns}
-            data={data.MonthByDate.data}
-            pageCount={data.MonthByDate.pageCount}
-            onLoadMore={(data: any) => onLoadMore(data)}
-            count={data.MonthByDate.totalCount}
-            page={data.MonthByDate.page - 1}
-            controlledPageIndex={data.MonthByDate.page - 1}
-        />
+        <ReusuableTable columns={TransactionsColumns} data={data.MonthByDate} />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );

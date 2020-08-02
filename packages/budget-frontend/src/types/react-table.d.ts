@@ -120,7 +120,7 @@ declare module 'react-table' {
         manualPagination?: boolean;
         pageCount?: number;
         controlledPageIndex?: number;
-        useControlledState: any;
+        useControlledState?: boolean;
 
     }
 

@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/client';
 import * as ApolloReactHooks from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -73,15 +73,6 @@ export type ChartData = {
 };
 
 
-export type MonthPaginated = {
-  __typename?: 'MonthPaginated';
-  page: Scalars['Int'];
-  limit: Scalars['Int'];
-  totalCount: Scalars['Int'];
-  pageCount: Scalars['Int'];
-  data: Array<Month>;
-};
-
 export type UserInput = {
   id: Scalars['ID'];
   username: Scalars['String'];
@@ -128,7 +119,7 @@ export type Query = {
   getMonths: Array<Month>;
   getMonthByIds: Array<Month>;
   sortedMonths: Array<Month>;
-  MonthByDate: MonthPaginated;
+  MonthByDate: Array<Month>;
   MonthByCategory: Array<Month>;
 };
 
@@ -200,8 +191,6 @@ export type QueryGetMonthByIdsArgs = {
 
 
 export type QueryMonthByDateArgs = {
-  limit: Scalars['Int'];
-  page: Scalars['Int'];
   year?: Maybe<Scalars['Int']>;
   month?: Maybe<Scalars['Int']>;
 };
@@ -373,28 +362,23 @@ export type SumDebitsByYearMonthQuery = (
 export type TransactionsByMonthAndYearQueryVariables = Exact<{
   year?: Maybe<Scalars['Int']>;
   month?: Maybe<Scalars['Int']>;
-  limit: Scalars['Int'];
-  page: Scalars['Int'];
 }>;
 
 
 export type TransactionsByMonthAndYearQuery = (
   { __typename?: 'Query' }
-  & { MonthByDate: (
-    { __typename?: 'MonthPaginated' }
-    & Pick<MonthPaginated, 'totalCount' | 'page' | 'limit' | 'pageCount'>
-    & { data: Array<(
-      { __typename?: 'Month' }
-      & Pick<Month, 'date'>
-      & { transactions?: Maybe<Array<(
-        { __typename?: 'Transaction' }
-        & Pick<Transaction, 'debitAmount' | 'date' | 'description'>
-      )>>, categories: Array<(
+  & { MonthByDate: Array<(
+    { __typename?: 'Month' }
+    & Pick<Month, 'date'>
+    & { transactions?: Maybe<Array<(
+      { __typename?: 'Transaction' }
+      & Pick<Transaction, 'debitAmount' | 'id' | 'date' | 'description'>
+      & { category?: Maybe<(
         { __typename?: 'Category' }
-        & Pick<Category, 'name'>
+        & Pick<Category, 'id' | 'budget' | 'name'>
       )> }
-    )> }
-  ) }
+    )>> }
+  )> }
 );
 
 export type CreateCategoryMutationVariables = Exact<{
@@ -676,20 +660,17 @@ export type SumDebitsByYearMonthQueryHookResult = ReturnType<typeof useSumDebits
 export type SumDebitsByYearMonthLazyQueryHookResult = ReturnType<typeof useSumDebitsByYearMonthLazyQuery>;
 export type SumDebitsByYearMonthQueryResult = ApolloReactCommon.QueryResult<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>;
 export const TransactionsByMonthAndYearDocument = gql`
-    query TransactionsByMonthAndYear($year: Int, $month: Int, $limit: Int!, $page: Int!) {
-  MonthByDate(year: $year, month: $month, limit: $limit, page: $page) {
-    totalCount
-    page
-    limit
-    pageCount
-    data {
+    query TransactionsByMonthAndYear($year: Int, $month: Int) {
+  MonthByDate(year: $year, month: $month) {
+    date
+    transactions {
+      debitAmount
+      id
       date
-      transactions {
-        debitAmount
-        date
-        description
-      }
-      categories {
+      description
+      category {
+        id
+        budget
         name
       }
     }
@@ -711,8 +692,6 @@ export const TransactionsByMonthAndYearDocument = gql`
  *   variables: {
  *      year: // value for 'year'
  *      month: // value for 'month'
- *      limit: // value for 'limit'
- *      page: // value for 'page'
  *   },
  * });
  */
