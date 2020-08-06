@@ -14,8 +14,8 @@ type Category {
 }
 
 type Month {
-  id: Int!
-  month: Int
+  id: ID!
+  month: Int!
   date: String!
   year: Float!
   categories: [Category!]!
@@ -99,7 +99,8 @@ type Query {
   getMonths: [Month!]!
   getMonthByIds(ids: [Int!]!): [Month!]!
   sortedMonths: [Month!]!
-  MonthByDate(offset: Int!, limit: Int!, year: Int, month: Int): [Month!]!
+  MonthByDate(year: Int, month: Int): [Month!]!
+  MonthByCategory(month: Int!, year: Int!, categoryId: Int!): [Month!]!
 }
 
 input DateInput {
@@ -119,7 +120,7 @@ type Mutation {
   updateCategory(budget: Float!, name: String!, id: Float!): Category!
   createCategory(name: String!, budget: Float!): Category!
   removeCategory(id: Float!): String!
-  createMonth(month: Int!, year: Int!, transaction: ID!): Month!
+  createMonth(month: Int!, year: Int!, transaction: ID!, category: [CatIn!]!): Month!
 }
 
 """Upload custom scalar type"""

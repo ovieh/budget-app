@@ -3,7 +3,7 @@ import { ArgsType, Int, Field } from '@nestjs/graphql';
 import { PaginationArgs } from './pagination-args';
 
 @ArgsType()
-export class DateDto extends PaginationArgs {
+export class DateDto {
   @Field(() => Int, { nullable: true })
   @IsInt()
   @IsOptional()

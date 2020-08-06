@@ -9,16 +9,16 @@ import {
 } from 'typeorm';
 import { Category } from '../category/category.entity';
 import { Transaction } from '../transaction/transaction.entity';
-import { ObjectType, Int, Field } from '@nestjs/graphql';
+import { ObjectType, Int, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
 export class Month extends BaseEntity {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Field(() => ID)
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   @Column('int')
   month: number;
 

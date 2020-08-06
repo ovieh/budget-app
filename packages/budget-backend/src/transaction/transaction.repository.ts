@@ -61,53 +61,6 @@ export class TransactionRepository extends Repository<Transaction> {
     // remove first element, which just containers headers
     transactions.shift();
 
-    //   const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
-    //     if (a.description < b.description) {
-    //       return -1;
-    //     }
-
-    //     if (a.description > b.description) {
-    //       return 1;
-    //     }
-    //     return 0;
-    //   });
-
-    //   const groupedTransactions = sortedTransactions.reduce((obj, transaction) => {
-    //     const description = transaction.description;
-
-    //     if (!obj.hasOwnProperty(description)) {
-    //       obj[description] = [];
-    //     }
-
-    //     obj[description].push(transaction);
-
-    //   return obj;
-    // }, {});
-
-    // const keys = Object.keys(groupedTransactions);
-
-    // I need to get the category based on the key (description)
-    // then i need to add the category to the transaction objects
-
-    // this.categoryService.getCategoryByDescription(transaction.description, user);
-
-    // const result = await this.categoryRepsitory.getCategoryByDescription('TFL TRAVEL CH', user);
-    // console.log(`======================== ${result} =================================`)
-
-    // keys.map(async key => {
-    //   console.log(groupedTransactions[key])
-    //   // const category = await this.categoryRepsitory.getCategoryByDescription(key, user);
-    //   const category = await getRepository(Category)
-    //     .createQueryBuilder('category')
-    //     .le
-    //     .where('')
-    //     .getOne();
-
-    //   // if (category) {
-    //   //   groupedTransactions[key]
-    //   // }
-    // });
-
     try {
       const transaction = await this.save(transactions);
       return transaction;
@@ -142,7 +95,7 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.sortCode = sortCode;
     transaction.type = type;
     transaction.user = user;
-
+    
     try {
       await transaction.save();
       return transaction;

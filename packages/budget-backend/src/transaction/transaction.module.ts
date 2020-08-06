@@ -27,7 +27,7 @@ import { MonthModule } from '../month/month.module';
     CategoryService,
     TransactionLoader,
     MonthService,
-    { provide: APP_INTERCEPTOR, useClass: DataLoaderInterceptor },
+    // { provide: APP_INTERCEPTOR, useClass: DataLoaderInterceptor },
   ],
 })
 export class TransactionModule {}

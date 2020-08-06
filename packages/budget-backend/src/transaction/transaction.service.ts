@@ -13,6 +13,8 @@ import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
 import { CreateMonthDto } from 'src/month/DTO/create-month.dto';
 import { MonthService } from 'src/month/month.service';
+import { Month } from 'src/month/month.entity';
+import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
 
 @Injectable()
 export class TransactionService {
@@ -65,17 +67,12 @@ export class TransactionService {
     );
 
     if (category) {
-      await this.updateCategoryById(transaction.id, category, user);
+      await this.updateCategoryById(transaction.id, category.id, user);
     }
 
-    const d = new Date(transaction.date);
-    const date = {
-      month: d.getMonth() + 1,
-      year: d.getFullYear(),
-      transaction
-    };
+    const date = AddMonthToTransaction(transaction, category)
 
-    transaction.month = await this.monthService.createMonth(date, user);
+    transaction.month = await this.monthService.createMonth(date, user); 
     await transaction.save();
 
     return transaction;
@@ -191,7 +188,4 @@ export class TransactionService {
     return this.transactionRepository.sumDebitsByYearMonth(user, year, month);
   }
 
-  async createMonth(createMonthDto: CreateMonthDto, user: User) {
-    return this.monthService.createMonth(createMonthDto, user);
-  }
 }

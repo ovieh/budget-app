@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { TransactionRepository } from '../transaction/transaction.repository';
 import { User } from '../auth/user.entity';
 import { CategoryService } from 'src/category/category.service';
 import { TransactionService } from 'src/transaction/transaction.service';
+import { Category } from 'src/category/category.entity';
+import { Transaction } from 'src/transaction/transaction.entity';
+import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
+import { MonthService } from 'src/month/month.service';
+import { CreateMonthDto } from 'src/month/DTO/create-month.dto';
 
 @Injectable()
 export class FileuploadService {
@@ -10,60 +15,40 @@ export class FileuploadService {
     private transactionRepository: TransactionRepository,
     private transactionService: TransactionService,
     private categoryService: CategoryService,
+    private monthService: MonthService,
   ) {}
 
-  async importFile(file: any, user: User) {
-    const transactions = await this.transactionRepository.importFile(file, user);
+  async importFile(file: any, user: User): Promise<Transaction[]> {
+    const transactions = await this.transactionRepository.importFile(
+      file,
+      user,
+    );
 
-    // const sortedTransactions = transactions.sort((a: Transaction, b: Transaction) => {
-    //   if (a.description < b.description) {
-    //     return -1;
-    //   }
-
-    //   if (a.description > b.description) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
-
-    // const groupedTransactions = sortedTransactions.reduce((obj, transaction) => {
-    //     const description = transaction.description;
-
-    //     if (!obj.hasOwnProperty(description)) {
-    //       obj[description] = [];
-    //     }
-
-    //     obj[description].push(transaction);
-
-    //   return obj;
-    // }, {});
-
-    
-    // const keys = Object.keys(groupedTransactions);
-
-    // keys.map(async key => {
-    //   const category = await this.categoryService.getCategoryByDescription(key, user);
-    //   // groupedTransactions[key]
-    //   if (category) {
-    //     await this.transactionService.updateCategoryByIds(keys, category, user);
-    //   }
-    // });
-
-    transactions.map(async transaction => {
-      let categoryId: number;
+    transactions.map(async (transaction) => {
+      let category: Category;
       try {
-        categoryId = await this.categoryService.getCategoryByDescription(transaction.description, user);
-      } catch(error) {
-        console.log(`this is an error ${error}`)
-        return;
-      }
-      if (categoryId) {
-        await this.transactionService.updateCategoryById(transaction.id, categoryId, user);
-
+        category = await this.categoryService.getCategoryByDescription(
+          transaction.description,
+          user,
+        );
+      } catch (error) {
+        throw new BadRequestException('Could not parse transactions.');
       }
 
+      if (category) {
+        await this.transactionService.updateCategoryById(
+          transaction.id,
+          category.id,
+          user,
+        );
+      }
+
+      const date = AddMonthToTransaction(transaction, category);
+
+      const month = { ...date, category: [category] };
+
+      transaction.month = await this.monthService.createMonth(month, user);
     });
     return transactions;
-
   }
 }

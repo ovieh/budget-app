@@ -31,7 +31,7 @@ export class Category extends BaseEntity {
   @HideField()
   @OneToMany(() => Transaction, 
     transaction => transaction.category,
-    { eager: true },
+    // { eager: true },
   )
   transaction?: Transaction;
 

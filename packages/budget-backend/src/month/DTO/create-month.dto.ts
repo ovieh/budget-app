@@ -1,6 +1,7 @@
 import { IsInt, IsNotEmpty } from "class-validator";
 import { ArgsType, Field, Int, ID } from "@nestjs/graphql";
 import { Transaction } from "src/transaction/transaction.entity";
+import { Category } from "src/category/category.entity";
 
 @ArgsType()
 export class CreateMonthDto {
@@ -15,4 +16,8 @@ export class CreateMonthDto {
     @Field(() => ID)
     @IsNotEmpty()
     transaction: Transaction;
+
+    @Field(() => [Category])
+    @IsNotEmpty()
+    category: Category[];
 }

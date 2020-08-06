@@ -61,7 +61,7 @@ export class CategoryService {
     return category;
   }
 
-  async getCategoryByDescription(description: string, user: User) {
+  async getCategoryByDescription(description: string, user: User): Promise<Category> {
     // const { id } = await this.categoryRepository.getCategoryByDescription(description, user);
     // return id;
     return await this.categoryRepository.getCategoryByDescription(

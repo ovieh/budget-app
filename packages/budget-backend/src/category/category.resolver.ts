@@ -64,7 +64,7 @@ export class CategoryResolver {
   getCategoryByDescription(
     @Args('description') description: string,
     @CurrentUser() user: User,
-  ): Promise<number> {
+  ): Promise<Category> {
     return this.categoryService.getCategoryByDescription(description, user);
   }
 

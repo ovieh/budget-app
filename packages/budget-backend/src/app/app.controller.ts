@@ -10,12 +10,13 @@ const jwtConfig = config.get('jwt');
 
 @Controller()
 export class AppController {
-  constructor(
-   private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Post('/refresh_token')
-  async refreshToken(@Req() req: Request, @Res() res: Response) {
+  async refreshToken(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response<{ ok: boolean; accessToken: string }>> {
     const token = req.cookies.jid;
     if (!token) {
       return res.send({ ok: false, accessToken: '' });
@@ -23,9 +24,12 @@ export class AppController {
     let payload = null;
 
     try {
-      payload = verify(token, process.env.JWT_REFRESH_SECRET || jwtConfig.secret2);
+      payload = verify(
+        token,
+        process.env.JWT_REFRESH_SECRET || jwtConfig.secret2,
+      );
     } catch (error) {
-      return res.send({ok: false, accessToken: ''});
+      return res.send({ ok: false, accessToken: '' });
     }
     const user = await User.findOne(payload.username);
     if (!user) {
@@ -36,6 +40,9 @@ export class AppController {
     }
     sendRefreshToken(res, await this.authService.createRefreshToken(user));
 
-    return res.send({ ok: true, accessToken: await this.authService.createAccessToken(user) });
+    return res.send({
+      ok: true,
+      accessToken: await this.authService.createAccessToken(user),
+    });
   }
 }
