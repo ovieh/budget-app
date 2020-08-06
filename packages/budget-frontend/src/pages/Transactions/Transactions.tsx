@@ -7,7 +7,7 @@ import { DashboardContext } from '../../components/DashboardContext';
 import { Drawer } from '../../components/Drawer';
 import { LoggedInNav } from '../../components/LoggedInNav';
 import { PrimaryList } from '../../components/PrimaryList';
-import { TransactionsTable } from '../../components/TransactionsTable';
+import { TransactionsTable } from './Components/TransactionsTable';
 import { useMonthlySpendingChartQuery, YearMonth } from '../../generated/graphql';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
 
@@ -47,7 +47,6 @@ export const Transactions: React.FC<Props> = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-
     // if (loading) {
     //     return <div>I'm loading</div>;
     // }
@@ -55,7 +54,6 @@ export const Transactions: React.FC<Props> = () => {
     // if (error) {
     //     return <pre>{JSON.stringify(error, null, 2)}</pre>;
     // }
-
 
     return (
         <div className={classes.root}>
@@ -90,9 +88,9 @@ export const Transactions: React.FC<Props> = () => {
                         </Paper>
                     </Grid>
                     <Grid item md={5} xs={9}>
-                        {/* <Paper className={classes.paper}>
+                        <Paper className={classes.paper}>
                             <DashboardContext />
-                        </Paper> */}
+                        </Paper>
                     </Grid>
                 </Grid>
             </main>
@@ -105,7 +103,6 @@ interface ChartProps {
 }
 
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
-
     const { data, loading, error } = useMonthlySpendingChartQuery({
         // skip: !!date,
         variables: {

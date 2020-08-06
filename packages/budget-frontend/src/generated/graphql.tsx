@@ -1,8 +1,7 @@
-import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/client';
-import * as ApolloReactHooks from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+const gql = Apollo.gql;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -31,7 +30,7 @@ export type Category = {
 
 export type Month = {
   __typename?: 'Month';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   month: Scalars['Int'];
   date: Scalars['String'];
   year: Scalars['Float'];
@@ -197,7 +196,9 @@ export type QueryMonthByDateArgs = {
 
 
 export type QueryMonthByCategoryArgs = {
-  id: Scalars['Int'];
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+  categoryId: Scalars['Int'];
 };
 
 export type DateInput = {
@@ -335,6 +336,17 @@ export type DebitsByMonthAndYearQuery = (
   )> }
 );
 
+export type ListAvailableMonthQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListAvailableMonthQuery = (
+  { __typename?: 'Query' }
+  & { getYearMonth: Array<(
+    { __typename?: 'YearMonth' }
+    & Pick<YearMonth, 'year' | 'month'>
+  )> }
+);
+
 export type MonthlySpendingChartQueryVariables = Exact<{
   date: DateInput;
 }>;
@@ -369,7 +381,7 @@ export type TransactionsByMonthAndYearQuery = (
   { __typename?: 'Query' }
   & { MonthByDate: Array<(
     { __typename?: 'Month' }
-    & Pick<Month, 'date'>
+    & Pick<Month, 'date' | 'month' | 'year'>
     & { transactions?: Maybe<Array<(
       { __typename?: 'Transaction' }
       & Pick<Transaction, 'debitAmount' | 'id' | 'date' | 'description'>
@@ -511,15 +523,15 @@ export const CategoriesDocument = gql`
  *   },
  * });
  */
-export function useCategoriesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
-        return ApolloReactHooks.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
+export function useCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+        return Apollo.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
       }
-export function useCategoriesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
+export function useCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          return Apollo.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, baseOptions);
         }
 export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
 export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
-export type CategoriesQueryResult = ApolloReactCommon.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
+export type CategoriesQueryResult = Apollo.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
 export const ChartDataDocument = gql`
     query chartData($date: [DateInput!]!) {
   chartData(dates: $date) {
@@ -544,15 +556,15 @@ export const ChartDataDocument = gql`
  *   },
  * });
  */
-export function useChartDataQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChartDataQuery, ChartDataQueryVariables>) {
-        return ApolloReactHooks.useQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
+export function useChartDataQuery(baseOptions?: Apollo.QueryHookOptions<ChartDataQuery, ChartDataQueryVariables>) {
+        return Apollo.useQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
       }
-export function useChartDataLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChartDataQuery, ChartDataQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
+export function useChartDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChartDataQuery, ChartDataQueryVariables>) {
+          return Apollo.useLazyQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
         }
 export type ChartDataQueryHookResult = ReturnType<typeof useChartDataQuery>;
 export type ChartDataLazyQueryHookResult = ReturnType<typeof useChartDataLazyQuery>;
-export type ChartDataQueryResult = ApolloReactCommon.QueryResult<ChartDataQuery, ChartDataQueryVariables>;
+export type ChartDataQueryResult = Apollo.QueryResult<ChartDataQuery, ChartDataQueryVariables>;
 export const DebitsByMonthAndYearDocument = gql`
     query DebitsByMonthAndYear($month: Float!, $year: Float!) {
   getDebitsByMonthAndYear(month: $month, year: $year) {
@@ -585,15 +597,48 @@ export const DebitsByMonthAndYearDocument = gql`
  *   },
  * });
  */
-export function useDebitsByMonthAndYearQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>) {
-        return ApolloReactHooks.useQuery<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>(DebitsByMonthAndYearDocument, baseOptions);
+export function useDebitsByMonthAndYearQuery(baseOptions?: Apollo.QueryHookOptions<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>) {
+        return Apollo.useQuery<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>(DebitsByMonthAndYearDocument, baseOptions);
       }
-export function useDebitsByMonthAndYearLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>(DebitsByMonthAndYearDocument, baseOptions);
+export function useDebitsByMonthAndYearLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>) {
+          return Apollo.useLazyQuery<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>(DebitsByMonthAndYearDocument, baseOptions);
         }
 export type DebitsByMonthAndYearQueryHookResult = ReturnType<typeof useDebitsByMonthAndYearQuery>;
 export type DebitsByMonthAndYearLazyQueryHookResult = ReturnType<typeof useDebitsByMonthAndYearLazyQuery>;
-export type DebitsByMonthAndYearQueryResult = ApolloReactCommon.QueryResult<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>;
+export type DebitsByMonthAndYearQueryResult = Apollo.QueryResult<DebitsByMonthAndYearQuery, DebitsByMonthAndYearQueryVariables>;
+export const ListAvailableMonthDocument = gql`
+    query ListAvailableMonth {
+  getYearMonth {
+    year
+    month
+  }
+}
+    `;
+
+/**
+ * __useListAvailableMonthQuery__
+ *
+ * To run a query within a React component, call `useListAvailableMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAvailableMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListAvailableMonthQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListAvailableMonthQuery(baseOptions?: Apollo.QueryHookOptions<ListAvailableMonthQuery, ListAvailableMonthQueryVariables>) {
+        return Apollo.useQuery<ListAvailableMonthQuery, ListAvailableMonthQueryVariables>(ListAvailableMonthDocument, baseOptions);
+      }
+export function useListAvailableMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListAvailableMonthQuery, ListAvailableMonthQueryVariables>) {
+          return Apollo.useLazyQuery<ListAvailableMonthQuery, ListAvailableMonthQueryVariables>(ListAvailableMonthDocument, baseOptions);
+        }
+export type ListAvailableMonthQueryHookResult = ReturnType<typeof useListAvailableMonthQuery>;
+export type ListAvailableMonthLazyQueryHookResult = ReturnType<typeof useListAvailableMonthLazyQuery>;
+export type ListAvailableMonthQueryResult = Apollo.QueryResult<ListAvailableMonthQuery, ListAvailableMonthQueryVariables>;
 export const MonthlySpendingChartDocument = gql`
     query MonthlySpendingChart($date: DateInput!) {
   MonthlySpendingChart(date: $date) {
@@ -618,15 +663,15 @@ export const MonthlySpendingChartDocument = gql`
  *   },
  * });
  */
-export function useMonthlySpendingChartQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>) {
-        return ApolloReactHooks.useQuery<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>(MonthlySpendingChartDocument, baseOptions);
+export function useMonthlySpendingChartQuery(baseOptions?: Apollo.QueryHookOptions<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>) {
+        return Apollo.useQuery<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>(MonthlySpendingChartDocument, baseOptions);
       }
-export function useMonthlySpendingChartLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>(MonthlySpendingChartDocument, baseOptions);
+export function useMonthlySpendingChartLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>) {
+          return Apollo.useLazyQuery<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>(MonthlySpendingChartDocument, baseOptions);
         }
 export type MonthlySpendingChartQueryHookResult = ReturnType<typeof useMonthlySpendingChartQuery>;
 export type MonthlySpendingChartLazyQueryHookResult = ReturnType<typeof useMonthlySpendingChartLazyQuery>;
-export type MonthlySpendingChartQueryResult = ApolloReactCommon.QueryResult<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>;
+export type MonthlySpendingChartQueryResult = Apollo.QueryResult<MonthlySpendingChartQuery, MonthlySpendingChartQueryVariables>;
 export const SumDebitsByYearMonthDocument = gql`
     query SumDebitsByYearMonth($year: Float!, $month: Float!) {
   sumDebitsByYearMonth(year: $year, month: $month)
@@ -650,19 +695,21 @@ export const SumDebitsByYearMonthDocument = gql`
  *   },
  * });
  */
-export function useSumDebitsByYearMonthQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>) {
-        return ApolloReactHooks.useQuery<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>(SumDebitsByYearMonthDocument, baseOptions);
+export function useSumDebitsByYearMonthQuery(baseOptions?: Apollo.QueryHookOptions<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>) {
+        return Apollo.useQuery<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>(SumDebitsByYearMonthDocument, baseOptions);
       }
-export function useSumDebitsByYearMonthLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>(SumDebitsByYearMonthDocument, baseOptions);
+export function useSumDebitsByYearMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>) {
+          return Apollo.useLazyQuery<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>(SumDebitsByYearMonthDocument, baseOptions);
         }
 export type SumDebitsByYearMonthQueryHookResult = ReturnType<typeof useSumDebitsByYearMonthQuery>;
 export type SumDebitsByYearMonthLazyQueryHookResult = ReturnType<typeof useSumDebitsByYearMonthLazyQuery>;
-export type SumDebitsByYearMonthQueryResult = ApolloReactCommon.QueryResult<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>;
+export type SumDebitsByYearMonthQueryResult = Apollo.QueryResult<SumDebitsByYearMonthQuery, SumDebitsByYearMonthQueryVariables>;
 export const TransactionsByMonthAndYearDocument = gql`
     query TransactionsByMonthAndYear($year: Int, $month: Int) {
   MonthByDate(year: $year, month: $month) {
     date
+    month
+    year
     transactions {
       debitAmount
       id
@@ -695,15 +742,15 @@ export const TransactionsByMonthAndYearDocument = gql`
  *   },
  * });
  */
-export function useTransactionsByMonthAndYearQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>) {
-        return ApolloReactHooks.useQuery<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>(TransactionsByMonthAndYearDocument, baseOptions);
+export function useTransactionsByMonthAndYearQuery(baseOptions?: Apollo.QueryHookOptions<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>) {
+        return Apollo.useQuery<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>(TransactionsByMonthAndYearDocument, baseOptions);
       }
-export function useTransactionsByMonthAndYearLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>(TransactionsByMonthAndYearDocument, baseOptions);
+export function useTransactionsByMonthAndYearLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>) {
+          return Apollo.useLazyQuery<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>(TransactionsByMonthAndYearDocument, baseOptions);
         }
 export type TransactionsByMonthAndYearQueryHookResult = ReturnType<typeof useTransactionsByMonthAndYearQuery>;
 export type TransactionsByMonthAndYearLazyQueryHookResult = ReturnType<typeof useTransactionsByMonthAndYearLazyQuery>;
-export type TransactionsByMonthAndYearQueryResult = ApolloReactCommon.QueryResult<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>;
+export type TransactionsByMonthAndYearQueryResult = Apollo.QueryResult<TransactionsByMonthAndYearQuery, TransactionsByMonthAndYearQueryVariables>;
 export const CreateCategoryDocument = gql`
     mutation createCategory($name: String!, $budget: Float!) {
   createCategory(name: $name, budget: $budget) {
@@ -711,7 +758,7 @@ export const CreateCategoryDocument = gql`
   }
 }
     `;
-export type CreateCategoryMutationFn = ApolloReactCommon.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
 
 /**
  * __useCreateCategoryMutation__
@@ -731,18 +778,18 @@ export type CreateCategoryMutationFn = ApolloReactCommon.MutationFunction<Create
  *   },
  * });
  */
-export function useCreateCategoryMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, baseOptions);
+export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
+        return Apollo.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, baseOptions);
       }
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
-export type CreateCategoryMutationResult = ApolloReactCommon.MutationResult<CreateCategoryMutation>;
-export type CreateCategoryMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
+export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateTransactionDocument = gql`
     mutation CreateTransaction($date: String!, $type: String!, $sortCode: String!, $accountNumber: String!, $description: String!, $debitAmount: Float!, $creditAmount: Float!, $balance: Float!) {
   createTransaction(date: $date, type: $type, sortCode: $sortCode, accountNumber: $accountNumber, description: $description, debitAmount: $debitAmount, creditAmount: $creditAmount, balance: $balance)
 }
     `;
-export type CreateTransactionMutationFn = ApolloReactCommon.MutationFunction<CreateTransactionMutation, CreateTransactionMutationVariables>;
+export type CreateTransactionMutationFn = Apollo.MutationFunction<CreateTransactionMutation, CreateTransactionMutationVariables>;
 
 /**
  * __useCreateTransactionMutation__
@@ -768,12 +815,12 @@ export type CreateTransactionMutationFn = ApolloReactCommon.MutationFunction<Cre
  *   },
  * });
  */
-export function useCreateTransactionMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateTransactionMutation, CreateTransactionMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateTransactionMutation, CreateTransactionMutationVariables>(CreateTransactionDocument, baseOptions);
+export function useCreateTransactionMutation(baseOptions?: Apollo.MutationHookOptions<CreateTransactionMutation, CreateTransactionMutationVariables>) {
+        return Apollo.useMutation<CreateTransactionMutation, CreateTransactionMutationVariables>(CreateTransactionDocument, baseOptions);
       }
 export type CreateTransactionMutationHookResult = ReturnType<typeof useCreateTransactionMutation>;
-export type CreateTransactionMutationResult = ApolloReactCommon.MutationResult<CreateTransactionMutation>;
-export type CreateTransactionMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateTransactionMutation, CreateTransactionMutationVariables>;
+export type CreateTransactionMutationResult = Apollo.MutationResult<CreateTransactionMutation>;
+export type CreateTransactionMutationOptions = Apollo.BaseMutationOptions<CreateTransactionMutation, CreateTransactionMutationVariables>;
 export const GetTransactionsDocument = gql`
     query getTransactions {
   getTransactions {
@@ -807,15 +854,15 @@ export const GetTransactionsDocument = gql`
  *   },
  * });
  */
-export function useGetTransactionsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, baseOptions);
+export function useGetTransactionsQuery(baseOptions?: Apollo.QueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+        return Apollo.useQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, baseOptions);
       }
-export function useGetTransactionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, baseOptions);
+export function useGetTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+          return Apollo.useLazyQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, baseOptions);
         }
 export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
 export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
-export type GetTransactionsQueryResult = ApolloReactCommon.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
+export type GetTransactionsQueryResult = Apollo.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
 export const MeDocument = gql`
     query me {
   me {
@@ -840,15 +887,15 @@ export const MeDocument = gql`
  *   },
  * });
  */
-export function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        return ApolloReactHooks.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
       }
-export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
         }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
-export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const SignInDocument = gql`
     mutation SignIn($username: String!, $password: String!) {
   signIn(username: $username, password: $password) {
@@ -856,7 +903,7 @@ export const SignInDocument = gql`
   }
 }
     `;
-export type SignInMutationFn = ApolloReactCommon.MutationFunction<SignInMutation, SignInMutationVariables>;
+export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMutationVariables>;
 
 /**
  * __useSignInMutation__
@@ -876,18 +923,18 @@ export type SignInMutationFn = ApolloReactCommon.MutationFunction<SignInMutation
  *   },
  * });
  */
-export function useSignInMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
-        return ApolloReactHooks.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
+export function useSignInMutation(baseOptions?: Apollo.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
+        return Apollo.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
       }
 export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
-export type SignInMutationResult = ApolloReactCommon.MutationResult<SignInMutation>;
-export type SignInMutationOptions = ApolloReactCommon.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
+export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
+export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
 export const SignOutDocument = gql`
     mutation signOut {
   signOut
 }
     `;
-export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutation, SignOutMutationVariables>;
+export type SignOutMutationFn = Apollo.MutationFunction<SignOutMutation, SignOutMutationVariables>;
 
 /**
  * __useSignOutMutation__
@@ -905,18 +952,18 @@ export type SignOutMutationFn = ApolloReactCommon.MutationFunction<SignOutMutati
  *   },
  * });
  */
-export function useSignOutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
-        return ApolloReactHooks.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
+export function useSignOutMutation(baseOptions?: Apollo.MutationHookOptions<SignOutMutation, SignOutMutationVariables>) {
+        return Apollo.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument, baseOptions);
       }
 export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
-export type SignOutMutationResult = ApolloReactCommon.MutationResult<SignOutMutation>;
-export type SignOutMutationOptions = ApolloReactCommon.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
+export type SignOutMutationResult = Apollo.MutationResult<SignOutMutation>;
+export type SignOutMutationOptions = Apollo.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($username: String!, $password: String!) {
   signUp(username: $username, password: $password)
 }
     `;
-export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
  * __useRegisterMutation__
@@ -936,12 +983,12 @@ export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMuta
  *   },
  * });
  */
-export function useRegisterMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
-        return ApolloReactHooks.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
+export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
       }
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
-export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
-export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UpdateTransactionCategoryDocument = gql`
     mutation updateTransactionCategory($categoryId: Float!, $id: String!) {
   updateTransactionCategory(categoryId: $categoryId, id: $id) {
@@ -949,7 +996,7 @@ export const UpdateTransactionCategoryDocument = gql`
   }
 }
     `;
-export type UpdateTransactionCategoryMutationFn = ApolloReactCommon.MutationFunction<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;
+export type UpdateTransactionCategoryMutationFn = Apollo.MutationFunction<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;
 
 /**
  * __useUpdateTransactionCategoryMutation__
@@ -969,9 +1016,9 @@ export type UpdateTransactionCategoryMutationFn = ApolloReactCommon.MutationFunc
  *   },
  * });
  */
-export function useUpdateTransactionCategoryMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>) {
-        return ApolloReactHooks.useMutation<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>(UpdateTransactionCategoryDocument, baseOptions);
+export function useUpdateTransactionCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>) {
+        return Apollo.useMutation<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>(UpdateTransactionCategoryDocument, baseOptions);
       }
 export type UpdateTransactionCategoryMutationHookResult = ReturnType<typeof useUpdateTransactionCategoryMutation>;
-export type UpdateTransactionCategoryMutationResult = ApolloReactCommon.MutationResult<UpdateTransactionCategoryMutation>;
-export type UpdateTransactionCategoryMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;
+export type UpdateTransactionCategoryMutationResult = Apollo.MutationResult<UpdateTransactionCategoryMutation>;
+export type UpdateTransactionCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateTransactionCategoryMutation, UpdateTransactionCategoryMutationVariables>;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import {
     ApolloProvider,
@@ -7,6 +7,7 @@ import {
     HttpLink,
     ApolloLink,
     Observable,
+    NormalizedCacheObject,
 } from '@apollo/client';
 import { onError } from 'apollo-link-error';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
@@ -17,9 +18,7 @@ import './index.css';
 import { ThemeProvider, createMuiTheme, CssBaseline } from '@material-ui/core';
 import { teal, orange } from '@material-ui/core/colors';
 
-const cache = new InMemoryCache({
-    // addTypename: false,
-});
+const cache: InMemoryCache = new InMemoryCache({});
 
 const theme = createMuiTheme({
     palette: {
@@ -61,7 +60,7 @@ const requestLink = new ApolloLink(
         })
 );
 
-const client = new ApolloClient({
+const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
     link: ApolloLink.from([
         new TokenRefreshLink({
             accessTokenField: 'accessToken',

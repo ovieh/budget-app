@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { Routes } from './Routes';
 import { setAccessToken } from './accessToken';
+import { ActiveDateContext, initialState, reducer } from './context';
 
 interface Props {}
 
 export const App: React.FC<Props> = () => {
+    const [store, dispatch] = useReducer(reducer, initialState);
+
     const [loading, setLoading] = useState(true);
 
     const URL = `${process.env.REACT_APP_API_URL}`;
@@ -24,5 +27,9 @@ export const App: React.FC<Props> = () => {
         return <div>loading...</div>;
     }
 
-    return <Routes />;
+    return (
+        <ActiveDateContext.Provider value={{ store, dispatch }}>
+            <Routes />
+        </ActiveDateContext.Provider>
+    );
 };

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback, useContext } from 'react';
 import {
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
@@ -8,10 +8,11 @@ import {
     useTransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearDocument,
-} from '../generated/graphql';
-import { ReusuableTable } from './ReusableTable';
+} from '../../../generated/graphql';
+import { ReusuableTable } from '../../../components/ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
-import { TablePlaceholder } from './TablePlaceholder/TablePlaceholder';
+import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlaceholder';
+import { ActiveDateContext, updateActiveDate } from '../../../context';
 
 interface Props {
     // active: number;
@@ -22,6 +23,16 @@ export const TransactionsTable: React.FC<Props> = () => {
     const { data, loading, error } = useTransactionsByMonthAndYearQuery({
         fetchPolicy: 'cache-and-network',
     });
+
+    const { store, dispatch } = useContext(ActiveDateContext);
+
+    useEffect(() => {
+        data?.MonthByDate[0]?.month &&
+            dispatch({
+                type: updateActiveDate,
+                payload: { month: data.MonthByDate[0].month, year: data.MonthByDate[0].year },
+            });
+    }, [data]);
 
     // TODO: Figure out these types
     interface EditableCellTypes {
@@ -101,8 +112,8 @@ export const TransactionsTable: React.FC<Props> = () => {
         return <TablePlaceholder />;
     }
 
-    return data ? (
-        <ReusuableTable columns={TransactionsColumns} data={data.MonthByDate} />
+    return data!.MonthByDate.length > 0 ? (
+        <ReusuableTable columns={TransactionsColumns} data={data!.MonthByDate} />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );

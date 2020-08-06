@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import format from 'date-fns/format';
 import {
     Typography,
@@ -14,9 +14,9 @@ import {
     useSumDebitsByYearMonthQuery,
     // useGetYearMonthQuery,
     YearMonth,
+    useListAvailableMonthQuery,
 } from '../generated/graphql';
-import { useQuery, useApolloClient } from '@apollo/client';
-import gql from 'graphql-tag';
+import { ActiveDateContext, updateActiveDate } from '../context';
 
 interface Props {}
 
@@ -33,24 +33,21 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const DashboardContext: React.FC<Props> = () => {
     const classes = useStyles();
-    // const { data: YearMonth, loading } = useGetYearMonthQuery();
-    const GET_ACTIVE_DATE = gql`
-        {
-            activeDate @client
-        }
-    `;
+    const { data, loading, error } = useListAvailableMonthQuery();
+    const {
+        store: { activeDate },
+        dispatch,
+    } = useContext(ActiveDateContext);
 
-    const { data: active } = useQuery(GET_ACTIVE_DATE);
+    if (!data?.getYearMonth[0]?.year) return null;
 
-    // if (loading) {
-    //     return <div>loading</div>;
-    // }
+    if (!activeDate) return null;
 
-    const year = parseInt(active.activeDate.split('/')[1]);
-
-    const month = parseInt(active.activeDate.split('/')[0]);
+    const { year, month } = activeDate;
 
     const monthName = format(new Date(year, month - 1, 1), 'LLLL');
+
+    if (loading || error) return null;
 
     return (
         <div>
@@ -63,9 +60,9 @@ export const DashboardContext: React.FC<Props> = () => {
                 </Typography>
             </div>
 
-            <Expenses year={year} month={month} />
+            {/* <Expenses year={year} month={month} /> */}
             <Typography variant='h5'>Income: l33t</Typography>
-            {/* <SelectDate year={year} month={month} dates={YearMonth?.getYearMonth} /> */}
+            <SelectDate year={year} month={month} dates={data.getYearMonth} />
         </div>
     );
 };
@@ -98,24 +95,19 @@ const SelectDate: React.FC<{ year: number; month: number; dates?: YearMonth[] }>
     dates,
 }) => {
     const classes = useFormStyles();
-    const client = useApolloClient();
-
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setActiveDate(event.target.value as string);
-    };
-
     const [activeDate, setActiveDate] = useState(`${month}/${year}`);
 
-    useEffect(() => {
-        client.writeQuery({
-            query: gql`
-                query GetActiveDate {
-                    activeDate
-                }
-            `,
-            data: { activeDate: activeDate },
+    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const valueToString = event.target.value as string;
+        const date = valueToString.split('/');
+        setActiveDate(event.target.value as string);
+        dispatch({
+            type: updateActiveDate,
+            payload: { month: parseInt(date[0]), year: parseInt(date[1]) - 1 },
         });
-    }, [activeDate, client]);
+    };
+
+    const { store, dispatch } = useContext(ActiveDateContext);
 
     return (
         <FormControl>
