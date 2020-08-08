@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import format from 'date-fns/format';
 import {
     Typography,
@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import {
     useSumDebitsByYearMonthQuery,
-    // useGetYearMonthQuery,
     YearMonth,
     useListAvailableMonthQuery,
 } from '../generated/graphql';
@@ -36,12 +35,11 @@ export const DashboardContext: React.FC<Props> = () => {
     const { data, loading, error } = useListAvailableMonthQuery();
     const {
         store: { activeDate },
-        dispatch,
     } = useContext(ActiveDateContext);
 
     if (!data?.getYearMonth[0]?.year) return null;
 
-    if (!activeDate) return null;
+    if (!activeDate.month || !activeDate.year) return null;
 
     const { year, month } = activeDate;
 
@@ -60,7 +58,7 @@ export const DashboardContext: React.FC<Props> = () => {
                 </Typography>
             </div>
 
-            {/* <Expenses year={year} month={month} /> */}
+            <Expenses year={year} month={month} />
             <Typography variant='h5'>Income: l33t</Typography>
             <SelectDate year={year} month={month} dates={data.getYearMonth} />
         </div>
@@ -103,11 +101,11 @@ const SelectDate: React.FC<{ year: number; month: number; dates?: YearMonth[] }>
         setActiveDate(event.target.value as string);
         dispatch({
             type: updateActiveDate,
-            payload: { month: parseInt(date[0]), year: parseInt(date[1]) - 1 },
+            payload: { month: parseInt(date[0]), year: parseInt(date[1]) },
         });
     };
 
-    const { store, dispatch } = useContext(ActiveDateContext);
+    const { dispatch } = useContext(ActiveDateContext);
 
     return (
         <FormControl>

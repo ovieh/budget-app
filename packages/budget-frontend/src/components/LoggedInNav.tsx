@@ -1,27 +1,37 @@
 import React from 'react';
 import { ReusableNav } from './ReusableNav';
 import { useSignOutMutation } from '../generated/graphql';
-import { Button } from '@material-ui/core';
+import { Button, Avatar, makeStyles, createStyles } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
 interface Props {
     className?: string;
+    userName?: string;
 }
 
-export const LoggedInNav: React.FC<Props> = () => {
+const useStyles = makeStyles(theme =>
+    createStyles({
+        avatar: {
+            textTransform: 'uppercase',
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.getContrastText(theme.palette.secondary.main),
+        },
+    })
+);
+
+export const LoggedInNav: React.FC<Props> = ({ userName }) => {
     const [signout, { data }] = useSignOutMutation();
-    const LoggedInLinks = [
-        // { to: '/', name: 'Home' },
-        // { to: '/transactions', name: 'Transactions' },
-        // { to: '/categories', name: 'Categories' },
-    ];
+    const classes = useStyles();
 
     if (data) {
         return <Redirect to='/signin' />;
     }
 
+    const firstLetterOfUsername = userName && userName.split('')[0];
+
     return (
         <ReusableNav>
+            {userName && <Avatar className={classes.avatar}>{firstLetterOfUsername}</Avatar>}
             <Button onClick={() => signout()}>Sign Out</Button>
         </ReusableNav>
     );

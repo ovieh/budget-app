@@ -1,15 +1,15 @@
 import { createStyles, Divider, Grid, makeStyles, Paper, Theme } from '@material-ui/core';
 import clsx from 'clsx';
-import gql from 'graphql-tag';
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { BarChart } from '../../components/Charts/BarChart/BarChart';
 import { DashboardContext } from '../../components/DashboardContext';
 import { Drawer } from '../../components/Drawer';
 import { LoggedInNav } from '../../components/LoggedInNav';
 import { PrimaryList } from '../../components/PrimaryList';
 import { TransactionsTable } from './Components/TransactionsTable';
-import { useMonthlySpendingChartQuery, YearMonth } from '../../generated/graphql';
+import { useMonthlySpendingChartQuery, YearMonth, useMeQuery } from '../../generated/graphql';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
+import { ActiveDateContext } from '../../context';
 
 interface Props {}
 
@@ -44,8 +44,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const Transactions: React.FC<Props> = () => {
+    const { data } = useMeQuery();
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const {
+        store: { activeDate },
+    } = useContext(ActiveDateContext);
+
+    const username = data?.me?.username;
 
     // if (loading) {
     //     return <div>I'm loading</div>;
@@ -57,7 +63,7 @@ export const Transactions: React.FC<Props> = () => {
 
     return (
         <div className={classes.root}>
-            <LoggedInNav />
+            <LoggedInNav userName={username} />
             <Drawer>
                 <PrimaryList />
                 <Divider />
@@ -79,12 +85,7 @@ export const Transactions: React.FC<Props> = () => {
 
                     <Grid item md={5} xs={9}>
                         <Paper className={fixedHeightPaper}>
-                            {/* <TransactionByCategoryChart
-                                date={{
-                                    month,
-                                    year,
-                                }}
-                            /> */}
+                            <TransactionByCategoryChart date={activeDate} />
                         </Paper>
                     </Grid>
                     <Grid item md={5} xs={9}>
@@ -99,12 +100,12 @@ export const Transactions: React.FC<Props> = () => {
 };
 
 interface ChartProps {
-    date: YearMonth;
+    date: any;
 }
 
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
     const { data, loading, error } = useMonthlySpendingChartQuery({
-        // skip: !!date,
+        skip: !!date,
         variables: {
             date,
         },
@@ -119,6 +120,8 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
     if (error) {
         return <pre>{error.message}</pre>;
     }
+
+    if (!data) return <h3>No Data</h3>;
 
     return <BarChart data={data?.MonthlySpendingChart.payload} value={label} />;
 };

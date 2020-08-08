@@ -17,5 +17,8 @@ mutation CreateTransaction(
     debitAmount: $debitAmount,
     creditAmount: $creditAmount,
     balance: $balance
-  )
+  ) {
+    id
+    date
+  }
 }

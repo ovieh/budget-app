@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     title: {
         flexGrow: 1,
     },
+    root: {
+        display: 'flex',
+    },
 }));
 
 export const ReusableNav: React.FC<Props> = ({ links, children }) => {
@@ -35,14 +38,14 @@ export const ReusableNav: React.FC<Props> = ({ links, children }) => {
                 >
                     Budget-App
                 </Typography>
-                <div>
+                <div className={classes.root}>
+                    {children}
                     {links &&
                         links.map((link, index) => (
                             <Button color='inherit' key={index}>
                                 <Link to={link.to}>{link.name}</Link>
                             </Button>
                         ))}
-                    {children}
                 </div>
             </Toolbar>
         </AppBar>

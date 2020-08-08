@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     Container,
     Paper,
@@ -19,9 +19,9 @@ import { FileUpload } from '../../../../components/FileUpload';
 import {
     useCreateTransactionMutation,
     YearMonth,
-    DebitsByMonthAndYearDocument,
+    TransactionsByMonthAndYearDocument,
 } from '../../../../generated/graphql';
-// import { TextField } from '../../../../components/Form/TextField/TextField';
+import { ActiveDateContext, updateActiveDate } from '../../../../context';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const TransactionForm: React.FC<{}> = () => {
     const classes = useStyles();
     const [addTransaction] = useCreateTransactionMutation();
+    const { dispatch } = useContext(ActiveDateContext);
 
     const FormFields = [
         { name: 'date', placeholder: 'Transaction Date', type: 'date' },
@@ -41,6 +42,17 @@ export const TransactionForm: React.FC<{}> = () => {
         { name: 'debitAmount', placeholder: 'Amount', type: 'text' },
         { name: 'balance', placeholder: 'Balance', type: 'text' },
     ];
+
+    // TODO: Figure out better way of dealing with dates!
+    const updateContextDate = (date: string) => {
+        const month = date.split('-')[1];
+        const year = date.split('-')[0];
+        dispatch({
+            type: updateActiveDate,
+            payload: { year: parseInt(year), month: parseInt(month) },
+        });
+        console.log(month, year);
+    };
 
     return (
         <Paper style={{ minHeight: '20rem' }}>
@@ -66,7 +78,7 @@ export const TransactionForm: React.FC<{}> = () => {
                     const month = date.getMonth() + 1;
                     const year = date.getFullYear();
 
-                    await addTransaction({
+                    const newTransaction = await addTransaction({
                         variables: {
                             date: values.date,
                             type: values.type,
@@ -80,7 +92,7 @@ export const TransactionForm: React.FC<{}> = () => {
                         awaitRefetchQueries: true,
                         refetchQueries: [
                             {
-                                query: DebitsByMonthAndYearDocument,
+                                query: TransactionsByMonthAndYearDocument,
                                 variables: {
                                     month,
                                     year,
@@ -88,6 +100,8 @@ export const TransactionForm: React.FC<{}> = () => {
                             },
                         ],
                     });
+                    newTransaction.data &&
+                        updateContextDate(newTransaction.data.createTransaction.date);
                     setSubmitting(false);
                 }}
             >

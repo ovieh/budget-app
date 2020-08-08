@@ -1,12 +1,8 @@
-import React, { useMemo, useState, useEffect, useCallback, useContext } from 'react';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import {
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
-    useDebitsByMonthAndYearQuery,
-    CategoriesDocument,
-    DebitsByMonthAndYearDocument,
     useTransactionsByMonthAndYearQuery,
-    TransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearDocument,
 } from '../../../generated/graphql';
 import { ReusuableTable } from '../../../components/ReusableTable';
@@ -15,16 +11,19 @@ import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlac
 import { ActiveDateContext, updateActiveDate } from '../../../context';
 
 interface Props {
-    // active: number;
     handleClickOpen?: () => void;
 }
 
 export const TransactionsTable: React.FC<Props> = () => {
+    const {
+        store: { activeDate },
+        dispatch,
+    } = useContext(ActiveDateContext);
+
     const { data, loading, error } = useTransactionsByMonthAndYearQuery({
         fetchPolicy: 'cache-and-network',
+        variables: { year: activeDate?.year, month: activeDate?.month },
     });
-
-    const { store, dispatch } = useContext(ActiveDateContext);
 
     useEffect(() => {
         data?.MonthByDate[0]?.month &&
@@ -32,7 +31,7 @@ export const TransactionsTable: React.FC<Props> = () => {
                 type: updateActiveDate,
                 payload: { month: data.MonthByDate[0].month, year: data.MonthByDate[0].year },
             });
-    }, [data]);
+    }, [data, dispatch]);
 
     // TODO: Figure out these types
     interface EditableCellTypes {
