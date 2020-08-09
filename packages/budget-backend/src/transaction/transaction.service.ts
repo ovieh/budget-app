@@ -66,6 +66,8 @@ export class TransactionService {
       user,
     );
 
+    console.log('CATEGORY CATEGORY', category);
+
     if (category) {
       await this.updateCategoryById(transaction.id, category.id, user);
     }

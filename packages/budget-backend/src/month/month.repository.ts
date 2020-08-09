@@ -30,7 +30,6 @@ export class MonthRepository extends Repository<Month> {
       await month.save();
       return month;
     } catch (error) {
-      console.log(month);
       this.logger.error(error);
     }
   }
@@ -42,13 +41,24 @@ export class MonthRepository extends Repository<Month> {
   ): Promise<Month[]> {
     const { month, year, categoryId } = getMonthByCategoryDto;
 
-    return this.createQueryBuilder('month')
-      .leftJoinAndSelect('month.categories', 'category')
-      .leftJoinAndSelect('month.transactions', 'transaction')
-      .where('month.userId = :userId', { userId: user.id })
-      .andWhere('month.month = :month', { month: month })
-      .andWhere('month.year = :year', { year: year })
-      .andWhere('category.id = :categoryId', { categoryId })
-      .getMany();
+      return this.createQueryBuilder('month')
+        .leftJoinAndSelect('month.categories', 'category')
+        .leftJoinAndSelect('month.transactions', 'transactions')
+        .where('month.userId = :userId', { userId: user.id })
+        .andWhere('month.month = :month', { month: month })
+        .andWhere('month.year = :year', { year: year })
+        .andWhere('category.id = :categoryId', { categoryId })
+        .getMany();
+
+    // return this.find({
+    //   join: {
+    //     alias: 'month',
+    //     leftJoinAndSelect: {
+    //       transactions: 'month.transactions',
+    //       categories: 'month.categories',
+    //     },
+    //   },
+    //   where: { userId: user.id, month, year},
+    // });
   }
 }

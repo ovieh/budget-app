@@ -75,7 +75,6 @@ export class MonthResolver {
     @Args() getMonthByCategoryDto: GetMonthByCategoryDto,
     @CurrentUser() user: User,
   ): Promise<Month[]> {
-    console.log(getMonthByCategoryDto);
     return this.monthService.categoryByMonth(getMonthByCategoryDto, user);
   }
 }

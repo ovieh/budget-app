@@ -25,7 +25,7 @@ export class FileuploadService {
     );
 
     transactions.map(async (transaction) => {
-      let category: Category;
+      let category;
       try {
         category = await this.categoryService.getCategoryByDescription(
           transaction.description,

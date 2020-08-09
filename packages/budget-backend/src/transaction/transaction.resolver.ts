@@ -16,6 +16,7 @@ import {
   Logger,
   ParseUUIDPipe,
   ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
@@ -88,7 +89,7 @@ export class TransactionResolver {
     @Args('year') year: number,
     @Args('month') month: number,
     @CurrentUser() user: User,
-  ): Promise<Transaction[]>  {
+  ): Promise<Transaction[]> {
     const result = await this.transactionService.getCreditsByYearAndMonth(
       year,
       month,
@@ -103,7 +104,7 @@ export class TransactionResolver {
     @Args('year') year: number,
     @Args('month') month: number,
     @CurrentUser() user: User,
-  ): Promise<Transaction[]>  {
+  ): Promise<Transaction[]> {
     const result = await this.transactionService.getDebitsByYearAndMonth(
       year,
       month,
@@ -118,19 +119,17 @@ export class TransactionResolver {
     return this.transactionService.getYearMonth(user);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Transaction)
   @UseGuards(GqlAuthGuard)
   async createTransaction(
     @CurrentUser() user: User,
     @Args() createTransactionDto: CreateTransactionDto,
-  ): Promise<string> {
-    this.transactionService.createTransaction(createTransactionDto, user);
-
-    this.logger.verbose(
-      `Transaction "${createTransactionDto.description}" was created`,
+  ): Promise<Transaction> {
+    
+    return this.transactionService.createTransaction(
+      createTransactionDto,
+      user,
     );
-
-    return `Transaction created`;
   }
 
   @Mutation(() => String)

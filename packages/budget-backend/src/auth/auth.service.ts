@@ -48,11 +48,11 @@ export class AuthService {
   }
 
    createRefreshToken = (payload: { username: string, tokenVersion: string }) => {
-    return sign({ username: payload, tokenVersion: payload.tokenVersion }, jwtConfig.secret2, { expiresIn: 604800 });
+    return sign({ username: payload, tokenVersion: payload.tokenVersion }, jwtConfig.secret2, { expiresIn: '604800' });
   }
 
   createAccessToken = async (user: User) => {
-    return await this.jwtService.sign({username: user.username});
+    return this.jwtService.sign({username: user.username});
   }
 
 }

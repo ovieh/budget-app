@@ -5,12 +5,7 @@ import { User } from 'src/auth/user.entity';
 import { Month } from './month.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
-import { Category } from 'src/category/category.entity';
-import { CategoryInput } from 'src/category/category.input';
-import { CategoryDto } from 'src/category/DTO/category.dto';
-import { MonthPaginated } from './DTO/month-paginated';
 import { GetMonthByCategoryDto } from './DTO/get-month-by-category.dto';
-import { getEnabledCategories } from 'trace_events';
 
 @Injectable()
 export class MonthService {
@@ -41,7 +36,7 @@ export class MonthService {
 
     if (!year && !month) {
       defaultDate = await this.monthRepository.findOne({
-        order: { month: 'DESC', year: 'DESC' },
+        order: { date: "DESC" },
       });
     }
 
@@ -49,7 +44,8 @@ export class MonthService {
 
     // const skippedItems = (dateDto.page - 1) * dateDto.limit;
 
-    if (!defaultDate && !year && !month) return [];
+    // if (!defaultDate || (!year && !month)) return [];
+
 
     const result = await this.monthRepository.find({
       where: {
@@ -64,14 +60,6 @@ export class MonthService {
     });
 
     if (!result) throw new NotFoundException('Month not found');
-
-    // return {
-    //   totalCount,
-    //   page,
-    //   limit,
-    //   pageCount: Math.ceil(totalCount / limit),
-    //   data: result
-    // }
 
     return result;
   }

@@ -59,7 +59,7 @@ export class CategoryResolver {
     return 'Category Removed';
   }
 
-  @Query(() => Number)
+  @Query(() => Category)
   @UseGuards(GqlAuthGuard)
   getCategoryByDescription(
     @Args('description') description: string,

@@ -33,19 +33,17 @@ export class CategoryRepository extends Repository<Category> {
   }
 
   async getCategories(user: User): Promise<Category[]> {
-    const query = this.createQueryBuilder('category');
-    // Add quotes around column name 😢
-    query.where('"userId" = :userId', { userId: user.id });
-
     try {
-      const categories = await query.getMany();
+      const categories = await this.find({
+        relations: ['transactions'],
+        where: { user: { id: user.id } },
+      });
       return categories;
     } catch (error) {
       this.logger.error(
-        `Failed to get tasks for user "${user.username}".`,
+        `Failed to get categories for user "${user.username}".`,
         error.stack,
       );
-      throw new BadRequestException();
     }
   }
 
@@ -53,15 +51,13 @@ export class CategoryRepository extends Repository<Category> {
     description: string,
     user: User,
   ): Promise<Category> {
-
     const query = this.createQueryBuilder('category')
       .select('category')
-      .leftJoinAndSelect('category.transaction', 'transaction')
-      .where('transaction.userId = :userId', { userId: user.id })
-      .andWhere('transaction.description = :description', {
+      .leftJoinAndSelect('category.transactions', 'transactions')
+      .where('transactions.userId = :userId', { userId: user.id })
+      .andWhere('transactions.description = :description', {
         description,
-      })
-      .cache(true);
+      });
 
 
     try {
@@ -74,6 +70,8 @@ export class CategoryRepository extends Repository<Category> {
       );
       throw new BadRequestException();
     }
+
+
   }
 
   async removeCategoryById(id: number, user: User): Promise<void> {
@@ -114,7 +112,7 @@ export class CategoryRepository extends Repository<Category> {
       .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
       .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
       .select('SUM(transaction.debitAmount)', 'sum')
-      .cache(true)
+      // .cache(true)
       .getRawOne();
     return sum || 0;
   }

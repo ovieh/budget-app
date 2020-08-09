@@ -61,9 +61,10 @@ export class CategoryService {
     return category;
   }
 
-  async getCategoryByDescription(description: string, user: User): Promise<Category> {
-    // const { id } = await this.categoryRepository.getCategoryByDescription(description, user);
-    // return id;
+  async getCategoryByDescription(
+    description: string,
+    user: User,
+  ): Promise<Category> {
     return await this.categoryRepository.getCategoryByDescription(
       description,
       user,
@@ -130,13 +131,14 @@ export class CategoryService {
   async MonthlySpendingChart({ year, month }: DateInput, user: User) {
     const categories = await this.findAll(user);
 
-    const result = categories.map(async ({ id }) => {
+    const result = categories.map(async ({ id, budget: something }) => {
       const categorySpending = await this.sumCategoryDebitsByYearMonth(
         id,
         user,
         year,
         month,
       );
+
       const { name, budget } = await this.getCategoryById(id, user);
       const obj = {
         name,
@@ -147,6 +149,5 @@ export class CategoryService {
     });
 
     return await Promise.all(result).then((payload) => ({ payload }));
-
   }
 }

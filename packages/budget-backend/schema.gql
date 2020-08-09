@@ -11,6 +11,7 @@ type Category {
   id: ID
   name: String!
   budget: Float
+  transactions: [Transaction!]
 }
 
 type Month {
@@ -63,6 +64,7 @@ input CatIn {
   id: ID
   name: String!
   budget: Float
+  transactions: [TransactionInput!]
 }
 
 input TransactionInput {
@@ -91,7 +93,7 @@ type Query {
   sumDebitsByYearMonth(month: Float!, year: Float!): Float!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
-  getCategoryByDescription(description: String!): Float!
+  getCategoryByDescription(description: String!): Category!
   sumCategoryDebits(id: Float!): Float!
   sumCategoryDebitsByYearMonth(month: Float!, year: Float!, id: Float!): Float!
   chartData(dates: [DateInput!]!): ChartData!
@@ -114,7 +116,7 @@ type Mutation {
   revokeRefreshToken(userId: Float!): Boolean!
   signOut: Boolean!
   uploadFile(file: Upload!): Boolean!
-  createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): String!
+  createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): Transaction!
   deleteTransaction(id: String!): String!
   updateTransactionCategory(categoryId: Float!, id: String!): Transaction!
   updateCategory(budget: Float!, name: String!, id: Float!): Category!

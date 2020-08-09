@@ -95,9 +95,14 @@ export class TransactionRepository extends Repository<Transaction> {
     transaction.sortCode = sortCode;
     transaction.type = type;
     transaction.user = user;
-    
+
     try {
       await transaction.save();
+
+      this.logger.verbose(
+        `Transaction "${createTransactionDto.description}" was created`,
+      );
+
       return transaction;
     } catch (error) {
       this.logger.error(error);
@@ -209,12 +214,13 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  // TODO: Figure out way to do this in one db transasction
+  // TODO: Figure out way to do this in one db transaction
   async updateCategoryById(
     id: string,
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
+    console.log("CATEGORY ID ", categoryId);
     try {
       this.createQueryBuilder()
         .update(Transaction)
@@ -222,7 +228,7 @@ export class TransactionRepository extends Repository<Transaction> {
         .where('id = :id', { id })
         .andWhere('userId = :userId', { userId: user.id })
         .execute();
-
+      console.log(await this.findOne(id));
       return this.findOne(id);
     } catch (error) {
       this.logger.error(error);
@@ -230,7 +236,11 @@ export class TransactionRepository extends Repository<Transaction> {
     }
   }
 
-  async updateCategoryByIds(ids: string[], categoryId: number, user: User): Promise<void> {
+  async updateCategoryByIds(
+    ids: string[],
+    categoryId: number,
+    user: User,
+  ): Promise<void> {
     await this.createQueryBuilder()
       .update(Transaction)
       .set({ categoryId })

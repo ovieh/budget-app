@@ -6,7 +6,6 @@ import {
   BeforeInsert,
   Unique,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
@@ -48,7 +47,7 @@ export class Transaction extends BaseEntity {
   @Column('numeric', { precision: 10, scale: 2 })
   balance: number;
 
-  @ManyToOne(() => Category, (category) => category.transaction)
+  @ManyToOne(() => Category, (category) => category.transactions)
   category?: Category;
   @RelationColumn({ default: 1 })
   categoryId?: number;
