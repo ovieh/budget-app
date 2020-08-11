@@ -106,7 +106,7 @@ export class CategoryRepository extends Repository<Category> {
     month: number,
   ): Promise<number> {
     const { sum } = await this.createQueryBuilder('category')
-      .leftJoinAndSelect('category.transaction', 'transaction')
+      .leftJoinAndSelect('category.transactions', 'transaction')
       .where('category.id = :id', { id })
       .andWhere('transaction.userId = :userId', { userId: user.id })
       .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)

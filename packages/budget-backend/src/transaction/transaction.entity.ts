@@ -10,7 +10,6 @@ import {
 import { Category } from '../category/category.entity';
 import { User } from '../auth/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { RelationColumn } from '../helpers';
 import { ObjectType, InputType, Field, ID, HideField } from '@nestjs/graphql';
 import { Month } from '../month/month.entity';
 
@@ -49,8 +48,8 @@ export class Transaction extends BaseEntity {
 
   @ManyToOne(() => Category, (category) => category.transactions)
   category?: Category;
-  @RelationColumn({ default: 1 })
-  categoryId?: number;
+  // @RelationColumn()
+  // categoryId?: number;
 
   @HideField()
   @ManyToOne(() => Month, (month) => month.transactions)

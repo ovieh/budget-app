@@ -11,9 +11,7 @@ import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
 import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
-import { CreateMonthDto } from 'src/month/DTO/create-month.dto';
 import { MonthService } from 'src/month/month.service';
-import { Month } from 'src/month/month.entity';
 import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
 
 @Injectable()
@@ -24,10 +22,6 @@ export class TransactionService {
     private categoryService: CategoryService,
     private monthService: MonthService,
   ) {}
-
-  // async importFile(file: Buffer, user: User) {
-  //   // const { id } = await this.categoryService.getCategoryByDescription("TFL TRAVEL CH", user);
-  // }
 
   async findByIds(ids: string[]): Promise<Transaction[]> {
     return await this.transactionRepository.findByIds(ids);
@@ -66,15 +60,29 @@ export class TransactionService {
       user,
     );
 
-    console.log('CATEGORY CATEGORY', category);
 
     if (category) {
       await this.updateCategoryById(transaction.id, category.id, user);
+    } else {
+      const category = await this.categoryService.findByName(
+        'Uncategorized',
+        user,
+      );
+      await this.updateCategoryById(transaction.id, category.id, user);
     }
 
-    const date = AddMonthToTransaction(transaction, category)
+    const date = AddMonthToTransaction(transaction, category);
 
-    transaction.month = await this.monthService.createMonth(date, user); 
+    // Check if month exists for given date, if so, add month to that date
+    const previousMonth = await this.monthService.getMonthByDate(date, user);
+
+    if (previousMonth) {
+      transaction.month = previousMonth;
+    } else {
+      // If not, create new month
+      transaction.month = await this.monthService.createMonth(date, user);
+    }
+
     await transaction.save();
 
     return transaction;
@@ -92,12 +100,9 @@ export class TransactionService {
   }
   async updateCategoryById(
     id: string,
-    // categoryInput: CategoryInput,
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
-    // TODO: Fix this
-    // const category = JSON.parse(JSON.stringify(categoryInput));
 
     try {
       return this.transactionRepository.updateCategoryById(
@@ -110,7 +115,6 @@ export class TransactionService {
         `Could not update transaction with id ${id}`,
       );
     }
-    // return id;
   }
 
   async updateCategoryByIds(
@@ -189,5 +193,4 @@ export class TransactionService {
   ): Promise<number> {
     return this.transactionRepository.sumDebitsByYearMonth(user, year, month);
   }
-
 }

@@ -6,6 +6,8 @@ import { Month } from './month.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
 import { GetMonthByCategoryDto } from './DTO/get-month-by-category.dto';
+import { Category } from 'src/category/category.entity';
+import { UpdateCategoryDto } from 'src/category/DTO/update-category.dto';
 
 @Injectable()
 export class MonthService {
@@ -22,11 +24,28 @@ export class MonthService {
   }
 
   async getMonths(user: User): Promise<Month[]> {
-    return this.monthRepository.find({ where: { userId: user.id } });
+    return this.monthRepository.find({
+      relations: ['categories'],
+      where: { userId: user.id },
+    });
   }
 
   async getByIds(ids: number[], user: User): Promise<Month[]> {
     return this.monthRepository.findByIds(ids, { where: { userId: user.id } });
+  }
+
+  async getMonthByDate(dateDto: DateDto, user: User): Promise<Month> {
+    const { year, month } = dateDto;
+
+    const foundMonth = this.monthRepository.findOne({
+      year,
+      month,
+      userId: user.id,
+    });
+
+    if (!foundMonth) throw new NotFoundException('Month not found');
+
+    return foundMonth;
   }
 
   async findMonthByDate(dateDto: DateDto, user: User): Promise<Month[]> {
@@ -36,16 +55,9 @@ export class MonthService {
 
     if (!year && !month) {
       defaultDate = await this.monthRepository.findOne({
-        order: { date: "DESC" },
+        order: { month: 'DESC', year: 'DESC' },
       });
     }
-
-    // const totalCount = await this.monthRepository.count();
-
-    // const skippedItems = (dateDto.page - 1) * dateDto.limit;
-
-    // if (!defaultDate || (!year && !month)) return [];
-
 
     const result = await this.monthRepository.find({
       where: {
@@ -53,7 +65,7 @@ export class MonthService {
         year: year || defaultDate.year,
         userId: user.id,
       },
-      order: { date: 'DESC' },
+      order: { month: 'DESC', year: 'DESC' },
       // skip: skippedItems,
       // take: limit,
       relations: ['categories'],
@@ -77,5 +89,13 @@ export class MonthService {
     user: User,
   ): Promise<Month[]> {
     return this.monthRepository.categoryByMonth(getMonthByCategoryDto, user);
+  }
+
+  async updateMonthCategories(
+    monthId: string,
+    updateCategoryDto: UpdateCategoryDto,
+    user: User
+  ): Promise<Month> {
+    return this.monthRepository.updateMonthCategories(monthId, updateCategoryDto, user);
   }
 }

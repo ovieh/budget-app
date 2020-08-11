@@ -10,7 +10,7 @@ export function AddMonthToTransaction(
     month: d.getMonth() + 1,
     year: d.getFullYear(),
     transaction,
-    category: [category],
+    categories: [category],
   };
 
   return date;

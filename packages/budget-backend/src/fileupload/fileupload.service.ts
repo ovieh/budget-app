@@ -45,7 +45,7 @@ export class FileuploadService {
 
       const date = AddMonthToTransaction(transaction, category);
 
-      const month = { ...date, category: [category] };
+      const month = { ...date, categories: [category] };
 
       transaction.month = await this.monthService.createMonth(month, user);
     });

@@ -5,7 +5,6 @@ import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/user.entity';
 import { DateInput } from './date.input';
-import { ChartData } from './chartData.output';
 
 @Injectable()
 export class CategoryService {
@@ -30,6 +29,10 @@ export class CategoryService {
 
   async find(id: number): Promise<Category> {
     return this.categoryRepository.findOne(id);
+  }
+
+  async findByName(name: string, user: User): Promise<Category> {
+    return this.categoryRepository.findOne({ where: { name, user } });
   }
 
   async findByIds(ids: number[]) {

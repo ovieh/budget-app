@@ -15,6 +15,7 @@ import {
   ID,
   Float,
   HideField,
+  ArgsType,
 } from '@nestjs/graphql';
 
 @ObjectType()
@@ -33,10 +34,8 @@ export class Category extends BaseEntity {
   @Field(() => Float, { nullable: true })
   budget: number;
 
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
   @Field(() => [Transaction], { nullable: true })
-  @OneToMany(() => Transaction, (transaction) => transaction.category, {
-    eager: true,
-  })
   transactions?: Transaction[];
 
   @HideField()

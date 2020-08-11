@@ -4,26 +4,17 @@ import {
   Args,
   Query,
   Int,
-  ResolveField,
-  Parent,
 } from '@nestjs/graphql';
 import { Month } from './month.entity';
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { MonthService } from './month.service';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { CurrentUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
-import { CategoryInput } from 'src/category/category.input';
-import { Category } from 'src/category/category.entity';
-import { CategoryDto } from 'src/category/DTO/category.dto';
-import { MonthPaginated } from './DTO/month-paginated';
-import { Transaction } from 'src/transaction/transaction.entity';
-import { Loader } from '@ovieh/nestjs-dataloader';
-import { CategoryLoader } from '../category/category.loader';
-import DataLoader = require('dataloader');
 import { GetMonthByCategoryDto } from './DTO/get-month-by-category.dto';
+import { UpdateCategoryDto } from 'src/category/DTO/update-category.dto';
 
 @Resolver(() => Month)
 export class MonthResolver {
@@ -66,7 +57,7 @@ export class MonthResolver {
     @CurrentUser() user: User,
     @Args() dateDto: DateDto,
   ): Promise<Month[]> {
-   return this.monthService.findMonthByDate(dateDto, user);
+    return this.monthService.findMonthByDate(dateDto, user);
   }
 
   @Query(() => [Month])
@@ -76,5 +67,19 @@ export class MonthResolver {
     @CurrentUser() user: User,
   ): Promise<Month[]> {
     return this.monthService.categoryByMonth(getMonthByCategoryDto, user);
+  }
+
+  @Mutation(() => Month)
+  @UseGuards(GqlAuthGuard)
+  async updateMonthCategories(
+    @CurrentUser() user: User,
+    @Args('monthId', ParseUUIDPipe) monthId: string,
+    @Args() updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Month> {
+    return this.monthService.updateMonthCategories(
+      monthId,
+      updateCategoryDto,
+      user,
+    );
   }
 }

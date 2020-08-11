@@ -220,16 +220,17 @@ export class TransactionRepository extends Repository<Transaction> {
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
-    console.log("CATEGORY ID ", categoryId);
     try {
       this.createQueryBuilder()
         .update(Transaction)
-        .set({ categoryId })
+        .set({
+          category: { id: categoryId },
+        })
         .where('id = :id', { id })
         .andWhere('userId = :userId', { userId: user.id })
         .execute();
-      console.log(await this.findOne(id));
-      return this.findOne(id);
+
+      return this.findOne(id, { relations: ['category'] });
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
@@ -243,7 +244,7 @@ export class TransactionRepository extends Repository<Transaction> {
   ): Promise<void> {
     await this.createQueryBuilder()
       .update(Transaction)
-      .set({ categoryId })
+      .set({ category: { id: categoryId } })
       .where('ids = :ids', ids)
       .andWhere('userId = :userId', { userId: user.id })
       .execute();

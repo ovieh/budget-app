@@ -16,7 +16,6 @@ import {
   Logger,
   ParseUUIDPipe,
   ParseIntPipe,
-  BadRequestException,
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
@@ -170,10 +169,10 @@ export class TransactionResolver {
     @Loader(CategoryLoader.name)
     categoryLoader: DataLoader<Category['id'], Category>,
   ): Promise<Category> {
-    const { categoryId } = transaction;
+    const { category } = transaction;
 
-    if (categoryId !== null) {
-      return categoryLoader.load(categoryId);
+    if (category.id !== null) {
+      return categoryLoader.load(category.id);
     }
   }
 }
