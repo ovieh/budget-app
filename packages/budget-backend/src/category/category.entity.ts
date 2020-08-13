@@ -15,7 +15,6 @@ import {
   ID,
   Float,
   HideField,
-  ArgsType,
 } from '@nestjs/graphql';
 
 @ObjectType()

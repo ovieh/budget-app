@@ -220,6 +220,8 @@ export class TransactionRepository extends Repository<Transaction> {
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
+    console.log("id", id);
+    console.log('categoryId', categoryId);
     try {
       this.createQueryBuilder()
         .update(Transaction)
@@ -230,7 +232,7 @@ export class TransactionRepository extends Repository<Transaction> {
         .andWhere('userId = :userId', { userId: user.id })
         .execute();
 
-      return this.findOne(id, { relations: ['category'] });
+      return this.findOne(id, { relations: ['category', 'month'] });
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();

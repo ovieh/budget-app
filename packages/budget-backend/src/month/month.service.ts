@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MonthRepository } from './month.repository';
 import { User } from 'src/auth/user.entity';
@@ -37,11 +41,14 @@ export class MonthService {
   async getMonthByDate(dateDto: DateDto, user: User): Promise<Month> {
     const { year, month } = dateDto;
 
-    const foundMonth = this.monthRepository.findOne({
-      year,
-      month,
-      userId: user.id,
-    });
+    const foundMonth = this.monthRepository.findOne(
+      {
+        year,
+        month,
+        userId: user.id,
+      },
+      { relations: ['categories'] },
+    );
 
     if (!foundMonth) throw new NotFoundException('Month not found');
 
@@ -94,8 +101,17 @@ export class MonthService {
   async updateMonthCategories(
     monthId: string,
     updateCategoryDto: UpdateCategoryDto,
-    user: User
+    user: User,
   ): Promise<Month> {
-    return this.monthRepository.updateMonthCategories(monthId, updateCategoryDto, user);
+    try {
+      const result = await this.monthRepository.updateMonthCategories(
+        monthId,
+        updateCategoryDto,
+        user,
+      );
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

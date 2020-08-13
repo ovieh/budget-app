@@ -23,7 +23,7 @@ export class MonthRepository extends Repository<Month> {
     month.year = year;
     month.userId = user.id;
     month.transactions = [transaction];
-    month.categories = categories;
+    month.categories = [transaction.category];
 
     try {
       await month.save();

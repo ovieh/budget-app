@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  Logger,
+  BadRequestException,
 } from '@nestjs/common';
 import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
@@ -16,6 +18,8 @@ import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
 
 @Injectable()
 export class TransactionService {
+  private logger = new Logger('TransactionService');
+
   constructor(
     @InjectRepository(TransactionRepository)
     private transactionRepository: TransactionRepository,
@@ -59,16 +63,17 @@ export class TransactionService {
       transaction.description,
       user,
     );
+    if (category && category.name !== 'Uncategorized') {
+      transaction.category = category;
+      this.logger.log(`Updated transaction category with new category: ${category.name}`);
 
-
-    if (category) {
-      await this.updateCategoryById(transaction.id, category.id, user);
     } else {
       const category = await this.categoryService.findByName(
         'Uncategorized',
         user,
       );
-      await this.updateCategoryById(transaction.id, category.id, user);
+      this.logger.log(`Updated transaction category with default: ${category.name}`);
+      transaction.category = category;
     }
 
     const date = AddMonthToTransaction(transaction, category);
@@ -78,9 +83,17 @@ export class TransactionService {
 
     if (previousMonth) {
       transaction.month = previousMonth;
+      await this.monthService.updateMonthCategories(
+        previousMonth.id,
+        { categories: [category] },
+        user,
+      );
     } else {
       // If not, create new month
-      transaction.month = await this.monthService.createMonth(date, user);
+      const newMonth = await this.monthService.createMonth(date, user);
+      if (!newMonth)
+        throw new BadRequestException('Could not create new month');
+      transaction.month = newMonth;
     }
 
     await transaction.save();
@@ -103,14 +116,23 @@ export class TransactionService {
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
-
     try {
-      return this.transactionRepository.updateCategoryById(
+      const result = await this.transactionRepository.updateCategoryById(
         id,
         categoryId,
         user,
       );
-    } catch (error) {
+
+      const updatedMonth = await this.monthService.updateMonthCategories(
+        result.month.id,
+        {
+          categories: [result.category],
+        },
+        user,
+      );
+      this.logger.log(`Updated month: ${updatedMonth}`);
+      return result;
+    } catch {
       throw new InternalServerErrorException(
         `Could not update transaction with id ${id}`,
       );
