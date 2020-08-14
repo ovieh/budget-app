@@ -58,20 +58,33 @@ export class MonthRepository extends Repository<Month> {
     return month;
   }
 
-  // get category by month
-  async categoryByMonth(
-    getMonthByCategoryDto: GetMonthByCategoryDto,
-    user: User,
-  ): Promise<Month[]> {
-    const { month, year, categoryId } = getMonthByCategoryDto;
+//   // get category by month
+//   async categoryByMonth(
+//     getMonthByCategoryDto: GetMonthByCategoryDto,
+//     user: User,
+//   ): Promise<Month[]> {
+//     const { month, year, categoryId } = getMonthByCategoryDto;
 
-    return await this.createQueryBuilder('month')
-      .leftJoinAndSelect('month.categories', 'category')
-      .leftJoinAndSelect('category.transactions', 'transaction')
-      .where('month.userId = :userId', { userId: user.id })
-      .andWhere('month.month = :month', { month: month })
-      .andWhere('month.year = :year', { year: year })
-      .andWhere('category.id = :categoryId', { categoryId })
-      .getMany();
-  }
+//     const { id: monthId } = await this.findOne({ month, year });
+
+//     console.log(monthId);
+
+//     // return await this.createQueryBuilder('month')
+//     //   .leftJoinAndSelect('month.categories', 'category')
+//     //   .leftJoinAndSelect('month.transactions', 'transactions')
+//     //   .leftJoinAndSelect('category.transactions', 'transaction')
+//     //   .where('month.userId = :userId', { userId: user.id })
+//     //   .andWhere('month.month = :month AND month.year = :year', { month, year })
+//     //   // .andWhere("'month.categoryId = :categoryId'", { categoryId })
+//     //   // .andWhere("'transaction.categoryId' = :categoryId", { categoryId })
+//     //   .andWhere('category.id = :categoryId', { categoryId })
+//     //   .getMany();
+
+//     return await this.createQueryBuilder('transaction')
+//       // .leftJoinAndSelect('transaction.month', 'month')
+//       // .where('month.year = :year AND month.month = :month', { month, year })
+//       // .andWhere("'transaction.categoryId' = :categoryId", { categoryId })
+
+//       .getMany();
+//   }
 }

@@ -15,6 +15,7 @@ import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
 import { MonthService } from 'src/month/month.service';
 import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
+import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
 
 @Injectable()
 export class TransactionService {
@@ -65,14 +66,17 @@ export class TransactionService {
     );
     if (category && category.name !== 'Uncategorized') {
       transaction.category = category;
-      this.logger.log(`Updated transaction category with new category: ${category.name}`);
-
+      this.logger.log(
+        `Updated transaction category with new category: ${category.name}`,
+      );
     } else {
       const category = await this.categoryService.findByName(
         'Uncategorized',
         user,
       );
-      this.logger.log(`Updated transaction category with default: ${category.name}`);
+      this.logger.log(
+        `Updated transaction category with default: ${category.name}`,
+      );
       transaction.category = category;
     }
 
@@ -214,5 +218,15 @@ export class TransactionService {
     month: number,
   ): Promise<number> {
     return this.transactionRepository.sumDebitsByYearMonth(user, year, month);
+  }
+
+  async transactionsByMonthAndCateogry(
+    getMonthByCategoryDto: GetMonthByCategoryDto,
+    user: User,
+  ) {
+    return this.transactionRepository.transactionsByMonthAndCategory(
+      getMonthByCategoryDto,
+      user,
+     );
   }
 }

@@ -90,6 +90,7 @@ type Query {
   getDebitsByMonthAndYear(month: Float!, year: Float!): [Transaction!]!
   getYearMonth: [YearMonth!]!
   sumDebitsByYearMonth(month: Float!, year: Float!): Float!
+  transactionsByMonthAndCateogry(month: Int!, year: Int!, categoryId: Int!): [Transaction!]!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
   getCategoryByDescription(description: String!): Category!
@@ -101,7 +102,6 @@ type Query {
   getMonthByIds(ids: [Int!]!): [Month!]!
   sortedMonths: [Month!]!
   MonthByDate(year: Int, month: Int): [Month!]!
-  MonthByCategory(month: Int!, year: Int!, categoryId: Int!): [Month!]!
 }
 
 input DateInput {

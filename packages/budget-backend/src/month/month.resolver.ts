@@ -60,14 +60,14 @@ export class MonthResolver {
     return this.monthService.findMonthByDate(dateDto, user);
   }
 
-  @Query(() => [Month])
-  @UseGuards(GqlAuthGuard)
-  async MonthByCategory(
-    @Args() getMonthByCategoryDto: GetMonthByCategoryDto,
-    @CurrentUser() user: User,
-  ): Promise<Month[]> {
-    return this.monthService.categoryByMonth(getMonthByCategoryDto, user);
-  }
+  // @Query(() => [Month])
+  // @UseGuards(GqlAuthGuard)
+  // async MonthByCategory(
+  //   @Args() getMonthByCategoryDto: GetMonthByCategoryDto,
+  //   @CurrentUser() user: User,
+  // ): Promise<Month[]> {
+  //   return this.monthService.categoryByMonth(getMonthByCategoryDto, user);
+  // }
 
   @Mutation(() => Month)
   @UseGuards(GqlAuthGuard)

@@ -25,6 +25,7 @@ import { YearMonth } from './DTO/year-month.dto';
 import { Loader } from '@ovieh/nestjs-dataloader';
 import DataLoader = require('dataloader');
 import { CategoryLoader } from '../category/category.loader';
+import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
 
 @Resolver(() => Transaction)
 export class TransactionResolver {
@@ -124,7 +125,6 @@ export class TransactionResolver {
     @CurrentUser() user: User,
     @Args() createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
-    
     return this.transactionService.createTransaction(
       createTransactionDto,
       user,
@@ -158,6 +158,18 @@ export class TransactionResolver {
     @CurrentUser() user: User,
   ): Promise<number> {
     return this.transactionService.sumDebitsByYearMonth(user, year, month);
+  }
+
+  @Query(() => [Transaction])
+  @UseGuards(GqlAuthGuard)
+  async transactionsByMonthAndCateogry(
+    @Args() getMonthByCategoryDto: GetMonthByCategoryDto,
+    @CurrentUser() user: User,
+  ): Promise<Transaction[]> {
+    return this.transactionService.transactionsByMonthAndCateogry(
+      getMonthByCategoryDto,
+      user,
+    );
   }
 
   // TODO: why isn't this passing the user?

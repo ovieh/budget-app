@@ -91,12 +91,12 @@ export class MonthService {
   }
 
   // get category by month
-  async categoryByMonth(
-    getMonthByCategoryDto: GetMonthByCategoryDto,
-    user: User,
-  ): Promise<Month[]> {
-    return this.monthRepository.categoryByMonth(getMonthByCategoryDto, user);
-  }
+  // async categoryByMonth(
+  //   getMonthByCategoryDto: GetMonthByCategoryDto,
+  //   user: User,
+  // ): Promise<Month[]> {
+  //   return this.monthRepository.categoryByMonth(getMonthByCategoryDto, user);
+  // }
 
   async updateMonthCategories(
     monthId: string,

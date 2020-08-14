@@ -6,6 +6,7 @@ import { User } from '../auth/user.entity';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { YearMonth } from './DTO/year-month.dto';
 import { Transaction } from './transaction.entity';
+import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
@@ -220,7 +221,7 @@ export class TransactionRepository extends Repository<Transaction> {
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
-    console.log("id", id);
+    console.log('id', id);
     console.log('categoryId', categoryId);
     try {
       this.createQueryBuilder()
@@ -265,5 +266,22 @@ export class TransactionRepository extends Repository<Transaction> {
       .cache(true)
       .getRawOne();
     return sum || 0;
+  }
+
+  async transactionsByMonthAndCategory(
+    getMonthByCategoryDto: GetMonthByCategoryDto,
+    user: User,
+  ): Promise<Transaction[]> {
+    const { month, year, categoryId } = getMonthByCategoryDto;
+
+    const result = await this.query(
+      `select * from transaction t left join "month" m2 
+              on m2.id = t."monthId" 
+              where m2.year = $1 and m2.month = $2
+              and t."categoryId" = $3 and t."userId" = $4`,
+      [year, month, categoryId, user.id],
+    );
+    console.log(result);
+    return result;
   }
 }
