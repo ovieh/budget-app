@@ -13,10 +13,12 @@ import { TransactionLoader } from './transaction.loader.';
 import { MonthRepository } from '../month/month.repository';
 import { MonthService } from '../month/month.service';
 import { MonthModule } from '../month/month.module';
+import { TransactionDescriptionService } from 'src/transaction-description/transaction-description.service';
+import { TransactionDescriptionRepository } from 'src/transaction-description/transaction-description.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TransactionRepository, CategoryRepository, MonthRepository]),
+    TypeOrmModule.forFeature([TransactionRepository, CategoryRepository, MonthRepository, TransactionDescriptionRepository]),
     AuthModule,
     CategoryModule,
     MonthModule,
@@ -27,6 +29,7 @@ import { MonthModule } from '../month/month.module';
     CategoryService,
     TransactionLoader,
     MonthService,
+    TransactionDescriptionService
     // { provide: APP_INTERCEPTOR, useClass: DataLoaderInterceptor },
   ],
 })

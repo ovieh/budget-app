@@ -16,6 +16,7 @@ import { CategoryService } from '../category/category.service';
 import { MonthService } from 'src/month/month.service';
 import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
 import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
+import { TransactionDescriptionService } from 'src/transaction-description/transaction-description.service';
 
 @Injectable()
 export class TransactionService {
@@ -26,6 +27,7 @@ export class TransactionService {
     private transactionRepository: TransactionRepository,
     private categoryService: CategoryService,
     private monthService: MonthService,
+    private transactionDescriptionService: TransactionDescriptionService,
   ) {}
 
   async findByIds(ids: string[]): Promise<Transaction[]> {
@@ -64,8 +66,10 @@ export class TransactionService {
       transaction.description,
       user,
     );
+
     if (category && category.name !== 'Uncategorized') {
       transaction.category = category;
+
       this.logger.log(
         `Updated transaction category with new category: ${category.name}`,
       );
@@ -99,6 +103,10 @@ export class TransactionService {
         throw new BadRequestException('Could not create new month');
       transaction.month = newMonth;
     }
+    await this.transactionDescriptionService.createTransactionDescription({
+      category: transaction.category,
+      description: transaction.description,
+    });
 
     await transaction.save();
 
@@ -121,21 +129,26 @@ export class TransactionService {
     user: User,
   ): Promise<Transaction> {
     try {
-      const result = await this.transactionRepository.updateCategoryById(
+      const transaction = await this.transactionRepository.updateCategoryById(
         id,
         categoryId,
         user,
       );
 
+      await this.transactionDescriptionService.updateTransactionDescription({
+        categoryId,
+        description: transaction.description,
+      });
+
       const updatedMonth = await this.monthService.updateMonthCategories(
-        result.month.id,
+        transaction.month.id,
         {
-          categories: [result.category],
+          categories: [transaction.category],
         },
         user,
       );
       this.logger.log(`Updated month: ${updatedMonth}`);
-      return result;
+      return transaction;
     } catch {
       throw new InternalServerErrorException(
         `Could not update transaction with id ${id}`,
@@ -227,6 +240,6 @@ export class TransactionService {
     return this.transactionRepository.transactionsByMonthAndCategory(
       getMonthByCategoryDto,
       user,
-     );
+    );
   }
 }

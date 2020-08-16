@@ -31,7 +31,9 @@ export class Month extends BaseEntity {
   @JoinTable()
   categories: Category[];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.month)
+  @OneToMany(() => Transaction, (transaction) => transaction.month, {
+    eager: true,
+  })
   transactions?: Transaction[];
 
   @Column()

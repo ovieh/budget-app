@@ -14,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MonthModule } from './month/month.module';
 import * as config from 'config';
 import { join } from 'path';
+import { TransactionDescriptionModule } from './transaction-description/transaction-description.module';
 
 const jwtConfig = config.get('jwt');
 
@@ -41,6 +42,7 @@ const jwtConfig = config.get('jwt');
         expiresIn: 3600,
       },
     }),
+    TransactionDescriptionModule,
   ],
   controllers: [AppController],
   providers: [AuthService, UserRepository],

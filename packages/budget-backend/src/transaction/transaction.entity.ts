@@ -46,7 +46,9 @@ export class Transaction extends BaseEntity {
   @Column('numeric', { precision: 10, scale: 2 })
   balance: number;
 
-  @ManyToOne(() => Category, (category) => category.transactions)
+  @ManyToOne(() => Category, (category) => category.transactions, {
+    eager: true,
+  })
   category?: Category;
   // @RelationColumn()
   // categoryId?: number;

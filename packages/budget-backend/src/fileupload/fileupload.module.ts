@@ -10,13 +10,15 @@ import { CategoryService } from 'src/category/category.service';
 import { CategoryRepository } from 'src/category/category.repository';
 import { MonthService } from 'src/month/month.service';
 import { MonthRepository } from 'src/month/month.repository';
+import { TransactionDescriptionService } from 'src/transaction-description/transaction-description.service';
+import { TransactionDescriptionRepository } from 'src/transaction-description/transaction-description.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TransactionRepository, CategoryRepository, MonthRepository]),
+    TypeOrmModule.forFeature([TransactionRepository, CategoryRepository, MonthRepository, TransactionDescriptionRepository]),
     AuthModule,
   ],
   controllers: [FileuploadController],
-  providers: [FileuploadService, FileuploadResolver, TransactionService, CategoryService, MonthService],
+  providers: [FileuploadService, FileuploadResolver, TransactionService, CategoryService, MonthService, TransactionDescriptionService],
 })
 export class FileuploadModule {}

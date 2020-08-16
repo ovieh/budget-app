@@ -67,6 +67,7 @@ export class MonthService {
     }
 
     const result = await this.monthRepository.find({
+      relations: ['categories'],
       where: {
         month: month || defaultDate.month,
         year: year || defaultDate.year,
@@ -75,7 +76,6 @@ export class MonthService {
       order: { month: 'DESC', year: 'DESC' },
       // skip: skippedItems,
       // take: limit,
-      relations: ['categories'],
     });
 
     if (!result) throw new NotFoundException('Month not found');

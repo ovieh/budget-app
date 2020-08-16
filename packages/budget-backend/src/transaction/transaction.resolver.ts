@@ -162,7 +162,7 @@ export class TransactionResolver {
 
   @Query(() => [Transaction])
   @UseGuards(GqlAuthGuard)
-  async transactionsByMonthAndCateogry(
+  async transactionsByMonthAndCategory(
     @Args() getMonthByCategoryDto: GetMonthByCategoryDto,
     @CurrentUser() user: User,
   ): Promise<Transaction[]> {

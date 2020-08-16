@@ -16,6 +16,7 @@ import {
   Float,
   HideField,
 } from '@nestjs/graphql';
+import { TransactionDescription } from 'src/transaction-description/transaction-description.entity';
 
 @ObjectType()
 @InputType('CatIn')
@@ -40,4 +41,7 @@ export class Category extends BaseEntity {
   @HideField()
   @ManyToOne(() => User, (user) => user.category, { eager: false })
   user: User;
+
+  @OneToMany(() => TransactionDescription, transactionDescription => transactionDescription.category)
+  transactionDescriptions: TransactionDescription[];
 }
