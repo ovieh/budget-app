@@ -221,8 +221,6 @@ export class TransactionRepository extends Repository<Transaction> {
     categoryId: number,
     user: User,
   ): Promise<Transaction> {
-    console.log('id', id);
-    console.log('categoryId', categoryId);
     try {
       this.createQueryBuilder()
         .update(Transaction)
@@ -281,7 +279,6 @@ export class TransactionRepository extends Repository<Transaction> {
               and t."categoryId" = $3 and t."userId" = $4`,
       [year, month, categoryId, user.id],
     );
-    console.log(result);
     return result;
   }
 }

@@ -25,4 +25,7 @@ export class TransactionDescription extends BaseEntity {
 
   @Column()
   categoryId: number;
+
+  @Column('int', { nullable: true })
+  userId: number;
 }

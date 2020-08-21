@@ -17,6 +17,8 @@ import { MonthService } from 'src/month/month.service';
 import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
 import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
 import { TransactionDescriptionService } from 'src/transaction-description/transaction-description.service';
+import { Category } from 'src/category/category.entity';
+import { TransactionDescription } from 'src/transaction-description/transaction-description.entity';
 
 @Injectable()
 export class TransactionService {
@@ -62,10 +64,16 @@ export class TransactionService {
       user,
     );
 
-    const category = await this.categoryService.getCategoryByDescription(
+    const transactionDescription = await this.transactionDescriptionService.findTransactionDescription(
       transaction.description,
       user,
     );
+
+    let category: Category;
+
+    if (transactionDescription) {
+      category = transactionDescription.category;
+    }
 
     if (category && category.name !== 'Uncategorized') {
       transaction.category = category;
@@ -103,10 +111,13 @@ export class TransactionService {
         throw new BadRequestException('Could not create new month');
       transaction.month = newMonth;
     }
-    await this.transactionDescriptionService.createTransactionDescription({
-      category: transaction.category,
-      description: transaction.description,
-    });
+    await this.transactionDescriptionService.createTransactionDescription(
+      {
+        category: transaction.category,
+        description: transaction.description,
+      },
+      user,
+    );
 
     await transaction.save();
 
@@ -135,10 +146,13 @@ export class TransactionService {
         user,
       );
 
-      await this.transactionDescriptionService.updateTransactionDescription({
-        categoryId,
-        description: transaction.description,
-      });
+      await this.transactionDescriptionService.updateTransactionDescription(
+        {
+          categoryId,
+          description: transaction.description,
+        },
+        user,
+      );
 
       const updatedMonth = await this.monthService.updateMonthCategories(
         transaction.month.id,
@@ -147,7 +161,7 @@ export class TransactionService {
         },
         user,
       );
-      this.logger.log(`Updated month: ${updatedMonth}`);
+      this.logger.log(`Updated month: ${updatedMonth.id}`);
       return transaction;
     } catch {
       throw new InternalServerErrorException(

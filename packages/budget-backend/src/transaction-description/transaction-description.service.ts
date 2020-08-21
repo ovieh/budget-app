@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateTransactionDescriptionDto } from './dto/create-transaction-description.dto';
 import { TransactionDescriptionRepository } from './transaction-description.repository';
 import { UpdateTransactionDescriptionDto } from './dto/update-transaction-description.dto';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class TransactionDescriptionService {
@@ -15,17 +16,29 @@ export class TransactionDescriptionService {
     >,
   ) {}
 
-  findAll(): Promise<TransactionDescription[]> {
-    return this.transactionDescriptionRepository.find();
+  findAll(user: User): Promise<TransactionDescription[]> {
+    return this.transactionDescriptionRepository.find({ userId: user.id });
+  }
+
+  async findTransactionDescription(
+    description: string,
+    user: User,
+  ): Promise<TransactionDescription> {
+    return  this.transactionDescriptionRepository.findOne(
+      { description, userId: user.id },
+      { relations: ['category'] },
+    );
   }
 
   async createTransactionDescription(
     createTransactionDescriptionDto: CreateTransactionDescriptionDto,
+    user: User,
   ): Promise<TransactionDescription> {
     const { category, description } = createTransactionDescriptionDto;
 
     const existing = await this.transactionDescriptionRepository.findOne({
       description,
+      userId: user.id,
     });
 
     if (existing) return existing;
@@ -34,6 +47,7 @@ export class TransactionDescriptionService {
 
     transactionDescription.category = category;
     transactionDescription.description = description;
+    transactionDescription.userId = user.id;
 
     await transactionDescription.save();
 
@@ -42,10 +56,14 @@ export class TransactionDescriptionService {
 
   async updateTransactionDescription(
     updateTransactionDescriptionDto: UpdateTransactionDescriptionDto,
+    user: User,
   ): Promise<TransactionDescription> {
     const { categoryId, description } = updateTransactionDescriptionDto;
 
-    const existing = await this.transactionDescriptionRepository.findOne({description});
+    const existing = await this.transactionDescriptionRepository.findOne({
+      description,
+      userId: user.id,
+    });
 
     if (!existing)
       throw new NotFoundException('Transaction Description not found');
