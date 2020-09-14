@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MonthRepository } from './month.repository';
@@ -9,12 +10,11 @@ import { User } from 'src/auth/user.entity';
 import { Month } from './month.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
-import { GetMonthByCategoryDto } from './DTO/get-month-by-category.dto';
-import { Category } from 'src/category/category.entity';
-import { UpdateCategoryDto } from 'src/category/DTO/update-category.dto';
+import { UpdateMonthCategoriesDto } from './DTO/update-month-categories.dto';
 
 @Injectable()
 export class MonthService {
+  private logger = new Logger('MonthService');
   constructor(
     @InjectRepository(MonthRepository)
     private monthRepository: MonthRepository,
@@ -22,9 +22,9 @@ export class MonthService {
 
   async createMonth(
     createMonthDto: CreateMonthDto,
-    user: User,
+    userId: number,
   ): Promise<Month> {
-    return this.monthRepository.createMonth(createMonthDto, user);
+    return this.monthRepository.createMonth(createMonthDto, userId);
   }
 
   async getMonths(user: User): Promise<Month[]> {
@@ -34,25 +34,24 @@ export class MonthService {
     });
   }
 
-  async getByIds(ids: number[], user: User): Promise<Month[]> {
-    return this.monthRepository.findByIds(ids, { where: { userId: user.id } });
+  async getByIds(ids: number[], userId: number): Promise<Month[]> {
+    return this.monthRepository.findByIds(ids, { where: { userId } });
   }
 
-  async getMonthByDate(dateDto: DateDto, user: User): Promise<Month> {
+  async getMonthByDate(dateDto: DateDto, userId: number): Promise<Month> {
     const { year, month } = dateDto;
 
-    const foundMonth = this.monthRepository.findOne(
-      {
-        year,
-        month,
-        userId: user.id,
-      },
-      { relations: ['categories'] },
-    );
+    try {
+      const foundMonth = await this.monthRepository.findOne({
+        where: { year, month, userId },
+        relations: ['categories'],
+      });
 
-    if (!foundMonth) throw new NotFoundException('Month not found');
-
-    return foundMonth;
+      return foundMonth;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException('Could not find month');
+    }
   }
 
   async findMonthByDate(dateDto: DateDto, user: User): Promise<Month[]> {
@@ -90,28 +89,29 @@ export class MonthService {
     });
   }
 
-  // get category by month
-  // async categoryByMonth(
-  //   getMonthByCategoryDto: GetMonthByCategoryDto,
-  //   user: User,
-  // ): Promise<Month[]> {
-  //   return this.monthRepository.categoryByMonth(getMonthByCategoryDto, user);
-  // }
+
 
   async updateMonthCategories(
-    monthId: string,
-    updateCategoryDto: UpdateCategoryDto,
-    user: User,
+    updateMonthCategoriesDto: UpdateMonthCategoriesDto,
+    userId: number,
   ): Promise<Month> {
     try {
       const result = await this.monthRepository.updateMonthCategories(
-        monthId,
-        updateCategoryDto,
-        user,
+        updateMonthCategoriesDto,
+        userId
       );
       return result;
     } catch (error) {
       throw new BadRequestException(error);
+    }
+  }
+
+  async saveMonth(months: CreateMonthDto[]) {
+    try {
+      const month = (await this.monthRepository.save(months)) as Month[];
+      return month;
+    } catch (error) {
+      throw new BadRequestException('Could not save month(s)');
     }
   }
 }

@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   main:
-    container_name: main
+    container_name: budget.app
     build:
       context: .
       target: development

@@ -19,7 +19,7 @@ export class FileuploadResolver {
     @CurrentUser() user: User,
     @Args('file') file: UploadScalar,
   ): boolean {
-    this.fileuploadService.importFile(file, user);
+    // this.fileuploadService.importFile(file, user);
     return true;
   }
 }

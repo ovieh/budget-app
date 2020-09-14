@@ -6,7 +6,7 @@ import {
   ManyToOne,
   Unique,
 } from 'typeorm';
-import { Category } from 'src/category/category.entity';
+import { Category } from '../category/category.entity';
 import { ObjectType, InputType } from '@nestjs/graphql';
 
 @ObjectType()

@@ -27,7 +27,7 @@ type Month {
   id: ID!
   month: Int!
   year: Float!
-  categories: [Category!]!
+  categories: [Category!]
   transactions: [Transaction!]
   userId: Float!
 }
@@ -46,13 +46,13 @@ type Transaction {
   userId: Float!
 }
 
-type LoginResponseDto {
-  accessToken: String!
-}
-
 type YearMonth {
   year: Int!
   month: Int!
+}
+
+type LoginResponseDto {
+  accessToken: String!
 }
 
 type ChartData {
@@ -139,8 +139,8 @@ type Mutation {
   updateCategory(budget: Float!, name: String!, id: Float!): Category!
   createCategory(name: String!, budget: Float!): Category!
   removeCategory(id: Float!): String!
-  createMonth(month: Int!, year: Int!, transaction: ID!, categories: [CatIn!]!): Month!
-  updateMonthCategories(categories: [CatIn!]!, monthId: String!): Month!
+  createMonth(month: Int!, year: Int!, transactions: ID!, categories: [CatIn!]!): Month!
+  updateMonthCategories: Month!
 }
 
 """Upload custom scalar type"""

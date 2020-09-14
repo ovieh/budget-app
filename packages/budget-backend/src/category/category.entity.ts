@@ -16,7 +16,7 @@ import {
   Float,
   HideField,
 } from '@nestjs/graphql';
-import { TransactionDescription } from 'src/transaction-description/transaction-description.entity';
+import { TransactionDescription } from '../transaction-description/transaction-description.entity';
 
 @ObjectType()
 @InputType('CatIn')

@@ -25,6 +25,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     migrationsDir: 'src/migration',
   },
   synchronize: true, //dbConfig.synchronize,
-  logging: ['error'],
+  // logging: ['error'],
   cache: false,
 };

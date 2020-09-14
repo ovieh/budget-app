@@ -3,7 +3,6 @@ import {
   NotFoundException,
   InternalServerErrorException,
   Logger,
-  BadRequestException,
 } from '@nestjs/common';
 import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
@@ -13,12 +12,12 @@ import { User } from '../auth/user.entity';
 import { CategoryInput } from '../category/category.input';
 import { YearMonth } from './DTO/year-month.dto';
 import { CategoryService } from '../category/category.service';
-import { MonthService } from 'src/month/month.service';
-import { AddMonthToTransaction } from 'src/utils/add-month-to-transaction';
-import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
-import { TransactionDescriptionService } from 'src/transaction-description/transaction-description.service';
-import { Category } from 'src/category/category.entity';
-import { TransactionDescription } from 'src/transaction-description/transaction-description.entity';
+import { MonthService } from '../month/month.service';
+import { GetMonthByCategoryDto } from '../month/DTO/get-month-by-category.dto';
+import { TransactionDescriptionService } from '../transaction-description/transaction-description.service';
+import { Category } from '../category/category.entity';
+import { getMonthsFromTransactions } from 'src/utils/get-months-from-transaction';
+import { Month } from 'src/month/month.entity';
 
 @Injectable()
 export class TransactionService {
@@ -64,64 +63,20 @@ export class TransactionService {
       user,
     );
 
-    const transactionDescription = await this.transactionDescriptionService.findTransactionDescription(
-      transaction.description,
-      user,
+    const updatedTransaction = await this.syncTransaction(transaction, user);
+
+    const transactionWithDescription = await this.syncDescription(
+      updatedTransaction,
     );
 
-    let category: Category;
-
-    if (transactionDescription) {
-      category = transactionDescription.category;
-    }
-
-    if (category && category.name !== 'Uncategorized') {
-      transaction.category = category;
-
-      this.logger.log(
-        `Updated transaction category with new category: ${category.name}`,
-      );
-    } else {
-      const category = await this.categoryService.findByName(
-        'Uncategorized',
-        user,
-      );
-      this.logger.log(
-        `Updated transaction category with default: ${category.name}`,
-      );
-      transaction.category = category;
-    }
-
-    const date = AddMonthToTransaction(transaction, category);
-
-    // Check if month exists for given date, if so, add month to that date
-    const previousMonth = await this.monthService.getMonthByDate(date, user);
-
-    if (previousMonth) {
-      transaction.month = previousMonth;
-      await this.monthService.updateMonthCategories(
-        previousMonth.id,
-        { categories: [category] },
-        user,
-      );
-    } else {
-      // If not, create new month
-      const newMonth = await this.monthService.createMonth(date, user);
-      if (!newMonth)
-        throw new BadRequestException('Could not create new month');
-      transaction.month = newMonth;
-    }
-    await this.transactionDescriptionService.createTransactionDescription(
-      {
-        category: transaction.category,
-        description: transaction.description,
-      },
-      user,
+    const transactionWithMonth = await this.syncMonth(
+      transactionWithDescription,
     );
 
-    await transaction.save();
+    await transactionWithMonth.save();
 
-    return transaction;
+
+    return transactionWithMonth;
   }
 
   async deleteTransactionById(id: string, user: User): Promise<void> {
@@ -155,15 +110,17 @@ export class TransactionService {
       );
 
       const updatedMonth = await this.monthService.updateMonthCategories(
-        transaction.month.id,
         {
           categories: [transaction.category],
+          month: transaction.month,
         },
-        user,
+        user.id
       );
-      this.logger.log(`Updated month: ${updatedMonth.id}`);
+
+      this.logger.log(updatedMonth, 'Updated Month');
       return transaction;
-    } catch {
+    } catch (error) {
+      this.logger.error(error.message);
       throw new InternalServerErrorException(
         `Could not update transaction with id ${id}`,
       );
@@ -250,10 +207,99 @@ export class TransactionService {
   async transactionsByMonthAndCateogry(
     getMonthByCategoryDto: GetMonthByCategoryDto,
     user: User,
-  ) {
+  ): Promise<Transaction[]> {
     return this.transactionRepository.transactionsByMonthAndCategory(
       getMonthByCategoryDto,
       user,
     );
+  }
+
+  async syncTransaction(
+    transaction: Transaction,
+    user: User,
+  ): Promise<Transaction> {
+    let category: Category;
+
+    // Assign category to transaction
+    if (category && category.name !== 'Uncategorized') {
+      transaction.category = category;
+
+      this.logger.log(
+        `Updated transaction category with new category: ${category.name}`,
+      );
+    } else {
+      const category = await this.categoryService.findByName(
+        'Uncategorized',
+        user.id,
+      );
+      this.logger.log(
+        `Updated transaction category with default: ${category.name}`,
+      );
+      transaction.category = category;
+    }
+
+    const updatedTransaction = await this.transactionRepository.findOne({
+      id: transaction.id,
+    });
+
+    updatedTransaction.month = transaction.month;
+    updatedTransaction.category = transaction.category;
+
+    const myTransaction = await updatedTransaction.save();
+
+    return myTransaction;
+  }
+
+  async syncMonth(transaction: Transaction): Promise<Transaction> {
+    const transactionMonth = getMonthsFromTransactions(
+      [transaction],
+      transaction.userId,
+    )[0];
+
+    const month = await this.monthService.getMonthByDate(
+      {
+        month: transactionMonth.month,
+        year: transactionMonth.year,
+      },
+      transaction.userId,
+    );
+
+    if (month) {
+      transaction.month = month;
+      return transaction;
+    } else {
+      const month = new Month();
+      month.transactions = [transaction];
+      month.userId = transaction.userId;
+      month.month = transactionMonth.month;
+      month.year = transactionMonth.year;
+
+      await month.save();
+      this.logger.log(`Created new month ${month}`);
+      transaction.month = month;
+      return transaction;
+    }
+  }
+
+  async syncDescription(transaction: Transaction): Promise<Transaction> {
+    // Find Transaction Description if available
+    const existingTransactionDescription = await this.transactionDescriptionService.findTransactionDescription(
+      transaction.description,
+      transaction.userId,
+    );
+
+    if (existingTransactionDescription) {
+      transaction.category = existingTransactionDescription.category;
+      return transaction;
+    } else {
+      await this.transactionDescriptionService.createTransactionDescription(
+        {
+          description: transaction.description,
+          category: transaction.category,
+        },
+        transaction.userId,
+      );
+      return transaction;
+    }
   }
 }

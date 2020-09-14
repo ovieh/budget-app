@@ -15,9 +15,9 @@ export class CreateMonthDto {
 
     @Field(() => ID)
     @IsNotEmpty()
-    transaction: Transaction;
+    transactions: Transaction[];
 
     @Field(() => [Category])
     @IsNotEmpty()
-    categories: Category[];
+    categories?: Category[];
 }

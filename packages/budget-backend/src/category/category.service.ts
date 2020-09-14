@@ -31,8 +31,10 @@ export class CategoryService {
     return this.categoryRepository.findOne(id);
   }
 
-  async findByName(name: string, user: User): Promise<Category> {
-    return this.categoryRepository.findOne({ where: { name, user } });
+  async findByName(name: string, userId: number): Promise<Category> {
+    return this.categoryRepository.findOne({
+      where: { name, user: { id: userId } },
+    });
   }
 
   async findByIds(ids: number[]) {

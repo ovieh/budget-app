@@ -1,4 +1,4 @@
-import { IsString, IsNumber } from "class-validator";
+import { IsString, IsNotEmpty } from "class-validator";
 import { Category } from "src/category/category.entity";
 
 export class CreateTransactionDescriptionDto {
@@ -6,6 +6,6 @@ export class CreateTransactionDescriptionDto {
     @IsString()
     description: string;
 
-    @IsNumber()
+    @IsNotEmpty()
     category: Category;
 }

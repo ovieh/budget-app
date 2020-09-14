@@ -6,15 +6,14 @@ import {
   Int,
 } from '@nestjs/graphql';
 import { Month } from './month.entity';
-import { Logger, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { MonthService } from './month.service';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { CurrentUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
-import { GetMonthByCategoryDto } from './DTO/get-month-by-category.dto';
-import { UpdateCategoryDto } from 'src/category/DTO/update-category.dto';
+import { UpdateMonthCategoriesDto } from './DTO/update-month-categories.dto';
 
 @Resolver(() => Month)
 export class MonthResolver {
@@ -27,7 +26,7 @@ export class MonthResolver {
     @Args() createMonthDto: CreateMonthDto,
     @CurrentUser() user: User,
   ): Promise<Month> {
-    return this.monthService.createMonth(createMonthDto, user);
+    return this.monthService.createMonth(createMonthDto, user.id);
   }
 
   @Query(() => [Month])
@@ -42,7 +41,7 @@ export class MonthResolver {
     @Args('ids', { type: () => [Int] }) ids: number[],
     @CurrentUser() user: User,
   ): Promise<Month[]> {
-    return this.monthService.getByIds(ids, user);
+    return this.monthService.getByIds(ids, user.id);
   }
 
   @Query(() => [Month])
@@ -73,13 +72,12 @@ export class MonthResolver {
   @UseGuards(GqlAuthGuard)
   async updateMonthCategories(
     @CurrentUser() user: User,
-    @Args('monthId', ParseUUIDPipe) monthId: string,
-    @Args() updateCategoryDto: UpdateCategoryDto,
+    // @Args('monthId', ParseUUIDPipe) monthId: string,
+    @Args() updateMonthCategoriesDto: UpdateMonthCategoriesDto,
   ): Promise<Month> {
     return this.monthService.updateMonthCategories(
-      monthId,
-      updateCategoryDto,
-      user,
+      updateMonthCategoriesDto,
+      user.id,
     );
   }
 }
