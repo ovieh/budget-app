@@ -16,8 +16,8 @@ import { MonthService } from '../month/month.service';
 import { GetMonthByCategoryDto } from '../month/DTO/get-month-by-category.dto';
 import { TransactionDescriptionService } from '../transaction-description/transaction-description.service';
 import { Category } from '../category/category.entity';
-import { getMonthsFromTransactions } from 'src/utils/get-months-from-transaction';
-import { Month } from 'src/month/month.entity';
+import { getMonthsFromTransactions } from '../utils/get-months-from-transaction';
+import { Month } from '../month/month.entity';
 
 @Injectable()
 export class TransactionService {

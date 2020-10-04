@@ -15,5 +15,6 @@ import { CategoryLoader } from './category.loader';
     CategoryLoader,
     { provide: APP_INTERCEPTOR, useClass: DataLoaderInterceptor },
   ],
+  exports: [CategoryService]
 })
 export class CategoryModule {}

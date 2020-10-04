@@ -1,12 +1,14 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import * as parse from 'csv-parse';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
+import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../auth/user.entity';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { YearMonth } from './DTO/year-month.dto';
 import { Transaction } from './transaction.entity';
-import { GetMonthByCategoryDto } from 'src/month/DTO/get-month-by-category.dto';
+import customParseFormat = require('dayjs/plugin/customParseFormat');
+dayjs.extend(customParseFormat);
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
@@ -36,7 +38,12 @@ export class TransactionRepository extends Repository<Transaction> {
           return 0;
           // convert date format
         } else if (context.column === 'date') {
-          return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+          console.log(dayjs(value, 'DD-MM-YYYY').format('YYYY-MM-DD'));
+          return dayjs(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+          // return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+          // return formatISO(parseDate(value, 'DD/MM/YYYY', new Date()), {
+          //   representation: 'date',
+          // });
         } else {
           return value;
         }

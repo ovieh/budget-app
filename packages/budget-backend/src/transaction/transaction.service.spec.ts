@@ -4,15 +4,36 @@ import { TransactionRepository } from './transaction.repository';
 import { CategoryService } from '../category/category.service';
 import { CategoryRepository } from '../category/category.repository';
 import { NotFoundException } from '@nestjs/common';
+import { MonthService } from '../month/month.service';
+import { TransactionDescriptionRepository } from '../transaction-description/transaction-description.repository';
+import { TransactionDescriptionService } from '../transaction-description/transaction-description.service';
+import { MonthRepository } from '../month/month.repository';
+import { CreateTransactionDto } from './DTO/create-transaction.dto';
 
 const mockUser = { id: 1, username: 'Bob' };
+
+const mockTransaction = {
+  id: '1',
+  date: '1/1/2020',
+  type: 'deb',
+  sortCode: '112233',
+  accountNumber: '332211',
+  description: 'Fake Transaciton',
+  debitAmount: 5.0,
+  creditAmount: 0,
+  balance: 1000,
+};
 
 const mockTransactionRepository = () => ({
   getTransaction: jest.fn(),
   findOne: jest.fn(),
+  createTransaction: jest.fn()
 });
 
 const mockCategoryRepository = () => ({});
+const mockMonthRepository = () => ({});
+const mockTransactionDescriptionRepository = () => ({});
+
 
 describe('TransactionService', () => {
   let transactionService;
@@ -31,6 +52,17 @@ describe('TransactionService', () => {
           provide: CategoryRepository,
           useFactory: mockCategoryRepository,
         },
+        MonthService,
+        {
+          provide: MonthRepository,
+          useFactory: mockMonthRepository,
+        },
+        TransactionDescriptionService,
+        {
+          provide: TransactionDescriptionRepository,
+          useFactory: mockTransactionDescriptionRepository,
+        },
+        
       ],
     }).compile();
 
@@ -54,22 +86,10 @@ describe('TransactionService', () => {
   });
 
   describe('getTransactionById', () => {
-    const mockTransaction = {
-      id: '1',
-      date: '1/1/2020',
-      type: 'deb',
-      sortCode: '112233',
-      accountNumber: '332211',
-      description: 'Fake Transaciton',
-      debitAmount: 5.0,
-      creditAmount: 0,
-      balance: 1000,
-    };
     it('calls the transctionRepository.findOne() and successfully retrieves a transaction', async () => {
       transactionRepository.findOne.mockResolvedValue(mockTransaction);
       const result = await transactionService.getTransactionsById(1, mockUser);
       expect(result).toEqual(mockTransaction);
-
       expect(transactionRepository.findOne).toHaveBeenCalledWith({
         where: { id: 1, userId: mockUser.id },
       });
@@ -80,6 +100,29 @@ describe('TransactionService', () => {
 
       expect(transactionService.getTransactionsById(1, mockUser)).rejects.toThrow(NotFoundException);
 
+    });
+  });
+
+  describe('createTransaction', () => {
+    it('calls transctionRepository.createTransaction() and returns the result', async () => {
+      transactionRepository.createTransaction.mockResolvedValue(mockTransaction);
+      expect(transactionRepository.createTransaction).not.toHaveBeenCalled();
+
+      const createTransactionDto: CreateTransactionDto = {
+        date: '1/1/2020',
+        type: 'deb',
+        sortCode: '112233',
+        accountNumber: '332211',
+        description: 'Fake Transaciton',
+        debitAmount: 5.0,
+        creditAmount: 0,
+        balance: 1000,
+      };
+      
+      const result = await transactionRepository.createTransaction(createTransactionDto, mockUser);
+      expect(transactionRepository.createTransaction).toHaveBeenCalledWith(createTransactionDto, mockUser);
+      expect(result).toEqual(mockTransaction);
+      
     });
   });
 });

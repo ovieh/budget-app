@@ -16,5 +16,6 @@ import { CategoryModule } from 'src/category/category.module';
     MonthService,
     MonthResolver,
   ],
+  exports: [MonthService]
 })
 export class MonthModule {}

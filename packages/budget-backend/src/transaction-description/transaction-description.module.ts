@@ -6,5 +6,6 @@ import { TransactionDescriptionRepository } from './transaction-description.repo
 @Module({
   imports: [TypeOrmModule.forFeature([TransactionDescriptionRepository])],
   providers: [TransactionDescriptionService],
+  exports: [TransactionDescriptionService]
 })
 export class TransactionDescriptionModule {}

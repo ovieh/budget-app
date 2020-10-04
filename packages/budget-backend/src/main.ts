@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import * as config from 'config';
-import helmet from 'helmet';
+import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 import * as cookieParser from 'cookie-parser';
 
