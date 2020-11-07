@@ -40,6 +40,16 @@ export class TransactionDescriptionService {
   ): Promise<TransactionDescription> {
     const { category, description } = createTransactionDescriptionDto;
 
+    const existingDescription = await this.findTransactionDescription(description, userId);
+
+    if (!category) {
+      throw new Error("CATEOGRY DOES NOT EXIST!!!!")
+    }
+
+    if (existingDescription) {
+      return existingDescription;
+    };
+
     const transactionDescription = new TransactionDescription();
 
     transactionDescription.category = category;
@@ -48,12 +58,12 @@ export class TransactionDescriptionService {
 
     try {
 
-      await transactionDescription.save();
-      this.logger.log(`created new Transaction Description ${transactionDescription.description}`);
+      // await transactionDescription.save();
+      // this.logger.log(`created new Transaction Description ${transactionDescription.description}`);
       return transactionDescription;
     } catch(error) {
       this.logger.error(error.message);
-      throw new BadRequestException('Could not create Transaction Description');
+      throw new BadRequestException('Could not create Transaction Description', error.message);
     }
 
   }

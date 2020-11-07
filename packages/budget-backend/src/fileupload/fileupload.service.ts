@@ -20,23 +20,37 @@ export class FileuploadService {
       user,
     );
 
-    transactions.map(async (transaction) => {
-      return this.transactionService.syncTransaction(transaction, user);
-    });
-
-    const updatedTransactions = await Promise.all(transactions);
-
     // loop through transaction, sync transaction descriptions
-    const descriptions = transactions.map((transaction) =>
-      this.transactionService.syncDescription(transaction),
+    const descriptions = transactions.map(
+      async (transaction) =>
+        await this.transactionService.syncDescription(transaction),
     );
 
-    await Promise.all(descriptions);
+    const updatedTransactions = await Promise.all(descriptions);
+
+
+    const categories = updatedTransactions.map(async (transaction) => {
+      return this.transactionService.syncCategory(transaction, user);
+    });
+
+    let resolvedTransactions: Transaction[];
+    try {
+      resolvedTransactions = await Promise.all(categories);
+    } catch (error) {
+      console.log(error);
+    }
+
+    let savedTransactions: Transaction[];
+    try {
+      savedTransactions = await this.transactionRepository.save(resolvedTransactions);
+    } catch (error) {
+      console.log(error);
+    }
 
     // loop through add find unique months and add to set
     const dateSet = new Set();
 
-    updatedTransactions.forEach((transaction) => {
+    savedTransactions.forEach((transaction) => {
       const transactionDate = new Date(transaction.date);
       const date = `${
         transactionDate.getMonth() + 1
@@ -48,7 +62,7 @@ export class FileuploadService {
 
     // split transactions by (unique) month
     const sortedTransactions = sortTransactionsByMonth(
-      updatedTransactions,
+      savedTransactions,
       months,
     );
 
@@ -67,7 +81,7 @@ export class FileuploadService {
 
     await Promise.all(monthsUnresolved);
 
-    const result = updatedTransactions.map(
+    const result = savedTransactions.map(
       async (transaction) =>
         await this.transactionService.syncMonth(transaction),
     );

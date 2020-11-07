@@ -62,20 +62,13 @@ export class TransactionService {
       createTransactionDto,
       user,
     );
-
-    const updatedTransaction = await this.syncTransaction(transaction, user);
-
-    const transactionWithDescription = await this.syncDescription(
-      updatedTransaction,
-    );
-
+    const updatedTransaction = await this.syncCategory(transaction, user);
+    const transactionWithDescription = await this.syncDescription(updatedTransaction);
     const transactionWithMonth = await this.syncMonth(
       transactionWithDescription,
     );
 
     await transactionWithMonth.save();
-
-
     return transactionWithMonth;
   }
 
@@ -114,7 +107,7 @@ export class TransactionService {
           categories: [transaction.category],
           month: transaction.month,
         },
-        user.id
+        user.id,
       );
 
       this.logger.log(updatedMonth, 'Updated Month');
@@ -214,40 +207,20 @@ export class TransactionService {
     );
   }
 
-  async syncTransaction(
-    transaction: Transaction,
-    user: User,
-  ): Promise<Transaction> {
-    let category: Category;
+  async syncCategory(transaction: Transaction, user: User): Promise<Transaction>  {
 
-    // Assign category to transaction
-    if (category && category.name !== 'Uncategorized') {
-      transaction.category = category;
-
-      this.logger.log(
-        `Updated transaction category with new category: ${category.name}`,
-      );
-    } else {
-      const category = await this.categoryService.findByName(
-        'Uncategorized',
-        user.id,
-      );
-      this.logger.log(
-        `Updated transaction category with default: ${category.name}`,
-      );
-      transaction.category = category;
+    if (transaction.category) {
+      return transaction;
     }
 
-    const updatedTransaction = await this.transactionRepository.findOne({
-      id: transaction.id,
-    });
+    const uncategorized = await this.categoryService.findByName('Uncategorized', user.id)
 
-    updatedTransaction.month = transaction.month;
-    updatedTransaction.category = transaction.category;
+    if (!uncategorized) throw new InternalServerErrorException(`Could not find uncategorized category`);
 
-    const myTransaction = await updatedTransaction.save();
+    transaction.category = uncategorized;
 
-    return myTransaction;
+    return transaction;
+
   }
 
   async syncMonth(transaction: Transaction): Promise<Transaction> {
@@ -282,24 +255,24 @@ export class TransactionService {
   }
 
   async syncDescription(transaction: Transaction): Promise<Transaction> {
-    // Find Transaction Description if available
-    const existingTransactionDescription = await this.transactionDescriptionService.findTransactionDescription(
+    // find existing description
+    const existingDescription = await this.transactionDescriptionService.findTransactionDescription(
       transaction.description,
       transaction.userId,
     );
 
-    if (existingTransactionDescription) {
-      transaction.category = existingTransactionDescription.category;
-      return transaction;
-    } else {
-      await this.transactionDescriptionService.createTransactionDescription(
+    if (!existingDescription) {
+      this.transactionDescriptionService.createTransactionDescription(
         {
-          description: transaction.description,
           category: transaction.category,
+          description: transaction.description,
         },
         transaction.userId,
       );
       return transaction;
     }
+
+    transaction.category = existingDescription.category;
+    return transaction;
   }
 }

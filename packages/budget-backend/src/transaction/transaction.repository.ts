@@ -10,9 +10,11 @@ import { Transaction } from './transaction.entity';
 import customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
 
+
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
+
 
   async importFile(file: Buffer, user: User): Promise<Transaction[]> {
     const transactions: Transaction[] = [];
@@ -38,19 +40,14 @@ export class TransactionRepository extends Repository<Transaction> {
           return 0;
           // convert date format
         } else if (context.column === 'date') {
-          console.log(dayjs(value, 'DD-MM-YYYY').format('YYYY-MM-DD'));
           return dayjs(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
-          // return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
-          // return formatISO(parseDate(value, 'DD/MM/YYYY', new Date()), {
-          //   representation: 'date',
-          // });
         } else {
           return value;
         }
       },
     });
 
-    parser.on('readable', () => {
+    parser.on('readable', async () => {
       let transaction: Transaction;
       while ((transaction = parser.read())) {
         transaction.userId = user.id;
@@ -66,7 +63,7 @@ export class TransactionRepository extends Repository<Transaction> {
     parser.write(file.buffer);
     parser.end();
 
-    // remove first element, which just containers headers
+    // remove first element, which just contains headers
     transactions.shift();
 
     try {
@@ -114,6 +111,7 @@ export class TransactionRepository extends Repository<Transaction> {
       return transaction;
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException('Could not create transaction!');
     }
   }
 
@@ -237,12 +235,23 @@ export class TransactionRepository extends Repository<Transaction> {
         .where('id = :id', { id })
         .andWhere('userId = :userId', { userId: user.id })
         .execute();
-
-      return this.findOne(id, { relations: ['category', 'month'] });
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        `Could not update transaction with id "${id}"`,
+      );
     }
+
+    const updatedTransaction = await this.findOne(id, {
+      relations: ['category', 'month'],
+    });
+
+    if (!updatedTransaction)
+      throw new InternalServerErrorException(
+        `Could not update transaction with id "${id}"`,
+      );
+
+    return updatedTransaction;
   }
 
   async updateCategoryByIds(
@@ -288,4 +297,5 @@ export class TransactionRepository extends Repository<Transaction> {
     );
     return result;
   }
+
 }

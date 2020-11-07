@@ -42,7 +42,7 @@ type Transaction {
   debitAmount: Float!
   creditAmount: Float!
   balance: Float!
-  category: Category
+  category: Category!
   userId: Float!
 }
 
@@ -95,7 +95,7 @@ input TransactionInput {
   debitAmount: Float!
   creditAmount: Float!
   balance: Float!
-  category: CatIn
+  category: CatIn!
   userId: Float!
 }
 

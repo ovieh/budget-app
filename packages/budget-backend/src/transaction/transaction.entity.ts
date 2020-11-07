@@ -49,7 +49,7 @@ export class Transaction extends BaseEntity {
   @ManyToOne(() => Category, (category) => category.transactions, {
     eager: true,
   })
-  category?: Category;
+  category: Category;
   // @RelationColumn()
   // categoryId?: number;
 
