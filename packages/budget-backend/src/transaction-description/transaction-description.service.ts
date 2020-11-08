@@ -59,7 +59,7 @@ export class TransactionDescriptionService {
     try {
 
       // await transactionDescription.save();
-      // this.logger.log(`created new Transaction Description ${transactionDescription.description}`);
+      this.logger.log(`created new Transaction Description "${transactionDescription.description}"`);
       return transactionDescription;
     } catch(error) {
       this.logger.error(error.message);
@@ -85,7 +85,7 @@ export class TransactionDescriptionService {
     existing.categoryId = categoryId;
 
     await existing.save();
-
+    this.logger.log(`Updated Transaction Description with descrition: "${description}"`)
     return existing;
   }
 }

@@ -18,6 +18,7 @@ import { TransactionDescriptionService } from '../transaction-description/transa
 import { Category } from '../category/category.entity';
 import { getMonthsFromTransactions } from '../utils/get-months-from-transaction';
 import { Month } from '../month/month.entity';
+import { SyncStrategy } from './sync-strategy.enum';
 
 @Injectable()
 export class TransactionService {
@@ -63,7 +64,10 @@ export class TransactionService {
       user,
     );
     const updatedTransaction = await this.syncCategory(transaction, user);
-    const transactionWithDescription = await this.syncDescription(updatedTransaction);
+    const transactionWithDescription = await this.syncDescription(
+      updatedTransaction,
+      SyncStrategy.Individual,
+    );
     const transactionWithMonth = await this.syncMonth(
       transactionWithDescription,
     );
@@ -207,20 +211,27 @@ export class TransactionService {
     );
   }
 
-  async syncCategory(transaction: Transaction, user: User): Promise<Transaction>  {
-
+  async syncCategory(
+    transaction: Transaction,
+    user: User,
+  ): Promise<Transaction> {
     if (transaction.category) {
       return transaction;
     }
 
-    const uncategorized = await this.categoryService.findByName('Uncategorized', user.id)
+    const uncategorized = await this.categoryService.findByName(
+      'Uncategorized',
+      user.id,
+    );
 
-    if (!uncategorized) throw new InternalServerErrorException(`Could not find uncategorized category`);
+    if (!uncategorized)
+      throw new InternalServerErrorException(
+        `Could not find uncategorized category`,
+      );
 
     transaction.category = uncategorized;
 
     return transaction;
-
   }
 
   async syncMonth(transaction: Transaction): Promise<Transaction> {
@@ -254,7 +265,10 @@ export class TransactionService {
     }
   }
 
-  async syncDescription(transaction: Transaction): Promise<Transaction> {
+  async syncDescription(
+    transaction: Transaction,
+    strategy: SyncStrategy,
+  ): Promise<Transaction> {
     // find existing description
     const existingDescription = await this.transactionDescriptionService.findTransactionDescription(
       transaction.description,
@@ -262,17 +276,33 @@ export class TransactionService {
     );
 
     if (!existingDescription) {
-      this.transactionDescriptionService.createTransactionDescription(
-        {
-          category: transaction.category,
-          description: transaction.description,
-        },
-        transaction.userId,
-      );
+      if (strategy === SyncStrategy.Individual) {
+        const transactionDescription = await this.transactionDescriptionService.createTransactionDescription(
+          {
+            category: transaction.category,
+            description: transaction.description,
+          },
+          transaction.userId,
+        );
+        transactionDescription.save();
+        return transaction;
+      } else if (strategy === SyncStrategy.Bulk) {
+
+        const result = await this.transactionDescriptionService.createTransactionDescription(
+          {
+            category: transaction.category,
+            description: transaction.description,
+          },
+          transaction.userId,
+        );
+
+        await result.save();
+
+        return transaction;
+      }
+    } else {
+      transaction.category = existingDescription.category;
       return transaction;
     }
-
-    transaction.category = existingDescription.category;
-    return transaction;
   }
 }

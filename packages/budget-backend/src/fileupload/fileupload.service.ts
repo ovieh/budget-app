@@ -5,6 +5,7 @@ import { TransactionService } from 'src/transaction/transaction.service';
 import { Transaction } from 'src/transaction/transaction.entity';
 import { MonthService } from 'src/month/month.service';
 import { sortTransactionsByMonth } from 'src/utils/sort-transactions-by-month';
+import { SyncStrategy } from '../transaction/sync-strategy.enum';
 
 @Injectable()
 export class FileuploadService {
@@ -20,22 +21,22 @@ export class FileuploadService {
       user,
     );
 
-    // loop through transaction, sync transaction descriptions
-    const descriptions = transactions.map(
-      async (transaction) =>
-        await this.transactionService.syncDescription(transaction),
-    );
-
-    const updatedTransactions = await Promise.all(descriptions);
-
-
-    const categories = updatedTransactions.map(async (transaction) => {
+    const categories = transactions.map(async (transaction) => {
       return this.transactionService.syncCategory(transaction, user);
     });
 
+    const transactionWithCategories = await Promise.all(categories);
+
+    // loop through transaction, sync transaction descriptions
+    const updatedTransactions = transactionWithCategories.map(
+      async (transaction) =>
+        await this.transactionService.syncDescription(transaction, SyncStrategy.Bulk),
+    );
+
+
     let resolvedTransactions: Transaction[];
     try {
-      resolvedTransactions = await Promise.all(categories);
+      resolvedTransactions = await Promise.all(updatedTransactions);
     } catch (error) {
       console.log(error);
     }
@@ -75,7 +76,7 @@ export class FileuploadService {
       };
       return this.monthService.createMonth(
         newMonth,
-        updatedTransactions[i].userId,
+        savedTransactions[i].userId,
       );
     });
 

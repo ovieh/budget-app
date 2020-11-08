@@ -67,10 +67,11 @@ export class TransactionRepository extends Repository<Transaction> {
     transactions.shift();
 
     try {
-      const transaction = await this.save(transactions);
-      return transaction;
+      const savedTransactions = await this.save(transactions);
+      this.logger.log(savedTransactions)
+      return savedTransactions;
     } catch (error) {
-      this.logger.error(`Failed to save transaction.`);
+      this.logger.error(`Failed to save transactions.`);
       throw new InternalServerErrorException(error);
     }
   }
