@@ -3,6 +3,7 @@ import { ApolloLink, Observable, HttpLink } from '@apollo/client';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import JwtDecode from 'jwt-decode';
 import { onError } from 'apollo-link-error';
+import { JwtToken } from './types/jwt';
 
 const requestLink = new ApolloLink(
     (operation, forward) =>
@@ -47,7 +48,7 @@ export const link = ApolloLink.from([
             }
 
             try {
-                const { exp } = JwtDecode(token);
+                const { exp } = JwtDecode(token) as JwtToken;
                 if (Date.now() >= exp * 1000) {
                     return false;
                 } else {
@@ -69,6 +70,7 @@ export const link = ApolloLink.from([
         handleError: err => {
             console.warn('Your refresh token is invalid. Try to relogin');
             console.error(err);
+            console.log('maybe i should redirect the user to the signin page here');
         },
     }) as any, // TODO: Figure why this is needed
     onError(({ graphQLErrors, networkError }) => {

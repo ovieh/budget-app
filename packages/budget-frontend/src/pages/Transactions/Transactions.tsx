@@ -53,14 +53,6 @@ export const Transactions: React.FC<Props> = () => {
 
     const username = data?.me?.username;
 
-    // if (loading) {
-    //     return <div>I'm loading</div>;
-    // }
-
-    // if (error) {
-    //     return <pre>{JSON.stringify(error, null, 2)}</pre>;
-    // }
-
     return (
         <div className={classes.root}>
             <LoggedInNav userName={username} />
@@ -104,12 +96,16 @@ interface ChartProps {
 }
 
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
+    const { year, month } = date;
     const { data, loading, error } = useMonthlySpendingChartQuery({
-        skip: !!date,
+        // skip: !!date,
         variables: {
-            date,
+            year,
+            month,
         },
     });
+
+    console.log('data', data);
 
     const label = 'Spending by category';
 

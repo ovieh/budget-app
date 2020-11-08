@@ -1,0 +1,16 @@
+query TransactionsByMonthAndYear($year: Int, $month: Int){
+  MonthByDate(year: $year, month: $month){
+    month
+    year
+    transactions {
+      id
+      description
+      debitAmount
+      date
+      category {
+        id
+        name
+      }
+    }
+  }
+}

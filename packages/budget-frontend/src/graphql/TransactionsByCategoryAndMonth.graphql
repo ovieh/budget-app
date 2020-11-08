@@ -1,0 +1,8 @@
+query TransactionsByMonthAndCategory($month: Int!, $year: Int!, $categoryId: Int!) {
+  transactionsByMonthAndCategory(month: $month, year: $year, categoryId: $categoryId) {
+    id
+    description
+    debitAmount
+    date
+  }
+}

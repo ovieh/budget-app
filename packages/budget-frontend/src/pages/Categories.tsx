@@ -19,6 +19,7 @@ import {
     CategoriesQuery,
     useCategoriesQuery,
     useCreateCategoryMutation,
+    useMeQuery,
 } from '../generated/graphql';
 import { Drawer } from '../components/Drawer';
 import { PrimaryList } from '../components/PrimaryList';
@@ -33,8 +34,7 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
         { Header: 'Category', accessor: 'name' },
         { Header: 'Budget', accessor: 'budget' },
     ];
-    return null;
-    // return <ReusuableTable data={data.getCategories} columns={columns} pageCount={1} />;
+    return <ReusuableTable data={data.getCategories} columns={columns} />;
 };
 
 const CategorySchema = yup.object().shape({
@@ -73,6 +73,8 @@ export const Categories: FC<Props> = () => {
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     const { data, loading, error } = useCategoriesQuery();
+    const { data: meData } = useMeQuery();
+    const username = meData?.me?.username;
 
     const [createCategory] = useCreateCategoryMutation();
 
@@ -91,7 +93,8 @@ export const Categories: FC<Props> = () => {
 
     return (
         <div className={classes.root}>
-            <LoggedInNav />
+            <LoggedInNav userName={username} />
+
             <Drawer>
                 <PrimaryList />
             </Drawer>
@@ -107,7 +110,7 @@ export const Categories: FC<Props> = () => {
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={4}>
                         <Paper className={fixedHeightPaper}>
                             <PieChart data={chartData} />
                         </Paper>

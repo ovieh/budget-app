@@ -25,6 +25,8 @@ export const TransactionsTable: React.FC<Props> = () => {
         variables: { year: activeDate?.year, month: activeDate?.month },
     });
 
+    console.log(data);
+
     useEffect(() => {
         data?.MonthByDate[0]?.month &&
             dispatch({
@@ -42,9 +44,7 @@ export const TransactionsTable: React.FC<Props> = () => {
 
     const EditableCell: React.FC<EditableCellTypes> = ({
         cell: { value: initialValue },
-        row: {
-            original: { transactions },
-        },
+        row: { original },
         column,
     }) => {
         const { data } = useCategoriesQuery();
@@ -55,7 +55,7 @@ export const TransactionsTable: React.FC<Props> = () => {
         const onBlur = () => {
             updateCategory({
                 variables: {
-                    id: transactions[0].id,
+                    id: original.id,
                     categoryId,
                 },
                 refetchQueries: [
@@ -96,9 +96,9 @@ export const TransactionsTable: React.FC<Props> = () => {
     const TransactionsColumns = useMemo(
         () => [
             { Header: 'Date', accessor: 'date' },
-            { Header: 'Description', accessor: 'transactions[0].description' },
-            { Header: 'Amount', accessor: 'transactions[0].debitAmount' },
-            { Header: 'Category', accessor: 'transactions[0].category.name', Cell: EditableCell },
+            { Header: 'Description', accessor: 'description' },
+            { Header: 'Amount', accessor: 'debitAmount' },
+            { Header: 'Category', accessor: 'category.name', Cell: EditableCell },
         ],
         []
     );
@@ -112,7 +112,7 @@ export const TransactionsTable: React.FC<Props> = () => {
     }
 
     return data!.MonthByDate.length > 0 ? (
-        <ReusuableTable columns={TransactionsColumns} data={data!.MonthByDate} />
+        <ReusuableTable columns={TransactionsColumns} data={data!.MonthByDate[0].transactions} />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );

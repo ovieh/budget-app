@@ -1,7 +1,7 @@
+import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-const gql = Apollo.gql;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
     ID: string;
@@ -9,10 +9,19 @@ export type Scalars = {
     Boolean: boolean;
     Int: number;
     Float: number;
-    /** Chart Data object scalar type */
-    JSONObject: any;
+    /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+    JSON: any;
     /** Upload custom scalar type */
     Upload: any;
+};
+
+export type TransactionDescription = {
+    __typename?: 'TransactionDescription';
+    id: Scalars['String'];
+    description: Scalars['String'];
+    category: Category;
+    categoryId: Scalars['Float'];
+    userId: Scalars['Float'];
 };
 
 export type User = {
@@ -26,15 +35,16 @@ export type Category = {
     id?: Maybe<Scalars['ID']>;
     name: Scalars['String'];
     budget?: Maybe<Scalars['Float']>;
+    transactions?: Maybe<Array<Transaction>>;
+    transactionDescriptions: Array<TransactionDescription>;
 };
 
 export type Month = {
     __typename?: 'Month';
     id: Scalars['ID'];
     month: Scalars['Int'];
-    date: Scalars['String'];
     year: Scalars['Float'];
-    categories: Array<Category>;
+    categories?: Maybe<Array<Category>>;
     transactions?: Maybe<Array<Transaction>>;
     userId: Scalars['Float'];
 };
@@ -50,8 +60,7 @@ export type Transaction = {
     debitAmount: Scalars['Float'];
     creditAmount: Scalars['Float'];
     balance: Scalars['Float'];
-    category?: Maybe<Category>;
-    categoryId?: Maybe<Scalars['Float']>;
+    category: Category;
     userId: Scalars['Float'];
 };
 
@@ -68,7 +77,15 @@ export type YearMonth = {
 
 export type ChartData = {
     __typename?: 'ChartData';
-    payload: Scalars['JSONObject'];
+    payload?: Maybe<Scalars['JSON']>;
+};
+
+export type Transaction_Description = {
+    id: Scalars['String'];
+    description: Scalars['String'];
+    category: CatIn;
+    categoryId: Scalars['Float'];
+    userId: Scalars['Float'];
 };
 
 export type UserInput = {
@@ -80,6 +97,8 @@ export type CatIn = {
     id?: Maybe<Scalars['ID']>;
     name: Scalars['String'];
     budget?: Maybe<Scalars['Float']>;
+    transactions?: Maybe<Array<TransactionInput>>;
+    transactionDescriptions: Array<Transaction_Description>;
 };
 
 export type TransactionInput = {
@@ -92,8 +111,7 @@ export type TransactionInput = {
     debitAmount: Scalars['Float'];
     creditAmount: Scalars['Float'];
     balance: Scalars['Float'];
-    category?: Maybe<CatIn>;
-    categoryId?: Maybe<Scalars['Float']>;
+    category: CatIn;
     userId: Scalars['Float'];
 };
 
@@ -107,9 +125,10 @@ export type Query = {
     getDebitsByMonthAndYear: Array<Transaction>;
     getYearMonth: Array<YearMonth>;
     sumDebitsByYearMonth: Scalars['Float'];
+    transactionsByMonthAndCategory: Array<Transaction>;
     getTransactionsByCategory: Category;
     getCategories: Array<Category>;
-    getCategoryByDescription: Scalars['Float'];
+    getCategoryByDescription: Category;
     sumCategoryDebits: Scalars['Float'];
     sumCategoryDebitsByYearMonth: Scalars['Float'];
     chartData: ChartData;
@@ -118,7 +137,6 @@ export type Query = {
     getMonthByIds: Array<Month>;
     sortedMonths: Array<Month>;
     MonthByDate: Array<Month>;
-    MonthByCategory: Array<Month>;
 };
 
 export type QueryGetTransactionByIdArgs = {
@@ -145,6 +163,12 @@ export type QuerySumDebitsByYearMonthArgs = {
     year: Scalars['Float'];
 };
 
+export type QueryTransactionsByMonthAndCategoryArgs = {
+    month: Scalars['Int'];
+    year: Scalars['Int'];
+    categoryId: Scalars['Int'];
+};
+
 export type QueryGetTransactionsByCategoryArgs = {
     id: Scalars['Float'];
 };
@@ -168,7 +192,8 @@ export type QueryChartDataArgs = {
 };
 
 export type QueryMonthlySpendingChartArgs = {
-    date: DateInput;
+    year: Scalars['Int'];
+    month: Scalars['Int'];
 };
 
 export type QueryGetMonthByIdsArgs = {
@@ -178,12 +203,6 @@ export type QueryGetMonthByIdsArgs = {
 export type QueryMonthByDateArgs = {
     year?: Maybe<Scalars['Int']>;
     month?: Maybe<Scalars['Int']>;
-};
-
-export type QueryMonthByCategoryArgs = {
-    month: Scalars['Int'];
-    year: Scalars['Int'];
-    categoryId: Scalars['Int'];
 };
 
 export type DateInput = {
@@ -205,6 +224,7 @@ export type Mutation = {
     createCategory: Category;
     removeCategory: Scalars['String'];
     createMonth: Month;
+    updateMonthCategories: Month;
 };
 
 export type MutationSignUpArgs = {
@@ -263,8 +283,8 @@ export type MutationRemoveCategoryArgs = {
 export type MutationCreateMonthArgs = {
     month: Scalars['Int'];
     year: Scalars['Int'];
-    transaction: Scalars['ID'];
-    category: Array<CatIn>;
+    transactions: Scalars['ID'];
+    categories: Array<CatIn>;
 };
 
 export type CategoriesQueryVariables = Exact<{ [key: string]: never }>;
@@ -291,7 +311,7 @@ export type DebitsByMonthAndYearQuery = { __typename?: 'Query' } & {
         { __typename?: 'Transaction' } & Pick<
             Transaction,
             'id' | 'description' | 'debitAmount' | 'date'
-        > & { category?: Maybe<{ __typename?: 'Category' } & Pick<Category, 'name' | 'budget'>> }
+        > & { category: { __typename?: 'Category' } & Pick<Category, 'name' | 'budget'> }
     >;
 };
 
@@ -302,7 +322,8 @@ export type ListAvailableMonthQuery = { __typename?: 'Query' } & {
 };
 
 export type MonthlySpendingChartQueryVariables = Exact<{
-    date: DateInput;
+    year: Scalars['Int'];
+    month: Scalars['Int'];
 }>;
 
 export type MonthlySpendingChartQuery = { __typename?: 'Query' } & {
@@ -319,6 +340,21 @@ export type SumDebitsByYearMonthQuery = { __typename?: 'Query' } & Pick<
     'sumDebitsByYearMonth'
 >;
 
+export type TransactionsByMonthAndCategoryQueryVariables = Exact<{
+    month: Scalars['Int'];
+    year: Scalars['Int'];
+    categoryId: Scalars['Int'];
+}>;
+
+export type TransactionsByMonthAndCategoryQuery = { __typename?: 'Query' } & {
+    transactionsByMonthAndCategory: Array<
+        { __typename?: 'Transaction' } & Pick<
+            Transaction,
+            'id' | 'description' | 'debitAmount' | 'date'
+        >
+    >;
+};
+
 export type TransactionsByMonthAndYearQueryVariables = Exact<{
     year?: Maybe<Scalars['Int']>;
     month?: Maybe<Scalars['Int']>;
@@ -326,18 +362,16 @@ export type TransactionsByMonthAndYearQueryVariables = Exact<{
 
 export type TransactionsByMonthAndYearQuery = { __typename?: 'Query' } & {
     MonthByDate: Array<
-        { __typename?: 'Month' } & Pick<Month, 'date' | 'month' | 'year'> & {
+        { __typename?: 'Month' } & Pick<Month, 'month' | 'year'> & {
                 transactions?: Maybe<
                     Array<
                         { __typename?: 'Transaction' } & Pick<
                             Transaction,
-                            'debitAmount' | 'id' | 'date' | 'description'
+                            'id' | 'description' | 'debitAmount' | 'date'
                         > & {
-                                category?: Maybe<
-                                    { __typename?: 'Category' } & Pick<
-                                        Category,
-                                        'id' | 'budget' | 'name'
-                                    >
+                                category: { __typename?: 'Category' } & Pick<
+                                    Category,
+                                    'id' | 'name'
                                 >;
                             }
                     >
@@ -377,11 +411,7 @@ export type GetTransactionsQuery = { __typename?: 'Query' } & {
         { __typename?: 'Transaction' } & Pick<
             Transaction,
             'id' | 'date' | 'creditAmount' | 'debitAmount' | 'balance' | 'description'
-        > & {
-                category?: Maybe<
-                    { __typename?: 'Category' } & Pick<Category, 'id' | 'name' | 'budget'>
-                >;
-            }
+        > & { category: { __typename?: 'Category' } & Pick<Category, 'id' | 'name' | 'budget'> }
     >;
 };
 
@@ -489,7 +519,7 @@ export const ChartDataDocument = gql`
  * });
  */
 export function useChartDataQuery(
-    baseOptions?: Apollo.QueryHookOptions<ChartDataQuery, ChartDataQueryVariables>
+    baseOptions: Apollo.QueryHookOptions<ChartDataQuery, ChartDataQueryVariables>
 ) {
     return Apollo.useQuery<ChartDataQuery, ChartDataQueryVariables>(ChartDataDocument, baseOptions);
 }
@@ -537,7 +567,7 @@ export const DebitsByMonthAndYearDocument = gql`
  * });
  */
 export function useDebitsByMonthAndYearQuery(
-    baseOptions?: Apollo.QueryHookOptions<
+    baseOptions: Apollo.QueryHookOptions<
         DebitsByMonthAndYearQuery,
         DebitsByMonthAndYearQueryVariables
     >
@@ -618,8 +648,8 @@ export type ListAvailableMonthQueryResult = Apollo.QueryResult<
     ListAvailableMonthQueryVariables
 >;
 export const MonthlySpendingChartDocument = gql`
-    query MonthlySpendingChart($date: DateInput!) {
-        MonthlySpendingChart(date: $date) {
+    query MonthlySpendingChart($year: Int!, $month: Int!) {
+        MonthlySpendingChart(year: $year, month: $month) {
             payload
         }
     }
@@ -637,12 +667,13 @@ export const MonthlySpendingChartDocument = gql`
  * @example
  * const { data, loading, error } = useMonthlySpendingChartQuery({
  *   variables: {
- *      date: // value for 'date'
+ *      year: // value for 'year'
+ *      month: // value for 'month'
  *   },
  * });
  */
 export function useMonthlySpendingChartQuery(
-    baseOptions?: Apollo.QueryHookOptions<
+    baseOptions: Apollo.QueryHookOptions<
         MonthlySpendingChartQuery,
         MonthlySpendingChartQueryVariables
     >
@@ -695,7 +726,7 @@ export const SumDebitsByYearMonthDocument = gql`
  * });
  */
 export function useSumDebitsByYearMonthQuery(
-    baseOptions?: Apollo.QueryHookOptions<
+    baseOptions: Apollo.QueryHookOptions<
         SumDebitsByYearMonthQuery,
         SumDebitsByYearMonthQueryVariables
     >
@@ -724,20 +755,79 @@ export type SumDebitsByYearMonthQueryResult = Apollo.QueryResult<
     SumDebitsByYearMonthQuery,
     SumDebitsByYearMonthQueryVariables
 >;
+export const TransactionsByMonthAndCategoryDocument = gql`
+    query TransactionsByMonthAndCategory($month: Int!, $year: Int!, $categoryId: Int!) {
+        transactionsByMonthAndCategory(month: $month, year: $year, categoryId: $categoryId) {
+            id
+            description
+            debitAmount
+            date
+        }
+    }
+`;
+
+/**
+ * __useTransactionsByMonthAndCategoryQuery__
+ *
+ * To run a query within a React component, call `useTransactionsByMonthAndCategoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionsByMonthAndCategoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransactionsByMonthAndCategoryQuery({
+ *   variables: {
+ *      month: // value for 'month'
+ *      year: // value for 'year'
+ *      categoryId: // value for 'categoryId'
+ *   },
+ * });
+ */
+export function useTransactionsByMonthAndCategoryQuery(
+    baseOptions: Apollo.QueryHookOptions<
+        TransactionsByMonthAndCategoryQuery,
+        TransactionsByMonthAndCategoryQueryVariables
+    >
+) {
+    return Apollo.useQuery<
+        TransactionsByMonthAndCategoryQuery,
+        TransactionsByMonthAndCategoryQueryVariables
+    >(TransactionsByMonthAndCategoryDocument, baseOptions);
+}
+export function useTransactionsByMonthAndCategoryLazyQuery(
+    baseOptions?: Apollo.LazyQueryHookOptions<
+        TransactionsByMonthAndCategoryQuery,
+        TransactionsByMonthAndCategoryQueryVariables
+    >
+) {
+    return Apollo.useLazyQuery<
+        TransactionsByMonthAndCategoryQuery,
+        TransactionsByMonthAndCategoryQueryVariables
+    >(TransactionsByMonthAndCategoryDocument, baseOptions);
+}
+export type TransactionsByMonthAndCategoryQueryHookResult = ReturnType<
+    typeof useTransactionsByMonthAndCategoryQuery
+>;
+export type TransactionsByMonthAndCategoryLazyQueryHookResult = ReturnType<
+    typeof useTransactionsByMonthAndCategoryLazyQuery
+>;
+export type TransactionsByMonthAndCategoryQueryResult = Apollo.QueryResult<
+    TransactionsByMonthAndCategoryQuery,
+    TransactionsByMonthAndCategoryQueryVariables
+>;
 export const TransactionsByMonthAndYearDocument = gql`
     query TransactionsByMonthAndYear($year: Int, $month: Int) {
         MonthByDate(year: $year, month: $month) {
-            date
             month
             year
             transactions {
-                debitAmount
                 id
-                date
                 description
+                debitAmount
+                date
                 category {
                     id
-                    budget
                     name
                 }
             }
