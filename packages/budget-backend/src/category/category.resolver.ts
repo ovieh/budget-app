@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation, Float } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Float, Field, InputType, Int } from '@nestjs/graphql';
 import { Category } from './category.entity';
 import { Logger, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
@@ -36,7 +36,7 @@ export class CategoryResolver {
     @Args('name') name: string,
     @Args('budget') budget: number,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<Category> {
     return this.categoryService.updateCategory(id, user, name, budget);
   }
 
@@ -54,7 +54,7 @@ export class CategoryResolver {
   async removeCategory(
     @Args('id', ParseIntPipe) id: number,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<string> {
     await this.categoryService.removeCategoryById(id, user);
     return 'Category Removed';
   }
@@ -84,7 +84,7 @@ export class CategoryResolver {
     @Args('year', ParseIntPipe) year: number,
     @Args('month', ParseIntPipe) month: number,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<number> {
     return this.categoryService.sumCategoryDebitsByYearMonth(
       id,
       user,
@@ -98,17 +98,18 @@ export class CategoryResolver {
   async chartData(
     @Args({ name: 'dates', type: () => [DateInput] }) dates: DateInput[],
     @CurrentUser() user: User,
-  ) {
+  ): Promise<ChartData> {
     return this.categoryService.chartData(dates, user);
   }
 
-  @Query(() => ChartData )
+  @Query(() => ChartData)
   @UseGuards(GqlAuthGuard)
   async MonthlySpendingChart(
-    @Args({ name: 'date', type: () => DateInput }) date: DateInput,
+    @Args({ name: 'month', type: () => Int }) month: number,
+    @Args({ name: 'year', type: () => Int }) year: number,
     @CurrentUser() user: User,
-  ) {
-    return this.categoryService.MonthlySpendingChart(date, user);
+  ): Promise<ChartData> {
+    return this.categoryService.MonthlySpendingChart({ year, month }, user);
   }
-
 }
+

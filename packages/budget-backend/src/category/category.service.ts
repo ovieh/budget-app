@@ -5,6 +5,7 @@ import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/user.entity';
 import { DateInput } from './date.input';
+import { ChartData } from './chartData.output';
 
 @Injectable()
 export class CategoryService {
@@ -43,7 +44,7 @@ export class CategoryService {
 
   async getCategoryById(id: number, user: User): Promise<Category> {
     const found = await this.categoryRepository.findOne({
-      where: { id, userId: user.id },
+      where: { id, user },
     });
     if (!found) {
       throw new NotFoundException(`Category with ${id} not found`);
@@ -133,7 +134,7 @@ export class CategoryService {
     }));
   }
 
-  async MonthlySpendingChart({ year, month }: DateInput, user: User) {
+  async MonthlySpendingChart({ year, month }: DateInput, user: User): Promise<ChartData> {
     const categories = await this.findAll(user);
 
     const result = categories.map(async ({ id, budget: something }) => {

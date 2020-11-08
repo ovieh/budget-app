@@ -1,8 +1,7 @@
-import { EntityRepository, Repository, Transaction } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import {
   Logger,
-  InternalServerErrorException,
   BadRequestException,
 } from '@nestjs/common';
 import { CreateCategoryDto } from '../transaction/DTO/create-category.dto';
