@@ -15,9 +15,9 @@ const jwtConfig = config.get<IConfig>('jwt');
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt'}),
     JwtModule.register({
-      secret: process.env.JWT_SECRET || jwtConfig.secret,
+      secret: process.env.JWT_REFRESH_SECRET || jwtConfig.secret,
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: '60s',
       },
     }),
     TypeOrmModule.forFeature([UserRepository]),
