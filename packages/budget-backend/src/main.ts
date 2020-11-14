@@ -5,6 +5,7 @@ import * as config from 'config';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 import * as cookieParser from 'cookie-parser';
+import * as compression from 'compression';
 
 async function bootstrap() {
   const serverConfig = config.get('server');
@@ -23,7 +24,7 @@ async function bootstrap() {
   } else {
     app.enableCors({ origin: serverConfig.origin, credentials: true });
     app.use(helmet());
-
+    app.use(compression());
     app.use(
       rateLimit({
         windowMs: 15 * 60 * 1000,
