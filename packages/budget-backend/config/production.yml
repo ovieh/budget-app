@@ -1,5 +1,5 @@
 server:
-  origin: 'https://budgetapp.xyz/'
+  origin: 'https://www.budgetapp.xyz'
 
 
 db:
