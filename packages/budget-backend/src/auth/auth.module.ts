@@ -7,8 +7,9 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import * as config from 'config';
 import { AuthResolver } from './auth.resolver';
+import { IConfig } from '../types';
 
-const jwtConfig = config.get('jwt');
+const jwtConfig = config.get<IConfig>('jwt');
 
 @Module({
   imports: [

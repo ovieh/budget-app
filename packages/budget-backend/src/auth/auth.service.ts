@@ -9,8 +9,9 @@ import { sendRefreshToken } from './token-service';
 import { sign } from 'jsonwebtoken';
 import * as config from 'config';
 import { User } from './user.entity';
+import { IConfig } from '../types';
 
-const jwtConfig = config.get('jwt');
+const jwtConfig = config.get<IConfig>('jwt');
 
 @Injectable()
 export class AuthService {

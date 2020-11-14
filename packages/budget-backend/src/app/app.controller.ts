@@ -5,8 +5,9 @@ import * as config from 'config';
 import { User } from '../auth/user.entity';
 import { sendRefreshToken } from '../auth/token-service';
 import { AuthService } from '../auth/auth.service';
+import { IConfig } from '../types';
 
-const jwtConfig = config.get('jwt');
+const jwtConfig: IConfig = config.get('jwt');
 
 @Controller()
 export class AppController {

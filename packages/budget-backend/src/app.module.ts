@@ -15,8 +15,9 @@ import { MonthModule } from './month/month.module';
 import * as config from 'config';
 import { join } from 'path';
 import { TransactionDescriptionModule } from './transaction-description/transaction-description.module';
+import { IConfig } from './types';
 
-const jwtConfig = config.get('jwt');
+const jwtConfig: IConfig = config.get('jwt');
 
 @Module({
   imports: [

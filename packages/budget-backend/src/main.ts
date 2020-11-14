@@ -6,9 +6,11 @@ import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
+import { IConfig } from './types';
+
 
 async function bootstrap() {
-  const serverConfig = config.get('server');
+  const serverConfig: IConfig  = config.get('server');
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || serverConfig.port;
