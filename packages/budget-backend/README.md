@@ -1,1 +1,1 @@
-# Backend for my personal budgeting App. Using Nest.js and GraphQl!
+# Backend for my personal budgeting App. Using Nest.js and GraphQl.
