@@ -92,7 +92,10 @@ export const Transactions: React.FC<Props> = () => {
 };
 
 interface ChartProps {
-    date: any;
+    date: {
+        year: number;
+        month: number;
+    };
 }
 
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
@@ -104,8 +107,6 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
             month,
         },
     });
-
-    console.log('data', data);
 
     const label = 'Spending by category';
 

@@ -4,11 +4,11 @@ import { createContext, Dispatch } from 'react';
 type Action = { type: 'updateActiveDate'; payload: { year: number; month: number } };
 
 type State = {
-    activeDate: { year: number | null; month: number | null };
+    activeDate: { year: number; month: number };
 };
 
 export const initialState = {
-    activeDate: { year: null, month: null },
+    activeDate: { year: 0, month: 0 },
 };
 
 export const updateActiveDate = 'updateActiveDate';
