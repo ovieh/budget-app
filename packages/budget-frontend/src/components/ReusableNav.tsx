@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     root: {
         display: 'flex',
     },
+    logo: {
+        textDecoration: 'inherit',
+        color: 'inherit',
+    },
 }));
 
 export const ReusableNav: React.FC<Props> = ({ links, children }) => {
@@ -36,7 +40,9 @@ export const ReusableNav: React.FC<Props> = ({ links, children }) => {
                     noWrap
                     className={classes.title}
                 >
-                    Budget-App
+                    <Link to='/' className={classes.logo}>
+                        Budget-App
+                    </Link>
                 </Typography>
                 <div className={classes.root}>
                     {children}
