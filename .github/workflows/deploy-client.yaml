@@ -2,7 +2,7 @@ name: 'deploy-client'
 on:
   pull_request:
     paths:
-      - 'packages/budget-frontend/**'
+      - 'packages/budget-backend/**'
 jobs:
   build:
     runs-on: ubuntu-latest
