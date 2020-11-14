@@ -2,7 +2,7 @@ name: '' #set whatevername you want to your github job
 on:
   pull_request:
     paths:
-      - 'packages/budget-frontend/**'
+      - 'packages/budget-backend/**'
 jobs:
   build:
     runs-on: ubuntu-latest
