@@ -22,14 +22,11 @@ export const FileUpload: React.FC<Props> = () => {
                 credentials: 'include',
                 body: formData,
                 headers: {
-                    Authorization: `bearer ${accessToken}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             })
                 .then(response => response.json())
-                .then(json => console.log(json))
                 .catch(error => console.log(error));
-
-        return `hey`;
     };
 
     return (

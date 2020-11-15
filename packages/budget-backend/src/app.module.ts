@@ -38,9 +38,9 @@ const jwtConfig: IConfig = config.get('jwt');
     MonthModule,
     AuthModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || jwtConfig.secret,
+      secret: process.env.JWT_REFRESH_SECRET || jwtConfig.secret,
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: '60s',
       },
     }),
     TransactionDescriptionModule,

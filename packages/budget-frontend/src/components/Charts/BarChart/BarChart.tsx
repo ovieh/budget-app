@@ -36,7 +36,7 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
             >
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis type='number' domain={[0, 420]}>
-                    <Label value={value} offset={0} position='insideBottom' />
+                    <Label value={value} offset={0} position='insideBottom' fill='white' />
                 </XAxis>
                 <YAxis dataKey='name' type='category' />
                 <Tooltip />

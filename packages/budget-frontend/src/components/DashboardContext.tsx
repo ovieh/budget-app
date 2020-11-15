@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
         date: {
             paddingRight: theme.spacing(1),
         },
+        expenses: {
+            marginBottom: theme.spacing(4),
+        },
     })
 );
 
@@ -58,14 +61,18 @@ export const DashboardContext: React.FC<Props> = () => {
                 </Typography>
             </div>
 
-            <Expenses year={year} month={month} />
-            <Typography variant='h5'>Income: l33t</Typography>
+            <Expenses year={year} month={month} className={classes.expenses} />
+            {/* <Typography variant='h5'>Income: l33t</Typography> */}
             <SelectDate year={year} month={month} dates={data.getYearMonth} />
         </div>
     );
 };
 
-const Expenses: React.FC<{ year: number; month: number }> = ({ year, month }) => {
+const Expenses: React.FC<{ year: number; month: number; className?: string }> = ({
+    year,
+    month,
+    className,
+}) => {
     const { data, loading } = useSumDebitsByYearMonthQuery({
         variables: {
             year,
@@ -76,7 +83,11 @@ const Expenses: React.FC<{ year: number; month: number }> = ({ year, month }) =>
         return <h1>loading</h1>;
     }
 
-    return <Typography variant='h5'>Expenses: {data?.sumDebitsByYearMonth}</Typography>;
+    return (
+        <Typography variant='h5' className={className}>
+            Expenses: {data?.sumDebitsByYearMonth}
+        </Typography>
+    );
 };
 
 const useFormStyles = makeStyles((theme: Theme) =>
