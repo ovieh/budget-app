@@ -63,7 +63,12 @@ export const DashboardContext: React.FC<Props> = () => {
 
             <Expenses year={year} month={month} className={classes.expenses} />
             {/* <Typography variant='h5'>Income: l33t</Typography> */}
-            <SelectDate year={year} month={month} dates={data.getYearMonth} />
+            <SelectDate
+                year={year}
+                month={month}
+                dates={data.getYearMonth}
+                disabled={!data?.getYearMonth[0]?.year}
+            />
         </div>
     );
 };
@@ -98,11 +103,12 @@ const useFormStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const SelectDate: React.FC<{ year: number; month: number; dates?: YearMonth[] }> = ({
-    month,
-    year,
-    dates,
-}) => {
+const SelectDate: React.FC<{
+    year: number;
+    month: number;
+    dates?: YearMonth[];
+    disabled?: boolean;
+}> = ({ month, year, dates, disabled }) => {
     const classes = useFormStyles();
     const [activeDate, setActiveDate] = useState(`${month}/${year}`);
 
@@ -123,7 +129,12 @@ const SelectDate: React.FC<{ year: number; month: number; dates?: YearMonth[] }>
             <InputLabel shrink id='month-year'>
                 Month / Year
             </InputLabel>
-            <Select value={activeDate} onChange={handleChange} className={classes.select}>
+            <Select
+                value={activeDate}
+                onChange={handleChange}
+                className={classes.select}
+                disabled={disabled}
+            >
                 {dates?.map(({ year, month }, i) => (
                     <MenuItem className={classes.select} key={i} value={`${month}/${year}`}>
                         {`${month}/${year}`}

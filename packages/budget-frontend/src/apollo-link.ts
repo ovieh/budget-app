@@ -68,9 +68,7 @@ export const link = ApolloLink.from([
             setAccessToken(accessToken);
         },
         handleError: err => {
-            console.warn('Your refresh token is invalid. Try to relogin');
-            console.error(err);
-            console.log('maybe i should redirect the user to the signin page here');
+            throw new Error(err.name);
         },
     }) as any, // TODO: Figure why this is needed
     onError(({ graphQLErrors, networkError }) => {

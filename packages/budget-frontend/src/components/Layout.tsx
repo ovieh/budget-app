@@ -20,10 +20,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { teal, deepOrange } from '@material-ui/core/colors';
 import { primaryListItems } from '../ListItems';
-// import { mainListItems, secondaryListItems } from './listItems';
-// import Chart from './Chart';
-// import Deposits from './Deposits';
-// import Orders from './Orders';
 
 function Copyright() {
     return (
@@ -136,6 +132,7 @@ export const Layout: React.FC<Props> = ({ main, chart }) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
     const handleDrawerOpen = () => {
+        console.log('hello');
         setOpen(true);
     };
     const handleDrawerClose = () => {
@@ -202,11 +199,6 @@ export const Layout: React.FC<Props> = ({ main, chart }) => {
                             <Grid item xs={12}>
                                 <Paper className={fixedHeightPaper}>{chart}</Paper>
                             </Grid>
-                            {/* Recent Deposits */}
-                            {/* <Grid item xs={12} md={4} lg={3}> */}
-                            {/* <Paper className={fixedHeightPaper}><Deposits /></Paper> */}
-                            {/* </Grid> */}
-                            {/* Recent Orders */}
                             <Grid item xs={12}>
                                 <Paper className={classes.paper}>{main}</Paper>
                             </Grid>

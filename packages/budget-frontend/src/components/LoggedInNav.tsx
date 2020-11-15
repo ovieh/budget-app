@@ -7,6 +7,8 @@ import { Redirect } from 'react-router-dom';
 interface Props {
     className?: string;
     userName?: string;
+    open?: boolean;
+    handleDrawerOpen?: () => void;
 }
 
 const useStyles = makeStyles(theme =>
@@ -19,7 +21,7 @@ const useStyles = makeStyles(theme =>
     })
 );
 
-export const LoggedInNav: React.FC<Props> = ({ userName }) => {
+export const LoggedInNav: React.FC<Props> = ({ userName, open, handleDrawerOpen }) => {
     const [signout, { data }] = useSignOutMutation();
     const classes = useStyles();
 
@@ -30,7 +32,7 @@ export const LoggedInNav: React.FC<Props> = ({ userName }) => {
     const firstLetterOfUsername = userName && userName.split('')[0];
 
     return (
-        <ReusableNav>
+        <ReusableNav handleDrawerOpen={handleDrawerOpen} open={open}>
             {userName && <Avatar className={classes.avatar}>{firstLetterOfUsername}</Avatar>}
             <Button onClick={() => signout()}>Sign Out</Button>
         </ReusableNav>

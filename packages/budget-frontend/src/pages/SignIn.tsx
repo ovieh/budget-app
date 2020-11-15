@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSignInMutation } from '../generated/graphql';
 import { RouteComponentProps } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
@@ -22,6 +22,8 @@ const useStyles = makeStyles(theme => ({
 export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
     const classes = useStyles();
     const [signIn] = useSignInMutation();
+    const [error, setError] = useState('');
+
     return (
         <Fragment>
             <LoggedOutNav />
@@ -34,16 +36,20 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                         }}
                         onSubmit={async (values, { setSubmitting }) => {
                             const { username, password } = values;
-                            const response = await signIn({
-                                variables: {
-                                    username,
-                                    password,
-                                },
-                            });
-                            history.push('/');
-                            response &&
-                                response.data &&
-                                setAccessToken(response.data.signIn.accessToken);
+                            try {
+                                const response = await signIn({
+                                    variables: {
+                                        username,
+                                        password,
+                                    },
+                                });
+                                history.push('/');
+                                response &&
+                                    response.data &&
+                                    setAccessToken(response.data.signIn.accessToken);
+                            } catch (err) {
+                                setError(err.message);
+                            }
                         }}
                     >
                         {({ handleSubmit, isSubmitting }) => (
@@ -56,6 +62,7 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                                         variant='outlined'
                                         fullWidth
                                         className={classes.input}
+                                        error={!!error}
                                     />
                                     <Field
                                         as={TextField}
@@ -65,6 +72,8 @@ export const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
                                         variant='outlined'
                                         fullWidth
                                         className={classes.input}
+                                        error={!!error}
+                                        helperText={error}
                                     />
                                     <Button
                                         variant='contained'

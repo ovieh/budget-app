@@ -71,6 +71,15 @@ interface Props {}
 export const Categories: FC<Props> = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const [open, setOpen] = React.useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
 
     const { data, loading, error } = useCategoriesQuery();
     const { data: meData } = useMeQuery();
@@ -93,9 +102,9 @@ export const Categories: FC<Props> = () => {
 
     return (
         <div className={classes.root}>
-            <LoggedInNav userName={username} />
+            <LoggedInNav userName={username} handleDrawerOpen={handleDrawerOpen} open={open} />
 
-            <Drawer>
+            <Drawer handleDrawerClose={handleDrawerClose} open={open}>
                 <PrimaryList />
             </Drawer>
             <main className={classes.content}>

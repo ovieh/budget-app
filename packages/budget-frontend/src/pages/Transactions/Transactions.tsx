@@ -7,7 +7,7 @@ import { Drawer } from '../../components/Drawer';
 import { LoggedInNav } from '../../components/LoggedInNav';
 import { PrimaryList } from '../../components/PrimaryList';
 import { TransactionsTable } from './Components/TransactionsTable';
-import { useMonthlySpendingChartQuery, YearMonth, useMeQuery } from '../../generated/graphql';
+import { useMonthlySpendingChartQuery, useMeQuery } from '../../generated/graphql';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
 import { ActiveDateContext } from '../../context';
 
@@ -30,16 +30,15 @@ const useStyles = makeStyles((theme: Theme) =>
         fixedHeight: {
             height: 482,
         },
-        // appBar: {
-        //     width: `calc(100% - ${drawerWidth}px)`,
-        //     marginLeft: drawerWidth,
-        // },
+
+        menuButton: {
+            marginRight: 36,
+        },
         content: {
             flexGrow: 1,
             padding: theme.spacing(1),
             marginTop: theme.spacing(3),
         },
-        // mainGrid: mar
     })
 );
 
@@ -51,12 +50,22 @@ export const Transactions: React.FC<Props> = () => {
         store: { activeDate },
     } = useContext(ActiveDateContext);
 
+    const [open, setOpen] = React.useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+
     const username = data?.me?.username;
 
     return (
         <div className={classes.root}>
-            <LoggedInNav userName={username} />
-            <Drawer>
+            <LoggedInNav userName={username} handleDrawerOpen={handleDrawerOpen} open={open} />
+            <Drawer handleDrawerClose={handleDrawerClose} open={open}>
                 <PrimaryList />
                 <Divider />
             </Drawer>
