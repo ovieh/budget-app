@@ -7,12 +7,13 @@ import * as rateLimit from 'express-rate-limit';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
 import { IConfig } from './types';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 
 async function bootstrap() {
   const serverConfig: IConfig  = config.get('server');
   const logger = new Logger('bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const port = process.env.PORT || serverConfig.port;
 
   app.useGlobalPipes(
@@ -25,7 +26,9 @@ async function bootstrap() {
     app.enableCors({ origin: 'http://localhost:5000', credentials: true });
   } else {
     app.enableCors({ origin: serverConfig.origin, credentials: true });
+
     app.use(helmet());
+    app.set('trust proxy', 1);
     app.use(compression());
     app.use(
       rateLimit({

@@ -1,6 +1,8 @@
 name: 'deploy-backend'
 on:
-  pull_request:
+  push:
+    branches:
+      - main
     paths:
       - 'packages/budget-backend/**'
 jobs:
