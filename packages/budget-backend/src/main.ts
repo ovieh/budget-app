@@ -24,6 +24,7 @@ async function bootstrap() {
 
   if (process.env.NODE_ENV === 'development') {
     app.enableCors({ origin: 'http://localhost:5000', credentials: true });
+    
   } else {
     app.enableCors({ origin: serverConfig.origin, credentials: true });
 
@@ -33,7 +34,7 @@ async function bootstrap() {
     app.use(
       rateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 100,
+        max: 300,
       }),
     );
 

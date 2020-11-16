@@ -68,7 +68,6 @@ export class TransactionRepository extends Repository<Transaction> {
 
     try {
       const savedTransactions = await this.save(transactions);
-      this.logger.log(savedTransactions)
       return savedTransactions;
     } catch (error) {
       this.logger.error(`Failed to save transactions.`);
