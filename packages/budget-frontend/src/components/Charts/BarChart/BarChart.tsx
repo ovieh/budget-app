@@ -23,7 +23,6 @@ interface ChartProps {
 
 export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) => {
     const notUncategorized = data!.filter((category: any) => category.name !== 'Uncategorized');
-    console.log(notUncategorized);
     return (
         <ResponsiveContainer>
             <ReBarChart
@@ -36,15 +35,27 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                 data={notUncategorized}
             >
                 <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='name'>
+                <XAxis dataKey='name' type='category'>
                     {/* <Label value={value} offset={0} position='insideBottom' fill='white' /> */}
                 </XAxis>
-                <YAxis domain={[0, 'dataMax + 100']} />
+                <YAxis
+                    type='number'
+                    domain={[0, 500]}
+                    scale='linear'
+                    label={{
+                        value: value,
+                        angle: -90,
+                        position: 'insideBottomLeft',
+                        fill: 'white',
+                    }}
+                >
+                    {/* <Label value={value} offset={0} position='insideLeft' fill='white' /> */}
+                </YAxis>
                 <Tooltip />
                 <Legend
-                    payload={[{ value: 'actual', type: 'rect', id: 'ID02', color: '#c12929' }]}
+                    payload={[{ value: 'budget', type: 'rect', id: 'ID02', color: '#c12929' }]}
                 />
-                <Bar dataKey='budget' shape={<CustomBarWithTarget />} isAnimationActive={true}>
+                <Bar dataKey='actual' shape={<CustomBarWithTarget />} isAnimationActive={true}>
                     {data?.map((entry, index) => (
                         <Cell fill={COLORS[index % COLORS.length]} key={`${entry}-${index}`} />
                     ))}
@@ -57,7 +68,7 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
 const CustomBarWithTarget = (props: any) => {
     const { fill, x, y, width, height, budget, actual } = props;
     let totalHeight = y + height;
-    let targetY = totalHeight - (height / budget) * actual;
+    let targetY = totalHeight - (height / actual) * budget;
 
     return (
         <svg>
