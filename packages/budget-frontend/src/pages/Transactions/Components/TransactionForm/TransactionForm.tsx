@@ -51,7 +51,6 @@ export const TransactionForm: React.FC<{}> = () => {
             type: updateActiveDate,
             payload: { year: parseInt(year), month: parseInt(month) },
         });
-        console.log(month, year);
     };
 
     return (

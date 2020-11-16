@@ -11,7 +11,9 @@ import {
     Tooltip,
     LabelProps,
     BarChart as ReBarChart,
+    Cell,
 } from 'recharts';
+import COLORS from '../colors';
 
 interface ChartProps {
     name: string;
@@ -21,7 +23,7 @@ interface ChartProps {
 
 export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) => {
     const notUncategorized = data!.filter((category: any) => category.name !== 'Uncategorized');
-
+    console.log(notUncategorized);
     return (
         <ResponsiveContainer>
             <ReBarChart
@@ -29,44 +31,33 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                     top: 20,
                     right: 20,
                     bottom: 20,
-                    left: 40,
+                    left: 10,
                 }}
                 data={notUncategorized}
-                layout='vertical'
             >
                 <CartesianGrid strokeDasharray='3 3' />
-                <XAxis type='number' domain={[0, 420]}>
-                    <Label value={value} offset={0} position='insideBottom' fill='white' />
+                <XAxis dataKey='name'>
+                    {/* <Label value={value} offset={0} position='insideBottom' fill='white' /> */}
                 </XAxis>
-                <YAxis dataKey='name' type='category' />
+                <YAxis domain={[0, 'dataMax + 100']} />
                 <Tooltip />
-                <Legend />
-                <Bar dataKey='actual' fill='#82ca9d' stackId='stack' />
-                <Bar dataKey='budget' fill='#8884d8' stackId='stack' />
-                {/* <Bar
-                    dataKey='budget'
-                    shape={
-                        <CustomBarWithTarget
-                            t='actual'
-                            // height={1000}
-                            // x={2}
-                            // y={2}
-                            // width={10}
-                            // amt='budget'
-                        />
-                    }
-                    isAnimationActive={false}
-                /> */}
+                <Legend
+                    payload={[{ value: 'actual', type: 'rect', id: 'ID02', color: '#c12929' }]}
+                />
+                <Bar dataKey='budget' shape={<CustomBarWithTarget />} isAnimationActive={true}>
+                    {data?.map((entry, index) => (
+                        <Cell fill={COLORS[index % COLORS.length]} key={`${entry}-${index}`} />
+                    ))}
+                </Bar>
             </ReBarChart>
         </ResponsiveContainer>
     );
 };
 
 const CustomBarWithTarget = (props: any) => {
-    const { fill, x, y, width, height, amt, t } = props;
-
+    const { fill, x, y, width, height, budget, actual } = props;
     let totalHeight = y + height;
-    let targetY = totalHeight - (height / amt) * t;
+    let targetY = totalHeight - (height / budget) * actual;
 
     return (
         <svg>
@@ -76,9 +67,9 @@ const CustomBarWithTarget = (props: any) => {
                 x2={x + (width + 8)}
                 y1={targetY}
                 y2={targetY}
-                stroke={'#2967c1'}
-                strokeWidth={2}
-                strokeDasharray={'10 5'}
+                stroke={'#c12929'}
+                strokeWidth={4}
+                // strokeDasharray={'10 5'}
             />
         </svg>
     );

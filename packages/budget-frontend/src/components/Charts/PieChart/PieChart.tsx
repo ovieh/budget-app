@@ -10,6 +10,7 @@ import {
     Tooltip,
     Legend,
 } from 'recharts';
+import COLORS from '../colors';
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel: ContentRenderer<PieLabelRenderProps> = ({
@@ -44,19 +45,6 @@ const renderCustomizedLabel: ContentRenderer<PieLabelRenderProps> = ({
 };
 
 export const PieChart: React.FC<PieChartProps> = ({ data }) => {
-    const COLORS = [
-        '#0088FE',
-        '#00C49F',
-        '#FFBB28',
-        '#FF8042',
-        '#845ec2',
-        '#d65db1',
-        '#ff6f91',
-        '#ff9671',
-        '#ffc75f',
-        '#f9f871',
-    ];
-
     return (
         <ResponsiveContainer>
             <RePieChart margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
