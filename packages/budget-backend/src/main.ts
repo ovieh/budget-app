@@ -8,10 +8,10 @@ import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
 import { IConfig } from './types';
 import { NestExpressApplication } from '@nestjs/platform-express';
-
+import { graphqlUploadExpress } from 'graphql-upload';
 
 async function bootstrap() {
-  const serverConfig: IConfig  = config.get('server');
+  const serverConfig: IConfig = config.get('server');
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const port = process.env.PORT || serverConfig.port;
@@ -24,7 +24,6 @@ async function bootstrap() {
 
   if (process.env.NODE_ENV === 'development') {
     app.enableCors({ origin: 'http://localhost:5000', credentials: true });
-    
   } else {
     app.enableCors({ origin: serverConfig.origin, credentials: true });
 

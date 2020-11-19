@@ -1,11 +1,14 @@
-import { IsString, IsNotEmpty } from "class-validator";
-import { Category } from "src/category/category.entity";
+import { IsString, IsNotEmpty, IsInt, IsOptional } from "class-validator";
 
 export class CreateTransactionDescriptionDto {
 
     @IsString()
     description: string;
 
-    @IsNotEmpty()
-    category: Category;
+    @IsInt()
+    categoryId: number;
+
+    @IsInt()
+    @IsOptional()
+    userId?: number;
 }

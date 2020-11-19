@@ -15,7 +15,6 @@ import { CategoryService } from '../category/category.service';
 import { MonthService } from '../month/month.service';
 import { GetMonthByCategoryDto } from '../month/DTO/get-month-by-category.dto';
 import { TransactionDescriptionService } from '../transaction-description/transaction-description.service';
-import { Category } from '../category/category.entity';
 import { getMonthsFromTransactions } from '../utils/get-months-from-transaction';
 import { Month } from '../month/month.entity';
 import { SyncStrategy } from './sync-strategy.enum';
@@ -68,6 +67,8 @@ export class TransactionService {
       updatedTransaction,
       SyncStrategy.Individual,
     );
+
+    console.log(transactionWithDescription)
     const transactionWithMonth = await this.syncMonth(
       transactionWithDescription,
     );
@@ -114,7 +115,6 @@ export class TransactionService {
         user.id,
       );
 
-      this.logger.log(updatedMonth, 'Updated Month');
       return transaction;
     } catch (error) {
       this.logger.error(error.message);
@@ -259,7 +259,7 @@ export class TransactionService {
       month.year = transactionMonth.year;
 
       await month.save();
-      this.logger.log(`Created new month ${month}`);
+      this.logger.log(`Created new month ${month.month}/${month.year}`);
       transaction.month = month;
       return transaction;
     }
@@ -277,27 +277,20 @@ export class TransactionService {
 
     if (!existingDescription) {
       if (strategy === SyncStrategy.Individual) {
-        const transactionDescription = await this.transactionDescriptionService.createTransactionDescription(
+        await this.transactionDescriptionService.createTransactionDescription(
           {
-            category: transaction.category,
+            categoryId: transaction.category.id,
             description: transaction.description,
           },
           transaction.userId,
         );
-        transactionDescription.save();
         return transaction;
       } else if (strategy === SyncStrategy.Bulk) {
-
-        const result = await this.transactionDescriptionService.createTransactionDescription(
-          {
-            category: transaction.category,
-            description: transaction.description,
-          },
+        const category = await this.categoryService.findByName(
+          'Uncategorized',
           transaction.userId,
         );
-
-        await result.save();
-
+        transaction.category = category;
         return transaction;
       }
     } else {

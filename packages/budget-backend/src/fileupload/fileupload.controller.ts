@@ -18,14 +18,14 @@ export class FileuploadController {
   async uploadFile(
     @UploadedFile() file: Buffer,
     @GetUser() user: User,
-  ): Promise<string> {
+  ): Promise<boolean> {
     try {
       await this.fileuploadService.importFile(file, user);
 
     } catch (error) {
-      return `failed`;
+      return false;
     }
-    return `File Uploaded`;
+    return true;
   }
 
 }

@@ -1,6 +1,8 @@
-import React, { useRef } from 'react';
-import { Button } from '@material-ui/core';
+import React, { useContext, useRef, useState } from 'react';
+import { Button, responsiveFontSizes } from '@material-ui/core';
 import { getAccessToken } from '../accessToken';
+import { useTransactionsByMonthAndYearLazyQuery } from '../generated/graphql';
+import { ActiveDateContext } from '../context';
 
 interface Props {}
 
@@ -10,12 +12,19 @@ export const FileUpload: React.FC<Props> = () => {
 
     const onUploadButtonClick = () => (ref as any).current.click();
 
+    const {
+        store: { activeDate },
+        dispatch,
+    } = useContext(ActiveDateContext);
+
     const accessToken = getAccessToken();
+    const [loading, setLoading] = useState('idle');
+    const [getTransactions, { data }] = useTransactionsByMonthAndYearLazyQuery();
 
     const fileUpload = (file: any): any => {
         const formData = new FormData();
         formData.append('file', file);
-
+        setLoading('fetching');
         accessToken &&
             fetch(`${URL}/fileupload`, {
                 method: 'POST',
@@ -25,8 +34,22 @@ export const FileUpload: React.FC<Props> = () => {
                     Authorization: `Bearer ${accessToken}`,
                 },
             })
-                .then(response => response.json())
-                .catch(error => console.log(error));
+                .then(response => {
+                    setLoading('idle');
+                    const result = response.json();
+                    if (result) {
+                        getTransactions({
+                            variables: { year: activeDate?.year, month: activeDate?.month },
+                        });
+
+                        console.log(data);
+                    }
+                })
+                .catch(error => {
+                    setLoading('idle');
+
+                    console.log(error);
+                });
     };
 
     return (
@@ -37,6 +60,7 @@ export const FileUpload: React.FC<Props> = () => {
                 fullWidth
                 onClick={onUploadButtonClick}
                 type='submit'
+                disabled={loading === 'fetching'}
             >
                 Upload File
             </Button>

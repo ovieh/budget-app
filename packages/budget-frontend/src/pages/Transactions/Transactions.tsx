@@ -107,6 +107,11 @@ interface ChartProps {
     };
 }
 
+enum Currency {
+    GBP = '£',
+    USD = '$',
+}
+
 export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
     const { year, month } = date;
     const { data, loading, error } = useMonthlySpendingChartQuery({
@@ -117,7 +122,7 @@ export const TransactionByCategoryChart: React.FC<ChartProps> = ({ date }) => {
         },
     });
 
-    const label = 'Spending by category';
+    const label = `Spending by category in ${Currency.GBP}`;
 
     if (loading) {
         return <span>loading</span>;

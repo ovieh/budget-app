@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, Logger, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TransactionDescription } from './transaction-description.entity';
 import { Repository } from 'typeorm';
@@ -6,10 +11,9 @@ import { CreateTransactionDescriptionDto } from './dto/create-transaction-descri
 import { TransactionDescriptionRepository } from './transaction-description.repository';
 import { UpdateTransactionDescriptionDto } from './dto/update-transaction-description.dto';
 import { User } from 'src/auth/user.entity';
-
 @Injectable()
 export class TransactionDescriptionService {
-  private logger = new Logger("TransactionDescriptionService");
+  private logger = new Logger('TransactionDescriptionService');
   constructor(
     @InjectRepository(TransactionDescriptionRepository)
     private transactionDescriptionRepository: Repository<
@@ -25,12 +29,11 @@ export class TransactionDescriptionService {
     description: string,
     userId: number,
   ): Promise<TransactionDescription> {
-
     const transactionDescription = await this.transactionDescriptionRepository.findOne(
       { description, userId },
       { relations: ['category'] },
     );
-    
+
     return transactionDescription;
   }
 
@@ -38,34 +41,54 @@ export class TransactionDescriptionService {
     createTransactionDescriptionDto: CreateTransactionDescriptionDto,
     userId: number,
   ): Promise<TransactionDescription> {
-    const { category, description } = createTransactionDescriptionDto;
+    const { categoryId, description } = createTransactionDescriptionDto;
 
-    const existingDescription = await this.findTransactionDescription(description, userId);
-
-    if (!category) {
-      throw new Error("CATEOGRY DOES NOT EXIST!!!!")
-    }
+    const existingDescription = await this.findTransactionDescription(
+      description,
+      userId,
+    );
 
     if (existingDescription) {
       return existingDescription;
-    };
+    }
 
     const transactionDescription = new TransactionDescription();
 
-    transactionDescription.category = category;
+    transactionDescription.categoryId = categoryId;
     transactionDescription.description = description;
     transactionDescription.userId = userId;
 
     try {
-
-      // await transactionDescription.save();
-      this.logger.log(`created new Transaction Description "${transactionDescription.description}"`);
+      await transactionDescription.save();
+      this.logger.log(
+        `created new Transaction Description "${transactionDescription.description}"`,
+      );
       return transactionDescription;
-    } catch(error) {
+    } catch (error) {
       this.logger.error(error.message);
-      throw new BadRequestException('Could not create Transaction Description', error.message);
+      throw new BadRequestException(
+        'Could not create Transaction Description',
+        error.message,
+      );
     }
+  }
 
+  async createBulkDescriptions(
+    descriptions: CreateTransactionDescriptionDto[],
+  ): Promise<boolean> {
+    try {
+      await this.transactionDescriptionRepository
+        .createQueryBuilder()
+        .insert()
+        .into(TransactionDescription)
+        .values(descriptions)
+        .onConflict(`("description") DO NOTHING`)
+
+        .execute();
+      return true;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async updateTransactionDescription(
@@ -85,7 +108,9 @@ export class TransactionDescriptionService {
     existing.categoryId = categoryId;
 
     await existing.save();
-    this.logger.log(`Updated Transaction Description with descrition: "${description}"`)
+    this.logger.log(
+      `Updated Transaction Description with descrition: "${description}"`,
+    );
     return existing;
   }
 }

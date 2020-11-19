@@ -132,7 +132,9 @@ type Mutation {
   signIn(password: String!, username: String!): LoginResponseDto!
   revokeRefreshToken(userId: Float!): Boolean!
   signOut: Boolean!
-  uploadFile(file: Upload!): Boolean!
+
+  """Upload a file"""
+  uploadFile(file: Upload!): Upload
   createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): Transaction!
   deleteTransaction(id: String!): String!
   updateTransactionCategory(categoryId: Float!, id: String!): Transaction!
@@ -143,5 +145,5 @@ type Mutation {
   updateMonthCategories: Month!
 }
 
-"""Upload custom scalar type"""
+"""The `Upload` scalar type represents a file upload."""
 scalar Upload

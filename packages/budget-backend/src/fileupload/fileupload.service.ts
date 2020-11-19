@@ -6,6 +6,7 @@ import { Transaction } from 'src/transaction/transaction.entity';
 import { MonthService } from 'src/month/month.service';
 import { sortTransactionsByMonth } from 'src/utils/sort-transactions-by-month';
 import { SyncStrategy } from '../transaction/sync-strategy.enum';
+import { TransactionDescriptionService } from '../transaction-description/transaction-description.service';
 
 @Injectable()
 export class FileuploadService {
@@ -13,9 +14,10 @@ export class FileuploadService {
     private transactionRepository: TransactionRepository,
     private transactionService: TransactionService,
     private monthService: MonthService,
+    private transactionDescriptionService: TransactionDescriptionService,
   ) {}
 
-  async importFile(file: Buffer, user: User): Promise<Transaction[]> {
+  async importFile(file: Buffer, user: User): Promise<boolean> {
     const transactions = await this.transactionRepository.importFile(
       file,
       user,
@@ -27,12 +29,36 @@ export class FileuploadService {
 
     const transactionWithCategories = await Promise.all(categories);
 
+    // loop through add unique descriptions and add to set
+    const descriptionSet = new Set();
+    transactionWithCategories.forEach((transaction) => {
+      descriptionSet.add(transaction.description);
+    });
+
+    const descriptions = Array.from(descriptionSet).map((description: string) => ({
+      description,
+      categoryId: 1,
+      userId: 1,
+    }));
+
+    // loop through transaction, sync transaction descriptions
+    // const updatedTransactions = transactionWithCategories.map(
+    //   async (transaction) =>
+    //     await this.transactionService.syncDescription(
+    //       transaction,
+    //       SyncStrategy.Bulk,
+    //     ),
+    // );
+
     // loop through transaction, sync transaction descriptions
     const updatedTransactions = transactionWithCategories.map(
       async (transaction) =>
         await this.transactionService.syncDescription(transaction, SyncStrategy.Bulk),
     );
 
+    await this.transactionDescriptionService.createBulkDescriptions(
+      descriptions,
+    );
 
     let resolvedTransactions: Transaction[];
     try {
@@ -43,7 +69,9 @@ export class FileuploadService {
 
     let savedTransactions: Transaction[];
     try {
-      savedTransactions = await this.transactionRepository.save(resolvedTransactions);
+      savedTransactions = await this.transactionRepository.save(
+        resolvedTransactions,
+      );
     } catch (error) {
       console.log(error);
     }
@@ -87,6 +115,8 @@ export class FileuploadService {
         await this.transactionService.syncMonth(transaction),
     );
 
-    return Promise.all(result);
+    await Promise.all(result);
+
+    return true;
   }
 }

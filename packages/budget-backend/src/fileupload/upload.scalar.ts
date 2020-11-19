@@ -1,8 +1,10 @@
 import { Scalar, CustomScalar } from '@nestjs/graphql';
-import { GraphQLUpload } from 'graphql-upload';
+// import { GraphQLUpload } from 'graphql-upload';
+import { GraphQLUpload } from 'apollo-server-express';
+
 
 @Scalar('Upload')
-export class UploadScalar implements CustomScalar<object, string> {
+export class Upload {
   createReadStream(): any {
     throw new Error('Method not implemented.');
   }

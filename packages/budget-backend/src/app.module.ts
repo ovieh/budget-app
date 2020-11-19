@@ -6,7 +6,7 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { TransactionModule } from './transaction/transaction.module';
 import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
-import { UploadScalar } from './fileupload/upload.scalar';
+import { Upload } from './fileupload/upload.scalar';
 import { AppController } from './app/app.controller';
 import { AuthService } from './auth/auth.service';
 import { UserRepository } from './auth/user.repository';
@@ -16,13 +16,14 @@ import * as config from 'config';
 import { join } from 'path';
 import { TransactionDescriptionModule } from './transaction-description/transaction-description.module';
 import { IConfig } from './types';
+import { ComplexityPlugin } from './utils/complexity';
 
 const jwtConfig: IConfig = config.get('jwt');
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
-    UploadScalar,
+    Upload,
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'schema.gql'),
       context: ({ req, res }) => ({ req, res }),
@@ -40,13 +41,13 @@ const jwtConfig: IConfig = config.get('jwt');
     JwtModule.register({
       secret: process.env.JWT_REFRESH_SECRET || jwtConfig.secret,
       signOptions: {
-        expiresIn: '60s',
+        expiresIn: '15m',
       },
     }),
     TransactionDescriptionModule,
   ],
   controllers: [AppController],
-  providers: [AuthService, UserRepository],
+  providers: [AuthService, UserRepository, ComplexityPlugin],
 })
 export class AppModule {
 }
