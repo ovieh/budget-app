@@ -5,7 +5,7 @@ import {
     useTransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearDocument,
 } from '../../../generated/graphql';
-import { ReusuableTable } from '../../../components/ReusableTable';
+import { ReusuableTable } from '../../../components/Table/ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
 import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlaceholder';
 import { ActiveDateContext, updateActiveDate } from '../../../context';
@@ -24,8 +24,6 @@ export const TransactionsTable: React.FC<Props> = () => {
         fetchPolicy: 'cache-and-network',
         variables: { year: activeDate?.year, month: activeDate?.month },
     });
-
-    console.log(data);
 
     useEffect(() => {
         data?.MonthByDate[0]?.month &&
@@ -112,7 +110,11 @@ export const TransactionsTable: React.FC<Props> = () => {
     }
 
     return data!.MonthByDate.length > 0 ? (
-        <ReusuableTable columns={TransactionsColumns} data={data!.MonthByDate[0].transactions} />
+        <ReusuableTable
+            columns={TransactionsColumns}
+            data={data!.MonthByDate[0].transactions}
+            toolbarConfig={{ title: 'Transactions', search: true }}
+        />
     ) : (
         <h1>i'm waiting for data!!!</h1>
     );
