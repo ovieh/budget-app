@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme, createStyles, makeStyles, useTheme } from '@material-ui/core';
+import { Theme, createStyles, makeStyles, useTheme, Divider } from '@material-ui/core';
 import MuDrawer from '@material-ui/core/Drawer';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -76,6 +76,7 @@ export const Drawer: React.FC<Props> = ({ children, open, handleDrawerClose }) =
                     {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
             </div>
+            <Divider />
             <div>{children}</div>
         </MuDrawer>
     );

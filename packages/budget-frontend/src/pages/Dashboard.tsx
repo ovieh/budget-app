@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Layout } from '../components/Layout';
-// import { TransactionsTable } from '../components/TransactionsTable';
-// import { useGetYearMonthQuery } from '../generated/graphql';
+import { TransactionsTable } from './Transactions/Components/TransactionsTable';
 
 interface Props {}
 export const Dashboard: React.FC<Props> = () => {
@@ -14,11 +13,7 @@ const Transactions = () => {
 
     return (
         <>
-            {/* {yearMonth?.getYearMonth.length ? (
-                <TransactionsTable />
-            ) : (
-                <div>Why don't you add some transactions?</div>
-            )} */}
+            <TransactionsTable />
         </>
     );
 };

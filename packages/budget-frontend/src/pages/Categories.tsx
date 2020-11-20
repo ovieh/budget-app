@@ -13,7 +13,7 @@ import { Field, Form, Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import React, { FC } from 'react';
 import { LoggedInNav } from '../components/LoggedInNav';
-import { ReusuableTable } from '../components/ReusableTable';
+import { ReusuableTable } from '../components/Table/ReusableTable';
 import {
     CategoriesDocument,
     CategoriesQuery,
@@ -34,7 +34,13 @@ const CategoriesTable: FC<CategoriesTableProps> = ({ data }) => {
         { Header: 'Category', accessor: 'name' },
         { Header: 'Budget', accessor: 'budget' },
     ];
-    return <ReusuableTable data={data.getCategories} columns={columns} />;
+    return (
+        <ReusuableTable
+            data={data.getCategories}
+            columns={columns}
+            toolbarConfig={{ search: false, title: 'Categories' }}
+        />
+    );
 };
 
 const CategorySchema = yup.object().shape({

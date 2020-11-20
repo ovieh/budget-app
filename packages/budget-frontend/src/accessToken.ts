@@ -1,6 +1,6 @@
 let accessToken = '';
 
-export const setAccessToken = (s: any) => {
+export const setAccessToken = (s: string) => {
     accessToken = s;
 };
 

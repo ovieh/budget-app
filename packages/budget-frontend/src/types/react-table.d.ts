@@ -94,6 +94,7 @@ declare module 'react-table' {
             UseRowsValues<D>,
             UseFiltersValues,
             UsePaginationValues<D>,
+            useGlobalFilter<D>,
             UseColumnsValues<D> {
         hooks: Hooks<D>;
         rows: Row<D>[];
@@ -104,6 +105,8 @@ declare module 'react-table' {
         prepareRow: (row: Row<D>) => any;
         getSelectRowToggleProps: (userProps?: any) => any;
         toggleSelectAll: (forcedState: boolean) => any;
+        preGlobalFilteredRows: any;
+        setGlobalFilter: () => void;
     }
 
     export interface TableOptions<D> {
@@ -121,7 +124,6 @@ declare module 'react-table' {
         pageCount?: number;
         controlledPageIndex?: number;
         useControlledState?: boolean;
-
     }
 
     export interface RowsProps {
@@ -162,6 +164,11 @@ declare module 'react-table' {
         setAllFilters: () => any;
     }
 
+    export interface UseGlobalFilterValues {
+        preGlobalFilteredRows: any;
+        setGlobalFilter: () => void;
+    }
+
     export function useTable<D>(props: TableOptions<D>, ...plugins: any[]): TableInstance<D>;
 
     export function useColumns<D>(props: TableOptions<D>): TableOptions<D> & UseColumnsValues<D>;
@@ -183,6 +190,8 @@ declare module 'react-table' {
     export function useGroupBy<D>(props: TableOptions<D>): TableOptions<D> & { rows: Row<D>[] };
 
     export function usePagination<D>(props: TableOptions<D>): UsePaginationValues<D>;
+
+    export function useGlobalFilter<D>(props: TableOptions<D>): UseGlobalFilterValues;
 
     export function useFlexLayout<D>(props: TableOptions<D>): TableOptions<D>;
 

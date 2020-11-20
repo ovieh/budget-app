@@ -10,11 +10,9 @@ import { Transaction } from './transaction.entity';
 import customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(customParseFormat);
 
-
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('Tranaction Repository');
-
 
   async importFile(file: Buffer, user: User): Promise<Transaction[]> {
     const transactions: Transaction[] = [];
@@ -137,13 +135,18 @@ export class TransactionRepository extends Repository<Transaction> {
     year: number,
     month: number,
     user: User,
+    // skip: number,
+    // take: number,
   ): Promise<Transaction[]> {
+    console.log("this is happending")
     try {
       const results = await this.createQueryBuilder('transaction')
-        .select('transaction')
-        .where('transaction.userId = :userId', { userId: user.id })
-        .andWhere(`EXTRACT(Year FROM transaction.date) = ${year}`)
-        .andWhere(`EXTRACT(Month FROM transaction.date) = ${month}`)
+        .leftJoinAndSelect('transaction.month', 'month')
+        .where('month.month = :month', { month })
+        .andWhere('month.year = :year', { year: 1920 })
+        .andWhere('transaction.userId = :userId', { userId: user.id })
+        .take(1)
+        .skip(0)
         .orderBy('transaction.date', 'DESC')
         .cache(true)
         .getMany();
@@ -203,10 +206,10 @@ export class TransactionRepository extends Repository<Transaction> {
   async getYearMonth(user: User): Promise<YearMonth[]> {
     try {
       const results = await this.createQueryBuilder()
-        .select(`EXTRACT(YEAR FROM transaction.date) as year`)
-        .addSelect(`EXTRACT(MONTH FROM transaction.date) as month`)
-        .from(Transaction, 'transaction')
-        .where('transaction.userId = :userId', { userId: user.id })
+        .leftJoinAndSelect('transaction.month', 'month')
+        .where('month.month = :month', { month: 12 })
+        .andWhere('month.year = :year', { year: 2019 })
+        .andWhere('transaction.userId = :userId', { userId: user.id })
         .groupBy('year')
         .addGroupBy('month')
         .orderBy('year', 'ASC')
@@ -297,5 +300,4 @@ export class TransactionRepository extends Repository<Transaction> {
     );
     return result;
   }
-
 }

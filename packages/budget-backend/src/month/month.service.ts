@@ -45,6 +45,7 @@ export class MonthService {
       const foundMonth = await this.monthRepository.findOne({
         where: { year, month, userId },
         relations: ['categories'],
+        
       });
 
       return foundMonth;
@@ -56,6 +57,7 @@ export class MonthService {
 
   async findMonthByDate(dateDto: DateDto, user: User): Promise<Month[]> {
     const { year, month } = dateDto;
+    console.log('hiya')
 
     let defaultDate: Month;
 
@@ -73,8 +75,8 @@ export class MonthService {
         userId: user.id,
       },
       order: { month: 'DESC', year: 'DESC' },
-      // skip: skippedItems,
-      // take: limit,
+      skip: 0,
+      take: 1,
     });
 
     if (!result) throw new NotFoundException('Month not found');

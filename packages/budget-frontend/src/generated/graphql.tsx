@@ -11,7 +11,7 @@ export type Scalars = {
     Float: number;
     /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
     JSON: any;
-    /** Upload custom scalar type */
+    /** The `Upload` scalar type represents a file upload. */
     Upload: any;
 };
 
@@ -216,7 +216,8 @@ export type Mutation = {
     signIn: LoginResponseDto;
     revokeRefreshToken: Scalars['Boolean'];
     signOut: Scalars['Boolean'];
-    uploadFile: Scalars['Boolean'];
+    /** Upload a file */
+    uploadFile?: Maybe<Scalars['Upload']>;
     createTransaction: Transaction;
     deleteTransaction: Scalars['String'];
     updateTransactionCategory: Transaction;
@@ -1254,9 +1255,7 @@ export function useUpdateTransactionCategoryMutation(
 export type UpdateTransactionCategoryMutationHookResult = ReturnType<
     typeof useUpdateTransactionCategoryMutation
 >;
-export type UpdateTransactionCategoryMutationResult = Apollo.MutationResult<
-    UpdateTransactionCategoryMutation
->;
+export type UpdateTransactionCategoryMutationResult = Apollo.MutationResult<UpdateTransactionCategoryMutation>;
 export type UpdateTransactionCategoryMutationOptions = Apollo.BaseMutationOptions<
     UpdateTransactionCategoryMutation,
     UpdateTransactionCategoryMutationVariables
