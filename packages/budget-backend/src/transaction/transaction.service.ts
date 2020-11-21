@@ -303,4 +303,12 @@ export class TransactionService {
   async sumCreditsByMonth(dateDto: DateDto, userId: number): Promise<number> {
     return this.transactionRepository.sumCreditsByMonth(dateDto, userId);
   }
+
+  async averageCredits(userId: number): Promise<number> {
+    return this.transactionRepository.averageCredits(userId);
+  }
+
+  async averageDebits(userId: number): Promise<number> {
+    return this.transactionRepository.averageDebits(userId);
+  }
 }

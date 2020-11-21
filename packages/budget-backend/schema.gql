@@ -110,6 +110,8 @@ type Query {
   sumDebitsByYearMonth(month: Float!, year: Float!): Float!
   transactionsByMonthAndCategory(month: Int!, year: Int!, categoryId: Int!): [Transaction!]!
   sumCreditsByMonth(year: Int, month: Int): Float!
+  averageCredits: Float!
+  averageDebits: Float!
   getTransactionsByCategory(id: Float!): Category!
   getCategories: [Category!]!
   getCategoryByDescription(description: String!): Category!

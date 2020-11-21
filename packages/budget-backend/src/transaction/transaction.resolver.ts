@@ -182,6 +182,22 @@ export class TransactionResolver {
     return this.transactionService.sumCreditsByMonth(dateDto, user.id);
   }
 
+  @Query(() => Float)
+  @UseGuards(GqlAuthGuard)
+  async averageCredits(
+    @CurrentUser() user: User,
+  ): Promise<number> {
+    return this.transactionService.averageCredits(user.id);
+  }
+
+  @Query(() => Float)
+  @UseGuards(GqlAuthGuard)
+  async averageDebits(
+    @CurrentUser() user: User,
+  ): Promise<number> {
+    return this.transactionService.averageDebits(user.id);
+  }
+
   // TODO: why isn't this passing the user?
   @ResolveField(() => Category)
   @UseGuards(GqlAuthGuard)

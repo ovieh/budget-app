@@ -127,6 +127,8 @@ export type Query = {
     sumDebitsByYearMonth: Scalars['Float'];
     transactionsByMonthAndCategory: Array<Transaction>;
     sumCreditsByMonth: Scalars['Float'];
+    averageCredits: Scalars['Float'];
+    averageDebits: Scalars['Float'];
     getTransactionsByCategory: Category;
     getCategories: Array<Category>;
     getCategoryByDescription: Category;
@@ -342,7 +344,10 @@ export type SumCreditsByMonthQueryVariables = Exact<{
     month: Scalars['Int'];
 }>;
 
-export type SumCreditsByMonthQuery = { __typename?: 'Query' } & Pick<Query, 'sumCreditsByMonth'>;
+export type SumCreditsByMonthQuery = { __typename?: 'Query' } & Pick<
+    Query,
+    'sumCreditsByMonth' | 'averageCredits'
+>;
 
 export type SumDebitsByYearMonthQueryVariables = Exact<{
     year: Scalars['Float'];
@@ -351,7 +356,7 @@ export type SumDebitsByYearMonthQueryVariables = Exact<{
 
 export type SumDebitsByYearMonthQuery = { __typename?: 'Query' } & Pick<
     Query,
-    'sumDebitsByYearMonth'
+    'sumDebitsByYearMonth' | 'averageDebits'
 >;
 
 export type TransactionsByMonthAndCategoryQueryVariables = Exact<{
@@ -719,6 +724,7 @@ export type MonthlySpendingChartQueryResult = Apollo.QueryResult<
 export const SumCreditsByMonthDocument = gql`
     query SumCreditsByMonth($year: Int!, $month: Int!) {
         sumCreditsByMonth(year: $year, month: $month)
+        averageCredits
     }
 `;
 
@@ -767,6 +773,7 @@ export type SumCreditsByMonthQueryResult = Apollo.QueryResult<
 export const SumDebitsByYearMonthDocument = gql`
     query SumDebitsByYearMonth($year: Float!, $month: Float!) {
         sumDebitsByYearMonth(year: $year, month: $month)
+        averageDebits
     }
 `;
 

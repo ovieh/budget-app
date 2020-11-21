@@ -30,6 +30,7 @@ const mockTransactionRepository = () => ({
   findOne: jest.fn(),
   createTransaction: jest.fn(),
   sumCreditsByMonth: jest.fn(),
+  averageCredits: jest.fn(),
 });
 
 const mockCategoryRepository = () => ({});
@@ -136,9 +137,30 @@ describe('TransactionService', () => {
     const mockDate: DateDto = { month: 1, year: 2020 };
     it('it returns the sum of the credits for a month', async () => {
       transactionRepository.sumCreditsByMonth.mockResolvedValue(100.0);
-      const result = await transactionService.sumCreditsByMonth(mockDate, 3);
+      const result = await transactionService.sumCreditsByMonth(mockDate, mockUser.id);
 
-      expect(result).toEqual(100.0);
+      expect(result).toEqual(100.00);
+      // expect(monthRepository.sumCredit)
+    });
+  });
+
+  describe('averageCredits', () => {
+    it('it returns the average credits per month', async () => {
+      transactionRepository.averageCredits.mockResolvedValue(100.00);
+      const result = await transactionService.averageCredits(mockUser.id);
+
+      expect(result).toEqual(100.00);
+      // expect(monthRepository.sumCredit)
+    });
+  });
+
+
+  describe('averageDebits', () => {
+    it('it returns the average debits per month', async () => {
+      transactionRepository.averageDebits.mockResolvedValue(100.00);
+      const result = await transactionService.averageDebits(mockUser.id);
+
+      expect(result).toEqual(100.00);
       // expect(monthRepository.sumCredit)
     });
   });
