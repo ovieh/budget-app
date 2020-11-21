@@ -1,8 +1,9 @@
 import React from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 import { useSumDebitsByYearMonthQuery } from '../../generated/graphql';
 import { Panel } from './Panel';
+import { RenderArrow } from './RenderArrow';
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -36,6 +37,9 @@ const Expenses: React.FC<{ year: number; month: number; className?: string }> = 
             type='expenses'
             amount={data?.sumDebitsByYearMonth}
             icon={<IndeterminateCheckBoxOutlinedIcon className={classes.icon} color='error' />}
+            averageIcon={
+                <RenderArrow current={data?.sumDebitsByYearMonth} average={data?.averageDebits} />
+            }
         />
     );
 };

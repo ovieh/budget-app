@@ -1,3 +1,4 @@
 query SumDebitsByYearMonth($year: Float!, $month: Float!) {
   sumDebitsByYearMonth(year:$year, month: $month)
+  averageDebits
 }

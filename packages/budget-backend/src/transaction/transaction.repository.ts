@@ -316,4 +316,33 @@ export class TransactionRepository extends Repository<Transaction> {
     );
     return result[0].sum || 0;
   }
+
+  async averageCredits(userId: number): Promise<number> {
+    const result = await this.query(
+      `
+        select sum(transaction."creditAmount" / (select count(*) from month))
+          from month m
+          left join "transaction" on transaction."monthId" = m.id
+          and transaction."userId" = $1;
+    `,
+      [userId],
+    );
+
+    return result[0].sum || 0;
+  }
+
+  async averageDebits(userId: number): Promise<number> {
+    const result = await this.query(
+      `
+        select sum(transaction."debitAmount" / (select count(*) from month))
+          from month m
+          left join "transaction" on transaction."monthId" = m.id
+          and transaction."userId" = $1;
+    `,
+      [userId],
+    );
+
+    return result[0].sum || 0;
+  }
 }
+

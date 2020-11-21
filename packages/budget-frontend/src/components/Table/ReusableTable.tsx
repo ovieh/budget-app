@@ -33,7 +33,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, toolbarConfig }
         headerGroups,
         prepareRow,
         page,
-        state: { globalFilter },
+        state: { globalFilter = '' },
         gotoPage,
         setPageSize,
         preGlobalFilteredRows,

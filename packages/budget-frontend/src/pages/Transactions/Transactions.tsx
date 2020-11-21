@@ -1,15 +1,4 @@
-import {
-    BottomNavigation,
-    BottomNavigationAction,
-    createStyles,
-    Divider,
-    Grid,
-    Hidden,
-    makeStyles,
-    Paper,
-    Theme,
-    useTheme,
-} from '@material-ui/core';
+import { createStyles, Divider, Grid, Hidden, makeStyles, Paper, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useContext } from 'react';
 import { BarChart } from '../../components/Charts/BarChart/BarChart';
@@ -24,9 +13,6 @@ import { ActiveDateContext } from '../../context';
 import Expenses from '../../components/Panel/Expenses';
 import Income from '../../components/Panel/Income';
 import { Currency } from '../../types/currency';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SimpleBottomNavigation from '../../components/BottomNavigation';
 
 interface Props {}
@@ -89,13 +75,10 @@ export const Transactions: React.FC<Props> = () => {
         setOpen(false);
     };
 
-    const theme = useTheme();
-
     const username = data?.me?.username;
 
     return (
         <div className={classes.container}>
-            {' '}
             <div className={classes.root}>
                 <LoggedInNav userName={username} handleDrawerOpen={handleDrawerOpen} open={open} />
 
@@ -109,19 +92,13 @@ export const Transactions: React.FC<Props> = () => {
                 <main className={classes.content}>
                     <Grid container spacing={2} className={classes.content} wrap='wrap'>
                         <Grid item md={4} sm={12} xs={10}>
-                            <Paper className={classes.paper}>
-                                <DashboardContext />
-                            </Paper>
+                            <DashboardContext />
                         </Grid>
                         <Grid item md={4} sm={6} xs={10}>
-                            <Paper className={classes.paper}>
-                                <Expenses year={activeDate.year} month={activeDate.month} />
-                            </Paper>
+                            <Expenses year={activeDate.year} month={activeDate.month} />
                         </Grid>
                         <Grid item md={4} sm={6} xs={10}>
-                            <Paper className={classes.paper}>
-                                <Income year={activeDate.year} month={activeDate.month} />
-                            </Paper>
+                            <Income year={activeDate.year} month={activeDate.month} />
                         </Grid>
                         <Grid item md={5} sm={12} xs={10}>
                             <Paper>

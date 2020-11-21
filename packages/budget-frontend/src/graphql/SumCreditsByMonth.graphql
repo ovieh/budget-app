@@ -1,3 +1,5 @@
 query SumCreditsByMonth($year: Int!, $month: Int!) {
-  sumCreditsByMonth(year: $year, month: $month) 
+  sumCreditsByMonth(year: $year, month: $month)
+  averageCredits
+ 
 }
