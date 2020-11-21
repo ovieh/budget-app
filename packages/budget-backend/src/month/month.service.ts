@@ -45,7 +45,6 @@ export class MonthService {
       const foundMonth = await this.monthRepository.findOne({
         where: { year, month, userId },
         relations: ['categories'],
-        
       });
 
       return foundMonth;
@@ -57,7 +56,6 @@ export class MonthService {
 
   async findMonthByDate(dateDto: DateDto, user: User): Promise<Month[]> {
     const { year, month } = dateDto;
-    console.log('hiya')
 
     let defaultDate: Month;
 
@@ -91,8 +89,6 @@ export class MonthService {
     });
   }
 
-
-
   async updateMonthCategories(
     updateMonthCategoriesDto: UpdateMonthCategoriesDto,
     userId: number,
@@ -100,7 +96,7 @@ export class MonthService {
     try {
       const result = await this.monthRepository.updateMonthCategories(
         updateMonthCategoriesDto,
-        userId
+        userId,
       );
       return result;
     } catch (error) {
@@ -116,4 +112,5 @@ export class MonthService {
       throw new BadRequestException('Could not save month(s)');
     }
   }
+
 }

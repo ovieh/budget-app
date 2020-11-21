@@ -3,6 +3,7 @@ import { Month } from './month.entity';
 import { Logger, BadRequestException } from '@nestjs/common';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { UpdateMonthCategoriesDto } from './DTO/update-month-categories.dto';
+import { DateDto } from './DTO/date.dto';
 
 @EntityRepository(Month)
 export class MonthRepository extends Repository<Month> {
@@ -18,7 +19,10 @@ export class MonthRepository extends Repository<Month> {
 
     if (existingMonth) {
       // take existing transactions and add new transactions
-      existingMonth.transactions = [...existingMonth.transactions, ...transactions];
+      existingMonth.transactions = [
+        ...existingMonth.transactions,
+        ...transactions,
+      ];
 
       await existingMonth.save();
 
@@ -33,7 +37,7 @@ export class MonthRepository extends Repository<Month> {
 
     if (transactions) {
       newMonth.transactions = transactions;
-    } 
+    }
 
     try {
       await newMonth.save();

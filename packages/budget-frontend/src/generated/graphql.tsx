@@ -126,6 +126,7 @@ export type Query = {
     getYearMonth: Array<YearMonth>;
     sumDebitsByYearMonth: Scalars['Float'];
     transactionsByMonthAndCategory: Array<Transaction>;
+    sumCreditsByMonth: Scalars['Float'];
     getTransactionsByCategory: Category;
     getCategories: Array<Category>;
     getCategoryByDescription: Category;
@@ -167,6 +168,11 @@ export type QueryTransactionsByMonthAndCategoryArgs = {
     month: Scalars['Int'];
     year: Scalars['Int'];
     categoryId: Scalars['Int'];
+};
+
+export type QuerySumCreditsByMonthArgs = {
+    year?: Maybe<Scalars['Int']>;
+    month?: Maybe<Scalars['Int']>;
 };
 
 export type QueryGetTransactionsByCategoryArgs = {
@@ -330,6 +336,13 @@ export type MonthlySpendingChartQueryVariables = Exact<{
 export type MonthlySpendingChartQuery = { __typename?: 'Query' } & {
     MonthlySpendingChart: { __typename?: 'ChartData' } & Pick<ChartData, 'payload'>;
 };
+
+export type SumCreditsByMonthQueryVariables = Exact<{
+    year: Scalars['Int'];
+    month: Scalars['Int'];
+}>;
+
+export type SumCreditsByMonthQuery = { __typename?: 'Query' } & Pick<Query, 'sumCreditsByMonth'>;
 
 export type SumDebitsByYearMonthQueryVariables = Exact<{
     year: Scalars['Float'];
@@ -702,6 +715,54 @@ export type MonthlySpendingChartLazyQueryHookResult = ReturnType<
 export type MonthlySpendingChartQueryResult = Apollo.QueryResult<
     MonthlySpendingChartQuery,
     MonthlySpendingChartQueryVariables
+>;
+export const SumCreditsByMonthDocument = gql`
+    query SumCreditsByMonth($year: Int!, $month: Int!) {
+        sumCreditsByMonth(year: $year, month: $month)
+    }
+`;
+
+/**
+ * __useSumCreditsByMonthQuery__
+ *
+ * To run a query within a React component, call `useSumCreditsByMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSumCreditsByMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSumCreditsByMonthQuery({
+ *   variables: {
+ *      year: // value for 'year'
+ *      month: // value for 'month'
+ *   },
+ * });
+ */
+export function useSumCreditsByMonthQuery(
+    baseOptions: Apollo.QueryHookOptions<SumCreditsByMonthQuery, SumCreditsByMonthQueryVariables>
+) {
+    return Apollo.useQuery<SumCreditsByMonthQuery, SumCreditsByMonthQueryVariables>(
+        SumCreditsByMonthDocument,
+        baseOptions
+    );
+}
+export function useSumCreditsByMonthLazyQuery(
+    baseOptions?: Apollo.LazyQueryHookOptions<
+        SumCreditsByMonthQuery,
+        SumCreditsByMonthQueryVariables
+    >
+) {
+    return Apollo.useLazyQuery<SumCreditsByMonthQuery, SumCreditsByMonthQueryVariables>(
+        SumCreditsByMonthDocument,
+        baseOptions
+    );
+}
+export type SumCreditsByMonthQueryHookResult = ReturnType<typeof useSumCreditsByMonthQuery>;
+export type SumCreditsByMonthLazyQueryHookResult = ReturnType<typeof useSumCreditsByMonthLazyQuery>;
+export type SumCreditsByMonthQueryResult = Apollo.QueryResult<
+    SumCreditsByMonthQuery,
+    SumCreditsByMonthQueryVariables
 >;
 export const SumDebitsByYearMonthDocument = gql`
     query SumDebitsByYearMonth($year: Float!, $month: Float!) {

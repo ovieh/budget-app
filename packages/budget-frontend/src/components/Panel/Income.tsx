@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
-import { useSumDebitsByYearMonthQuery } from '../../generated/graphql';
+import { useSumCreditsByMonthQuery } from '../../generated/graphql';
 import { Panel } from './Panel';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -18,20 +18,17 @@ const Income: React.FC<{ year: number; month: number; className?: string }> = ({
 }) => {
     const classes = useStyles();
 
-    // const { data, loading } = useSumDebitsByYearMonthQuery({
-    //     variables: {
-    //         year,
-    //         month,
-    //     },
-    // });
-    // if (loading) {
-    //     return <h1>loading</h1>;
-    // }
+    const { data } = useSumCreditsByMonthQuery({
+        variables: {
+            year,
+            month,
+        },
+    });
 
     return (
         <Panel
             type='income'
-            amount={300}
+            amount={data?.sumCreditsByMonth}
             icon={<AddBoxOutlinedIcon className={classes.icon} color='primary' />}
         />
     );
