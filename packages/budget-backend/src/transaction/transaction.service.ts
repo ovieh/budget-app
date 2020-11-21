@@ -18,6 +18,7 @@ import { TransactionDescriptionService } from '../transaction-description/transa
 import { getMonthsFromTransactions } from '../utils/get-months-from-transaction';
 import { Month } from '../month/month.entity';
 import { SyncStrategy } from './sync-strategy.enum';
+import { DateDto } from '../month/DTO/date.dto';
 
 @Injectable()
 export class TransactionService {
@@ -68,7 +69,7 @@ export class TransactionService {
       SyncStrategy.Individual,
     );
 
-    console.log(transactionWithDescription)
+    console.log(transactionWithDescription);
     const transactionWithMonth = await this.syncMonth(
       transactionWithDescription,
     );
@@ -297,5 +298,9 @@ export class TransactionService {
       transaction.category = existingDescription.category;
       return transaction;
     }
+  }
+
+  async sumCreditsByMonth(dateDto: DateDto, userId: number): Promise<number> {
+    return this.transactionRepository.sumCreditsByMonth(dateDto, userId);
   }
 }

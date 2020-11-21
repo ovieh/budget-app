@@ -8,6 +8,8 @@ import { CreateTransactionDto } from './DTO/create-transaction.dto';
 import { YearMonth } from './DTO/year-month.dto';
 import { Transaction } from './transaction.entity';
 import customParseFormat = require('dayjs/plugin/customParseFormat');
+import { DateDto } from '../month/DTO/date.dto';
+import { Month } from '../month/month.entity';
 dayjs.extend(customParseFormat);
 
 @EntityRepository(Transaction)
@@ -138,7 +140,7 @@ export class TransactionRepository extends Repository<Transaction> {
     // skip: number,
     // take: number,
   ): Promise<Transaction[]> {
-    console.log("this is happending")
+    console.log('this is happending');
     try {
       const results = await this.createQueryBuilder('transaction')
         .leftJoinAndSelect('transaction.month', 'month')
@@ -206,10 +208,10 @@ export class TransactionRepository extends Repository<Transaction> {
   async getYearMonth(user: User): Promise<YearMonth[]> {
     try {
       const results = await this.createQueryBuilder()
-        .leftJoinAndSelect('transaction.month', 'month')
-        .where('month.month = :month', { month: 12 })
-        .andWhere('month.year = :year', { year: 2019 })
-        .andWhere('transaction.userId = :userId', { userId: user.id })
+        .select(`EXTRACT(YEAR FROM transaction.date) as year`)
+        .addSelect(`EXTRACT(MONTH FROM transaction.date) as month`)
+        .from(Transaction, 'transaction')
+        .where('transaction.userId = :userId', { userId: user.id })
         .groupBy('year')
         .addGroupBy('month')
         .orderBy('year', 'ASC')
@@ -299,5 +301,19 @@ export class TransactionRepository extends Repository<Transaction> {
       [year, month, categoryId, user.id],
     );
     return result;
+  }
+
+  async sumCreditsByMonth(dateDto: DateDto, userId: number): Promise<number> {
+    const { month, year } = dateDto;
+
+    const result = await this.query(
+      `select sum(transaction."creditAmount")
+          from month m
+          left join "transaction" on transaction."monthId" = m.id
+          where m.month = $1  and m."year" = $2 
+          and transaction."userId" = $3;`,
+      [month, year, userId],
+    );
+    return result[0].sum || 0;
   }
 }

@@ -9,6 +9,7 @@ import { TransactionDescriptionRepository } from '../transaction-description/tra
 import { TransactionDescriptionService } from '../transaction-description/transaction-description.service';
 import { MonthRepository } from '../month/month.repository';
 import { CreateTransactionDto } from './DTO/create-transaction.dto';
+import { DateDto } from '../month/DTO/date.dto';
 
 const mockUser = { id: 1, username: 'Bob' };
 
@@ -27,13 +28,13 @@ const mockTransaction = {
 const mockTransactionRepository = () => ({
   getTransaction: jest.fn(),
   findOne: jest.fn(),
-  createTransaction: jest.fn()
+  createTransaction: jest.fn(),
+  sumCreditsByMonth: jest.fn(),
 });
 
 const mockCategoryRepository = () => ({});
 const mockMonthRepository = () => ({});
 const mockTransactionDescriptionRepository = () => ({});
-
 
 describe('TransactionService', () => {
   let transactionService;
@@ -62,13 +63,10 @@ describe('TransactionService', () => {
           provide: TransactionDescriptionRepository,
           useFactory: mockTransactionDescriptionRepository,
         },
-        
       ],
     }).compile();
 
-    transactionService = module.get<TransactionService>(
-      TransactionService,
-    );
+    transactionService = module.get<TransactionService>(TransactionService);
     transactionRepository = await module.get<TransactionRepository>(
       TransactionRepository,
     );
@@ -98,14 +96,17 @@ describe('TransactionService', () => {
     it('throws an error as a transaction is not found', async () => {
       transactionRepository.findOne.mockResolvedValue(null);
 
-      expect(transactionService.getTransactionsById(1, mockUser)).rejects.toThrow(NotFoundException);
-
+      expect(
+        transactionService.getTransactionsById(1, mockUser),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('createTransaction', () => {
     it('calls transctionRepository.createTransaction() and returns the result', async () => {
-      transactionRepository.createTransaction.mockResolvedValue(mockTransaction);
+      transactionRepository.createTransaction.mockResolvedValue(
+        mockTransaction,
+      );
       expect(transactionRepository.createTransaction).not.toHaveBeenCalled();
 
       const createTransactionDto: CreateTransactionDto = {
@@ -118,11 +119,27 @@ describe('TransactionService', () => {
         creditAmount: 0,
         balance: 1000,
       };
-      
-      const result = await transactionRepository.createTransaction(createTransactionDto, mockUser);
-      expect(transactionRepository.createTransaction).toHaveBeenCalledWith(createTransactionDto, mockUser);
+
+      const result = await transactionRepository.createTransaction(
+        createTransactionDto,
+        mockUser,
+      );
+      expect(transactionRepository.createTransaction).toHaveBeenCalledWith(
+        createTransactionDto,
+        mockUser,
+      );
       expect(result).toEqual(mockTransaction);
-      
+    });
+  });
+
+  describe('sumCreditsByMonth', () => {
+    const mockDate: DateDto = { month: 1, year: 2020 };
+    it('it returns the sum of the credits for a month', async () => {
+      transactionRepository.sumCreditsByMonth.mockResolvedValue(100.0);
+      const result = await transactionService.sumCreditsByMonth(mockDate, 3);
+
+      expect(result).toEqual(100.0);
+      // expect(monthRepository.sumCredit)
     });
   });
 });
