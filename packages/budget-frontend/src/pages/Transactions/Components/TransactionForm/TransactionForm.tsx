@@ -21,7 +21,7 @@ import {
     YearMonth,
     TransactionsByMonthAndYearDocument,
 } from '../../../../generated/graphql';
-import { ActiveDateContext, updateActiveDate } from '../../../../context';
+import { ActiveDateContext, updateActiveDate } from '../../../../Contexts/ActiveDate';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -9,7 +9,7 @@ import { PrimaryList } from '../../components/PrimaryList';
 import { TransactionsTable } from './Components/TransactionsTable';
 import { useMonthlySpendingChartQuery, useMeQuery } from '../../generated/graphql';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
-import { ActiveDateContext } from '../../context';
+import { ActiveDateContext } from '../../Contexts/ActiveDate';
 import Expenses from '../../components/Panel/Expenses';
 import Income from '../../components/Panel/Income';
 import { Currency } from '../../types/currency';

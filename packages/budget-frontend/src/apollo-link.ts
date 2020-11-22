@@ -72,8 +72,8 @@ export const link = ApolloLink.from([
         },
     }) as any, // TODO: Figure why this is needed
     onError(({ graphQLErrors, networkError }) => {
-        console.log(graphQLErrors);
-        console.log(networkError);
+        console.log('graphQLErrors', graphQLErrors);
+        console.log('network error', networkError);
     }),
     requestLink,
     new HttpLink({

@@ -16,7 +16,7 @@ import {
     YearMonth,
     useListAvailableMonthQuery,
 } from '../generated/graphql';
-import { ActiveDateContext, updateActiveDate } from '../context';
+import { ActiveDateContext, updateActiveDate } from '../Contexts/ActiveDate';
 import { Panel } from './Panel/Panel';
 
 interface Props {}

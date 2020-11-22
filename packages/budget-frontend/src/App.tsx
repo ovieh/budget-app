@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { Routes } from './Routes';
 import { setAccessToken } from './accessToken';
-import { ActiveDateContext, initialState, reducer } from './context';
+import { ActiveDateContext, initialState, reducer } from './Contexts/ActiveDate';
 
 interface Props {}
 

@@ -1,8 +1,8 @@
 import React, { useContext, useRef, useState } from 'react';
-import { Button, responsiveFontSizes } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { getAccessToken } from '../accessToken';
 import { useTransactionsByMonthAndYearLazyQuery } from '../generated/graphql';
-import { ActiveDateContext } from '../context';
+import { ActiveDateContext } from '../Contexts/ActiveDate';
 
 interface Props {}
 
@@ -14,7 +14,6 @@ export const FileUpload: React.FC<Props> = () => {
 
     const {
         store: { activeDate },
-        dispatch,
     } = useContext(ActiveDateContext);
 
     const accessToken = getAccessToken();

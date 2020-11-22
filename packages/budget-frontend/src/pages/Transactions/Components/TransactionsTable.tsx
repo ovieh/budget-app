@@ -8,7 +8,7 @@ import {
 import { ReusuableTable } from '../../../components/Table/ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
 import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlaceholder';
-import { ActiveDateContext, updateActiveDate } from '../../../context';
+import { ActiveDateContext, updateActiveDate } from '../../../Contexts/ActiveDate';
 
 interface Props {
     handleClickOpen?: () => void;
