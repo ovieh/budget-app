@@ -41,6 +41,8 @@ export class TransactionRepository extends Repository<Transaction> {
           // convert date format
         } else if (context.column === 'date') {
           return dayjs(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+        } else if (context.column === 'accountNumber') {
+          return value.replace(/.(?=.{4,}$)/g, 'X');
         } else {
           return value;
         }
@@ -345,4 +347,3 @@ export class TransactionRepository extends Repository<Transaction> {
     return result[0].sum || 0;
   }
 }
-
