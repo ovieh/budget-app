@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { useMeQuery, User } from '../generated/graphql';
+import { useStateWithLocalStorage } from '../hooks/use-state-with-local-storage';
 
 interface Props {}
 
@@ -17,11 +18,15 @@ export const useAuth = () => {
 
 const useProvideAuth = () => {
     const { data } = useMeQuery();
-    const [user, setUser] = useState<User | null>(null);
+
+    const [user, setUser] = useStateWithLocalStorage('user');
+
+    console.log('user', user);
 
     useEffect(() => {
         data?.me && setUser(data?.me);
-    }, [data?.me]);
+    }, [data?.me, setUser]);
+
     return user;
 };
 

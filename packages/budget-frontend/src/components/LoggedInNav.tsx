@@ -31,10 +31,15 @@ export const LoggedInNav: React.FC<Props> = ({ userName, open, handleDrawerOpen 
 
     const firstLetterOfUsername = userName && userName.split('')[0];
 
+    const handelSignout = () => {
+        localStorage.clear();
+        signout();
+    };
+
     return (
         <ReusableNav handleDrawerOpen={handleDrawerOpen} open={open}>
             {userName && <Avatar className={classes.avatar}>{firstLetterOfUsername}</Avatar>}
-            <Button onClick={() => signout()}>Sign Out</Button>
+            <Button onClick={handelSignout}>Sign Out</Button>
         </ReusableNav>
     );
 };
