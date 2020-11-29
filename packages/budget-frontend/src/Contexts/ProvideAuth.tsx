@@ -21,8 +21,6 @@ const useProvideAuth = () => {
 
     const [user, setUser] = useStateWithLocalStorage('user');
 
-    console.log('user', user);
-
     useEffect(() => {
         data?.me && setUser(data?.me);
     }, [data?.me, setUser]);

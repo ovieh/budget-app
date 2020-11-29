@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             padding: theme.spacing(1),
             marginTop: theme.spacing(3),
+            [theme.breakpoints.down('sm')]: {
+                width: 'calc(100% - 20px)',
+            },
         },
     })
 );
@@ -90,28 +93,37 @@ export const Transactions: React.FC<Props> = () => {
                 </Hidden>
 
                 <main className={classes.content}>
-                    <Grid container spacing={2} className={classes.content} wrap='wrap'>
-                        <Grid item md={4} sm={12} xs={10}>
-                            <DashboardContext />
-                        </Grid>
-                        <Grid item md={4} sm={6} xs={10}>
-                            <Expenses year={activeDate.year} month={activeDate.month} />
-                        </Grid>
-                        <Grid item md={4} sm={6} xs={10}>
-                            <Income year={activeDate.year} month={activeDate.month} />
-                        </Grid>
-                        <Grid item md={5} sm={12} xs={10}>
-                            <Paper>
-                                <TransactionsTable />
-                            </Paper>
-                        </Grid>
-                        <Grid item md={5} sm={12} xs={10}>
-                            <Paper className={fixedHeightPaper}>
-                                <TransactionByCategoryChart date={activeDate} />
-                            </Paper>
-                        </Grid>
-                        <Grid item md={2} sm={12} xs={10}>
-                            <TransactionForm />
+                    <Grid container justify='center'>
+                        <Grid
+                            container
+                            spacing={2}
+                            className={classes.content}
+                            // wrap='wrap'
+                            // alignItems='center'
+                            justify='center'
+                        >
+                            <Grid item md={4} sm={12} xs={12}>
+                                <DashboardContext />
+                            </Grid>
+                            <Grid item md={4} sm={6} xs={12}>
+                                <Expenses year={activeDate.year} month={activeDate.month} />
+                            </Grid>
+                            <Grid item md={4} sm={6} xs={12}>
+                                <Income year={activeDate.year} month={activeDate.month} />
+                            </Grid>
+                            <Grid item md={5} sm={12} xs={12}>
+                                <Paper>
+                                    <TransactionsTable />
+                                </Paper>
+                            </Grid>
+                            <Grid item md={5} sm={12} xs={12}>
+                                <Paper className={fixedHeightPaper}>
+                                    <TransactionByCategoryChart date={activeDate} />
+                                </Paper>
+                            </Grid>
+                            <Grid item md={2} sm={12} xs={12}>
+                                <TransactionForm />
+                            </Grid>
                         </Grid>
                     </Grid>
                 </main>

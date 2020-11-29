@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import format from 'date-fns/format';
 import {
     Typography,
     Select,
@@ -9,7 +8,10 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    useMediaQuery,
+    useTheme,
 } from '@material-ui/core';
+import dayjs from 'dayjs';
 import DateRangeOutlinedIcon from '@material-ui/icons/DateRangeOutlined';
 import {
     useSumDebitsByYearMonthQuery,
@@ -48,13 +50,17 @@ export const DashboardContext: React.FC<Props> = () => {
         store: { activeDate },
     } = useContext(ActiveDateContext);
 
+    const matches = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
     if (!data?.getYearMonth[0]?.year) return null;
 
     if (!activeDate.month || !activeDate.year) return null;
 
     const { year, month } = activeDate;
 
-    const monthName = format(new Date(year, month - 1, 1), 'LLLL');
+    const monthName = dayjs()
+        .month(month - 1)
+        .format(matches ? 'MMMM' : 'MMM');
 
     if (loading || error) return null;
 
