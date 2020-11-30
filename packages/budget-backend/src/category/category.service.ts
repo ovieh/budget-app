@@ -55,8 +55,8 @@ export class CategoryService {
   async updateCategory(
     id: number,
     user: User,
-    name: string,
-    budget: number,
+    name?: string,
+    budget?: number,
   ): Promise<Category> {
     const category = await this.getCategoryById(id, user);
 

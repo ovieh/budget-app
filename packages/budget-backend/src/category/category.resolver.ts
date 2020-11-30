@@ -1,4 +1,13 @@
-import { Resolver, Query, Args, Mutation, Float, Field, InputType, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Args,
+  Mutation,
+  Float,
+  Field,
+  InputType,
+  Int,
+} from '@nestjs/graphql';
 import { Category } from './category.entity';
 import { Logger, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { CurrentUser } from '../auth/get-user.decorator';
@@ -32,10 +41,10 @@ export class CategoryResolver {
   @Mutation(() => Category)
   @UseGuards(GqlAuthGuard)
   updateCategory(
-    @Args('id') id: number,
-    @Args('name') name: string,
-    @Args('budget') budget: number,
     @CurrentUser() user: User,
+    @Args('id', { type: () => Int }) id: number,
+    @Args('name', { nullable: true }) name?: string,
+    @Args('budget') budget?: number,
   ): Promise<Category> {
     return this.categoryService.updateCategory(id, user, name, budget);
   }
@@ -112,4 +121,3 @@ export class CategoryResolver {
     return this.categoryService.MonthlySpendingChart({ year, month }, user);
   }
 }
-

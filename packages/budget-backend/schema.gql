@@ -141,7 +141,7 @@ type Mutation {
   createTransaction(date: String!, type: String!, sortCode: String!, accountNumber: String!, description: String!, debitAmount: Float!, creditAmount: Float!, balance: Float!): Transaction!
   deleteTransaction(id: String!): String!
   updateTransactionCategory(categoryId: Float!, id: String!): Transaction!
-  updateCategory(budget: Float!, name: String!, id: Float!): Category!
+  updateCategory(budget: Float!, name: String, id: Int!): Category!
   createCategory(name: String!, budget: Float!): Category!
   removeCategory(id: Float!): String!
   createMonth(month: Int!, year: Int!, transactions: ID!, categories: [CatIn!]!): Month!

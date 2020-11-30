@@ -278,8 +278,8 @@ export type MutationUpdateTransactionCategoryArgs = {
 
 export type MutationUpdateCategoryArgs = {
     budget: Scalars['Float'];
-    name: Scalars['String'];
-    id: Scalars['Float'];
+    name?: Maybe<Scalars['String']>;
+    id: Scalars['Int'];
 };
 
 export type MutationCreateCategoryArgs = {
@@ -399,6 +399,16 @@ export type TransactionsByMonthAndYearQuery = { __typename?: 'Query' } & {
                 >;
             }
     >;
+};
+
+export type UpdateCategoryMutationVariables = Exact<{
+    name?: Maybe<Scalars['String']>;
+    budget: Scalars['Float'];
+    id: Scalars['Int'];
+}>;
+
+export type UpdateCategoryMutation = { __typename?: 'Mutation' } & {
+    updateCategory: { __typename?: 'Category' } & Pick<Category, 'name' | 'budget'>;
 };
 
 export type CreateCategoryMutationVariables = Exact<{
@@ -954,6 +964,55 @@ export type TransactionsByMonthAndYearLazyQueryHookResult = ReturnType<
 export type TransactionsByMonthAndYearQueryResult = Apollo.QueryResult<
     TransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearQueryVariables
+>;
+export const UpdateCategoryDocument = gql`
+    mutation UpdateCategory($name: String, $budget: Float!, $id: Int!) {
+        updateCategory(budget: $budget, name: $name, id: $id) {
+            name
+            budget
+        }
+    }
+`;
+export type UpdateCategoryMutationFn = Apollo.MutationFunction<
+    UpdateCategoryMutation,
+    UpdateCategoryMutationVariables
+>;
+
+/**
+ * __useUpdateCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCategoryMutation, { data, loading, error }] = useUpdateCategoryMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      budget: // value for 'budget'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateCategoryMutation(
+    baseOptions?: Apollo.MutationHookOptions<
+        UpdateCategoryMutation,
+        UpdateCategoryMutationVariables
+    >
+) {
+    return Apollo.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(
+        UpdateCategoryDocument,
+        baseOptions
+    );
+}
+export type UpdateCategoryMutationHookResult = ReturnType<typeof useUpdateCategoryMutation>;
+export type UpdateCategoryMutationResult = Apollo.MutationResult<UpdateCategoryMutation>;
+export type UpdateCategoryMutationOptions = Apollo.BaseMutationOptions<
+    UpdateCategoryMutation,
+    UpdateCategoryMutationVariables
 >;
 export const CreateCategoryDocument = gql`
     mutation createCategory($name: String!, $budget: Float!) {

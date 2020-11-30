@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { SignIn } from './pages/SignIn';
 import { Home } from './pages/Home';
-import { Categories } from './pages/Categories';
+import { Categories } from './pages/Categories/Categories';
 import { Transactions } from './pages/Transactions/Transactions';
 import ProvideAuth, { PrivateRoute } from './Contexts/ProvideAuth';
 
