@@ -69,7 +69,6 @@ export class TransactionService {
       SyncStrategy.Individual,
     );
 
-    console.log(transactionWithDescription);
     const transactionWithMonth = await this.syncMonth(
       transactionWithDescription,
     );
@@ -108,7 +107,7 @@ export class TransactionService {
         user,
       );
 
-      const updatedMonth = await this.monthService.updateMonthCategories(
+      await this.monthService.updateMonthCategories(
         {
           categories: [transaction.category],
           month: transaction.month,

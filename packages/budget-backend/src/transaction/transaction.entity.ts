@@ -50,8 +50,6 @@ export class Transaction extends BaseEntity {
     eager: true,
   })
   category: Category;
-  // @RelationColumn()
-  // categoryId?: number;
 
   @HideField()
   @ManyToOne(() => Month, (month) => month.transactions)

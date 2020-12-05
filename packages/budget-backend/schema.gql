@@ -122,12 +122,18 @@ type Query {
   getMonths: [Month!]!
   getMonthByIds(ids: [Int!]!): [Month!]!
   sortedMonths: [Month!]!
-  MonthByDate(year: Int, month: Int): [Month!]!
+  MonthByDate(transactionType: TransactionType, year: Int, month: Int): [Month!]!
 }
 
 input DateInput {
   year: Int!
   month: Int!
+}
+
+"""The supported transaction types"""
+enum TransactionType {
+  DEBIT
+  CREDIT
 }
 
 type Mutation {

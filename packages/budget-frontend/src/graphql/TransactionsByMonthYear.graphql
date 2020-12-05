@@ -1,5 +1,6 @@
-query TransactionsByMonthAndYear($year: Int, $month: Int){
-  MonthByDate(year: $year, month: $month){
+query TransactionsByMonthAndYear($year: Int, $month: Int, 
+  $transactionType: TransactionType){
+  MonthByDate(year: $year, month: $month, transactionType: $transactionType){
     month
     year
     transactions {
@@ -7,9 +8,9 @@ query TransactionsByMonthAndYear($year: Int, $month: Int){
       description
       debitAmount
       date
-      category {
-        id
+      category{
         name
+        id
       }
     }
   }

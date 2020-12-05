@@ -211,6 +211,7 @@ export type QueryGetMonthByIdsArgs = {
 };
 
 export type QueryMonthByDateArgs = {
+    transactionType?: Maybe<TransactionType>;
     year?: Maybe<Scalars['Int']>;
     month?: Maybe<Scalars['Int']>;
 };
@@ -219,6 +220,12 @@ export type DateInput = {
     year: Scalars['Int'];
     month: Scalars['Int'];
 };
+
+/** The supported transaction types */
+export enum TransactionType {
+    Debit = 'DEBIT',
+    Credit = 'CREDIT',
+}
 
 export type Mutation = {
     __typename?: 'Mutation';
@@ -379,6 +386,7 @@ export type TransactionsByMonthAndCategoryQuery = { __typename?: 'Query' } & {
 export type TransactionsByMonthAndYearQueryVariables = Exact<{
     year?: Maybe<Scalars['Int']>;
     month?: Maybe<Scalars['Int']>;
+    transactionType?: Maybe<TransactionType>;
 }>;
 
 export type TransactionsByMonthAndYearQuery = { __typename?: 'Query' } & {
@@ -392,7 +400,7 @@ export type TransactionsByMonthAndYearQuery = { __typename?: 'Query' } & {
                         > & {
                                 category: { __typename?: 'Category' } & Pick<
                                     Category,
-                                    'id' | 'name'
+                                    'name' | 'id'
                                 >;
                             }
                     >
@@ -898,8 +906,8 @@ export type TransactionsByMonthAndCategoryQueryResult = Apollo.QueryResult<
     TransactionsByMonthAndCategoryQueryVariables
 >;
 export const TransactionsByMonthAndYearDocument = gql`
-    query TransactionsByMonthAndYear($year: Int, $month: Int) {
-        MonthByDate(year: $year, month: $month) {
+    query TransactionsByMonthAndYear($year: Int, $month: Int, $transactionType: TransactionType) {
+        MonthByDate(year: $year, month: $month, transactionType: $transactionType) {
             month
             year
             transactions {
@@ -908,8 +916,8 @@ export const TransactionsByMonthAndYearDocument = gql`
                 debitAmount
                 date
                 category {
-                    id
                     name
+                    id
                 }
             }
         }
@@ -930,6 +938,7 @@ export const TransactionsByMonthAndYearDocument = gql`
  *   variables: {
  *      year: // value for 'year'
  *      month: // value for 'month'
+ *      transactionType: // value for 'transactionType'
  *   },
  * });
  */

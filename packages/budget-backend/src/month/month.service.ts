@@ -11,6 +11,8 @@ import { Month } from './month.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
 import { UpdateMonthCategoriesDto } from './DTO/update-month-categories.dto';
+import { TransactionTypeDto } from './DTO/transaction-type.dto';
+import { MoreThan } from 'typeorm';
 
 @Injectable()
 export class MonthService {
@@ -54,7 +56,11 @@ export class MonthService {
     }
   }
 
-  async findMonthByDate(dateDto: DateDto, user: User): Promise<Month[]> {
+  async findMonthByDate(
+    dateDto: DateDto,
+    transactionType: TransactionTypeDto,
+    user: User,
+  ): Promise<Month[]> {
     const { year, month } = dateDto;
 
     let defaultDate: Month;
@@ -65,17 +71,26 @@ export class MonthService {
       });
     }
 
-    const result = await this.monthRepository.find({
-      relations: ['categories'],
-      where: {
-        month: month || defaultDate.month,
-        year: year || defaultDate.year,
-        userId: user.id,
-      },
-      order: { month: 'DESC', year: 'DESC' },
-      skip: 0,
-      take: 1,
-    });
+    // const result = await this.monthRepository.find({
+    //   relations: ['categories', 'transactions'],
+    //   where: {
+    //     month: month || defaultDate.month,
+    //     year: year || defaultDate.year,
+    //     userId: user.id,
+    //     transactions: {
+    //       debitAmount: 0
+    //     },
+    //   },
+    //   order: { month: 'DESC', year: 'DESC' },
+    //   skip: 0,
+    //   take: 1,
+    // });
+
+    const result = await this.monthRepository.findMonthByDate(
+      defaultDate ? defaultDate : dateDto,
+      transactionType,
+      user,
+    );
 
     if (!result) throw new NotFoundException('Month not found');
 
@@ -112,5 +127,4 @@ export class MonthService {
       throw new BadRequestException('Could not save month(s)');
     }
   }
-
 }

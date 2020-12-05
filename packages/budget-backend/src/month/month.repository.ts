@@ -4,6 +4,8 @@ import { Logger, BadRequestException } from '@nestjs/common';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { UpdateMonthCategoriesDto } from './DTO/update-month-categories.dto';
 import { DateDto } from './DTO/date.dto';
+import { TransactionTypeDto } from './DTO/transaction-type.dto';
+import { User } from '../auth/user.entity';
 
 @EntityRepository(Month)
 export class MonthRepository extends Repository<Month> {
@@ -66,4 +68,37 @@ export class MonthRepository extends Repository<Month> {
     return month;
   }
 
+  async findMonthByDate(
+    dateDto: DateDto,
+    transactionTypeDto: TransactionTypeDto,
+    user: User,
+  ): Promise<Month[]> {
+    const { month, year } = dateDto;
+    const { transactionType } = transactionTypeDto;
+    const query = this.createQueryBuilder('month')
+      .leftJoinAndSelect('month.transactions', 'transaction')
+      .leftJoinAndSelect('transaction.category', 'category')
+      .where('month.month = :month', { month })
+      .andWhere('month.year = :year', { year })
+      .andWhere('transaction.userId = :userId', { userId: user.id });
+
+    if (transactionType === 'DEBIT') {
+      return query
+        .andWhere('transaction.debitAmount > 0')
+        .orderBy(`month.month`, 'DESC')
+        .addOrderBy('month.year', 'DESC')
+        .getMany();
+    } else if (transactionType === 'CREDIT') {
+      return query
+        .andWhere('transaction.creditAmount > 0')
+        .orderBy(`month.month`, 'DESC')
+        .addOrderBy('month.year', 'DESC')
+        .getMany();
+    } else {
+      return query
+      .orderBy(`month.month`, 'DESC')
+      .addOrderBy('month.year', 'DESC')
+      .getMany();
+    }
+  }
 }

@@ -1,10 +1,4 @@
-import {
-  Resolver,
-  Mutation,
-  Args,
-  Query,
-  Int,
-} from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql';
 import { Month } from './month.entity';
 import { Logger, UseGuards } from '@nestjs/common';
 import { MonthService } from './month.service';
@@ -14,6 +8,7 @@ import { User } from 'src/auth/user.entity';
 import { CreateMonthDto } from './DTO/create-month.dto';
 import { DateDto } from './DTO/date.dto';
 import { UpdateMonthCategoriesDto } from './DTO/update-month-categories.dto';
+import { TransactionTypeDto } from './DTO/transaction-type.dto';
 
 @Resolver(() => Month)
 export class MonthResolver {
@@ -55,8 +50,9 @@ export class MonthResolver {
   async MonthByDate(
     @CurrentUser() user: User,
     @Args() dateDto: DateDto,
+    @Args() tranactionType?: TransactionTypeDto,
   ): Promise<Month[]> {
-    return this.monthService.findMonthByDate(dateDto, user);
+    return this.monthService.findMonthByDate(dateDto, tranactionType, user);
   }
 
   // @Query(() => [Month])

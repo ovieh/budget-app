@@ -4,6 +4,7 @@ import {
     useUpdateTransactionCategoryMutation,
     useTransactionsByMonthAndYearQuery,
     TransactionsByMonthAndYearDocument,
+    TransactionType,
 } from '../../../generated/graphql';
 import { ReusuableTable } from '../../../components/Table/ReusableTable';
 import { Select, MenuItem } from '@material-ui/core';
@@ -22,7 +23,11 @@ export const TransactionsTable: React.FC<Props> = () => {
 
     const { data, loading, error } = useTransactionsByMonthAndYearQuery({
         fetchPolicy: 'cache-and-network',
-        variables: { year: activeDate?.year, month: activeDate?.month },
+        variables: {
+            year: activeDate?.year,
+            month: activeDate?.month,
+            transactionType: TransactionType.Debit,
+        },
     });
 
     useEffect(() => {

@@ -147,7 +147,7 @@ export class TransactionRepository extends Repository<Transaction> {
       const results = await this.createQueryBuilder('transaction')
         .leftJoinAndSelect('transaction.month', 'month')
         .where('month.month = :month', { month })
-        .andWhere('month.year = :year', { year: 1920 })
+        .andWhere('month.year = :year', { year })
         .andWhere('transaction.userId = :userId', { userId: user.id })
         .take(1)
         .skip(0)
@@ -200,6 +200,7 @@ export class TransactionRepository extends Repository<Transaction> {
         .orderBy('transaction.date', 'DESC')
         .cache(true)
         .getMany();
+      console.log(results);
       return results;
     } catch {
       this.logger.error(`Failed to get results for "${year}/${month}"`);
@@ -346,4 +347,5 @@ export class TransactionRepository extends Repository<Transaction> {
 
     return result[0].sum || 0;
   }
+
 }

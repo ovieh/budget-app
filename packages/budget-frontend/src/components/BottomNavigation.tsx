@@ -2,9 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+import ClassIcon from '@material-ui/icons/Class';
 
 interface Props {
     className: string;
@@ -22,9 +21,8 @@ export default function SimpleBottomNavigation({ className }: Props) {
             showLabels
             className={className}
         >
-            <BottomNavigationAction label='Recents' icon={<RestoreIcon />} />
-            <BottomNavigationAction label='Favorites' icon={<FavoriteIcon />} />
-            <BottomNavigationAction label='Nearby' icon={<LocationOnIcon />} />
+            <BottomNavigationAction label='Transactions' icon={<ReceiptIcon />} />
+            <BottomNavigationAction label='Categories' icon={<ClassIcon />} />
         </BottomNavigation>
     );
 }
