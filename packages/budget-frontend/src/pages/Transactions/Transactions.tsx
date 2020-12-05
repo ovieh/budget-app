@@ -1,19 +1,16 @@
-import { createStyles, Divider, Grid, Hidden, makeStyles, Paper, Theme } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Paper, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useContext } from 'react';
 import { BarChart } from '../../components/Charts/BarChart/BarChart';
 import { DashboardContext } from '../../components/DashboardContext';
-import { Drawer } from '../../components/Drawer';
-import { LoggedInNav } from '../../components/LoggedInNav';
-import { PrimaryList } from '../../components/PrimaryList';
 import { TransactionsTable } from './Components/TransactionsTable';
-import { useMonthlySpendingChartQuery, useMeQuery } from '../../generated/graphql';
+import { useMonthlySpendingChartQuery } from '../../generated/graphql';
 import { TransactionForm } from './Components/TransactionForm/TransactionForm';
 import { ActiveDateContext } from '../../Contexts/ActiveDate';
 import Expenses from '../../components/Panel/Expenses';
 import Income from '../../components/Panel/Income';
 import { Currency } from '../../types/currency';
-import SimpleBottomNavigation from '../../components/BottomNavigation';
+import { Layout } from '../../components/Layout';
 
 interface Props {}
 
@@ -22,13 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
         container: {
             display: 'flex',
             flexDirection: 'column',
-        },
-        bottomNavigation: {
-            width: '100%',
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.text.primary,
-            position: 'fixed',
-            bottom: 0,
         },
         root: {
             display: 'flex',
@@ -45,10 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
         fixedHeight: {
             height: 482,
         },
-
-        menuButton: {
-            marginRight: 36,
-        },
         content: {
             flexGrow: 1,
             padding: theme.spacing(1),
@@ -61,77 +47,48 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const Transactions: React.FC<Props> = () => {
-    const { data } = useMeQuery();
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
     const {
         store: { activeDate },
     } = useContext(ActiveDateContext);
 
-    const [open, setOpen] = React.useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-
-    const username = data?.me?.username;
-
     return (
-        <div className={classes.container}>
-            <div className={classes.root}>
-                <LoggedInNav userName={username} handleDrawerOpen={handleDrawerOpen} open={open} />
-
-                <Hidden smDown>
-                    <Drawer handleDrawerClose={handleDrawerClose} open={open}>
-                        <PrimaryList />
-                        <Divider />
-                    </Drawer>
-                </Hidden>
-
-                <main className={classes.content}>
-                    <Grid container justify='center'>
-                        <Grid
-                            container
-                            spacing={2}
-                            className={classes.content}
-                            // wrap='wrap'
-                            // alignItems='center'
-                            justify='center'
-                        >
-                            <Grid item md={4} sm={12} xs={12}>
-                                <DashboardContext />
-                            </Grid>
-                            <Grid item md={4} sm={6} xs={12}>
-                                <Expenses year={activeDate.year} month={activeDate.month} />
-                            </Grid>
-                            <Grid item md={4} sm={6} xs={12}>
-                                <Income year={activeDate.year} month={activeDate.month} />
-                            </Grid>
-                            <Grid item md={5} sm={12} xs={12}>
-                                <Paper>
-                                    <TransactionsTable />
-                                </Paper>
-                            </Grid>
-                            <Grid item md={5} sm={12} xs={12}>
-                                <Paper className={fixedHeightPaper}>
-                                    <TransactionByCategoryChart date={activeDate} />
-                                </Paper>
-                            </Grid>
-                            <Grid item md={2} sm={12} xs={12}>
-                                <TransactionForm />
-                            </Grid>
-                        </Grid>
+        <Layout>
+            <Grid container justify='center'>
+                <Grid
+                    container
+                    spacing={2}
+                    className={classes.content}
+                    // wrap='wrap'
+                    // alignItems='center'
+                    justify='center'
+                >
+                    <Grid item md={4} sm={12} xs={12}>
+                        <DashboardContext />
                     </Grid>
-                </main>
-            </div>
-            <Hidden smUp>
-                <SimpleBottomNavigation className={classes.bottomNavigation} />
-            </Hidden>
-        </div>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Expenses year={activeDate.year} month={activeDate.month} />
+                    </Grid>
+                    <Grid item md={4} sm={6} xs={12}>
+                        <Income year={activeDate.year} month={activeDate.month} />
+                    </Grid>
+                    <Grid item md={5} sm={12} xs={12}>
+                        <Paper>
+                            <TransactionsTable />
+                        </Paper>
+                    </Grid>
+                    <Grid item md={5} sm={12} xs={12}>
+                        <Paper className={fixedHeightPaper}>
+                            <TransactionByCategoryChart date={activeDate} />
+                        </Paper>
+                    </Grid>
+                    <Grid item md={2} sm={12} xs={12}>
+                        <TransactionForm />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Layout>
     );
 };
 
