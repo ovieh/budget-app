@@ -22,10 +22,10 @@ export default function SimpleBottomNavigation({ className }: Props) {
             className={className}
         >
             <Link to='/transactions'>
-                <BottomNavigationAction label='Transactions' icon={<ReceiptIcon />} />
+                <BottomNavigationAction showLabel label='Transactions' icon={<ReceiptIcon />} />
             </Link>
             <Link to='/categories'>
-                <BottomNavigationAction label='Categories' icon={<ClassIcon />} />
+                <BottomNavigationAction showLabel label='Categories' icon={<ClassIcon />} />
             </Link>
         </BottomNavigation>
     );
