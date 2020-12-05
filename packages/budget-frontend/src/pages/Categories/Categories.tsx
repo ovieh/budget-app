@@ -11,15 +11,11 @@ import {
 import clsx from 'clsx';
 import * as yup from 'yup';
 import React, { FC } from 'react';
-import { LoggedInNav } from '../../components/LoggedInNav';
 import {
     CategoriesDocument,
     useCategoriesQuery,
     useCreateCategoryMutation,
-    useMeQuery,
 } from '../../generated/graphql';
-import { Drawer } from '../../components/Drawer';
-import { PrimaryList } from '../../components/PrimaryList';
 import { PieChart } from '../../components/Charts/PieChart/PieChart';
 import CategoriesTable from './components/CategoriesTable';
 import { useForm } from 'react-hook-form';

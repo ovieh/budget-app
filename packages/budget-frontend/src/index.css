@@ -1,1 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto&display=swap');
+
+td {
+    text-overflow: ellipsis;
+    max-width: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}

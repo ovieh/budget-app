@@ -1,15 +1,11 @@
-import React, { useMemo, useState, useEffect, useContext } from 'react';
-import {
-    useCategoriesQuery,
-    useUpdateTransactionCategoryMutation,
-    useTransactionsByMonthAndYearQuery,
-    TransactionsByMonthAndYearDocument,
-    TransactionType,
-} from '../../../generated/graphql';
+import React, { useMemo, useEffect, useContext } from 'react';
+import { useTransactionsByMonthAndYearQuery, TransactionType } from '../../../generated/graphql';
 import { ReusuableTable } from '../../../components/Table/ReusableTable';
-import { Select, MenuItem } from '@material-ui/core';
+import { useMediaQuery, Theme } from '@material-ui/core';
 import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlaceholder';
 import { ActiveDateContext, updateActiveDate } from '../../../Contexts/ActiveDate';
+import { EditableCell } from './EditableCell';
+import { Cell } from 'recharts';
 
 interface Props {
     handleClickOpen?: () => void;
@@ -30,6 +26,8 @@ export const TransactionsTable: React.FC<Props> = () => {
         },
     });
 
+    const matches = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
     useEffect(() => {
         data?.MonthByDate[0]?.month &&
             dispatch({
@@ -38,72 +36,26 @@ export const TransactionsTable: React.FC<Props> = () => {
             });
     }, [data, dispatch]);
 
-    // TODO: Figure out these types
-    interface EditableCellTypes {
-        cell: any;
-        row: any;
-        column: any;
-    }
-
-    const EditableCell: React.FC<EditableCellTypes> = ({
-        cell: { value: initialValue },
-        row: { original },
-        column,
-    }) => {
-        const { data } = useCategoriesQuery();
-        const [updateCategory] = useUpdateTransactionCategoryMutation();
-        const [value, setValue] = useState(initialValue);
-        const [categoryId, setCategoryId] = useState(0);
-
-        const onBlur = () => {
-            updateCategory({
-                variables: {
-                    id: original.id,
-                    categoryId,
-                },
-                refetchQueries: [
-                    {
-                        query: TransactionsByMonthAndYearDocument,
-                        variables: {},
-                    },
-                ],
-            });
-        };
-
-        const onChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-            setValue(e.target.value as number);
-        };
-
-        useEffect(() => {
-            setValue(initialValue);
-        }, [initialValue]);
-        // TODO: fix below, shouldn't need !
-        useEffect(() => {
-            data?.getCategories
-                .filter(({ name }) => name === value)
-                .map(({ id }) => setCategoryId(Number(id))); //  TODO: This is bad
-        }, [data, value]);
-
-        return (
-            <Select onBlur={onBlur} onChange={onChange} name='category' value={value}>
-                {data?.getCategories.map(({ id, name }) => (
-                    <MenuItem value={name} key={name}>
-                        {name}
-                    </MenuItem>
-                ))}
-            </Select>
-        );
-    };
-
-    // Not sure useMemo is necessary?
     const TransactionsColumns = useMemo(
         () => [
-            { Header: 'Date', accessor: 'date' },
-            { Header: 'Description', accessor: 'description' },
-            { Header: 'Amount', accessor: 'debitAmount' },
-            { Header: 'Category', accessor: 'category.name', Cell: EditableCell },
+            {
+                Header: 'Date',
+                accessor: 'date',
+                Cell: (cell: any) => (!matches ? cell.value.split(/-(.+)/)[1] : cell.value),
+            },
+            { Header: matches ? 'Description' : 'Desc.', accessor: 'description' },
+            {
+                Header: matches ? 'Amount' : 'Amt.',
+                accessor: 'debitAmount',
+                Cell: (cell: any) => cell.value.toFixed(2),
+            },
+            {
+                Header: 'Category',
+                accessor: 'category.name',
+                Cell: EditableCell,
+            },
         ],
-        []
+        [matches]
     );
 
     if (error) {
@@ -118,7 +70,7 @@ export const TransactionsTable: React.FC<Props> = () => {
         <ReusuableTable
             columns={TransactionsColumns}
             data={data!.MonthByDate[0].transactions}
-            toolbarConfig={{ title: 'Transactions', search: true }}
+            toolbarConfig={{ title: matches ? 'Transactions' : undefined, search: true }}
         />
     ) : (
         <h1>i'm waiting for data!!!</h1>
