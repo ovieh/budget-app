@@ -4,7 +4,7 @@ import { TransactionsTable } from './Transactions/Components/TransactionsTable';
 
 interface Props {}
 export const Dashboard: React.FC<Props> = () => {
-    return <Layout main={<Transactions />} />;
+    return <Layout />;
 };
 
 const Transactions = () => {

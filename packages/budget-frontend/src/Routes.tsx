@@ -12,7 +12,7 @@ export const Routes: React.FC = () => {
         <ProvideAuth>
             <BrowserRouter>
                 <Switch>
-                    <Route exact path='/' component={Home} />
+                    <Route exact path='/' component={Transactions} />
                     <Route exact path='/register' component={Register} />
                     <Route exact path='/signin' component={SignIn} />
                     <PrivateRoute path='/transactions'>

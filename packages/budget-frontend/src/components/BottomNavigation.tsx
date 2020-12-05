@@ -1,9 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import ClassIcon from '@material-ui/icons/Class';
+import { Link } from 'react-router-dom';
 
 interface Props {
     className: string;
@@ -21,8 +21,12 @@ export default function SimpleBottomNavigation({ className }: Props) {
             showLabels
             className={className}
         >
-            <BottomNavigationAction label='Transactions' icon={<ReceiptIcon />} />
-            <BottomNavigationAction label='Categories' icon={<ClassIcon />} />
+            <Link to='/transactions'>
+                <BottomNavigationAction label='Transactions' icon={<ReceiptIcon />} />
+            </Link>
+            <Link to='/categories'>
+                <BottomNavigationAction label='Categories' icon={<ClassIcon />} />
+            </Link>
         </BottomNavigation>
     );
 }
