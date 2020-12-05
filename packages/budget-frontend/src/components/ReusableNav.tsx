@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, makeStyles, Theme } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, makeStyles, Theme, Hidden } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
@@ -58,17 +58,20 @@ export const ReusableNav: React.FC<Props> = ({ links, children, open, handleDraw
     return (
         <AppBar position='fixed' className={classes.appBar}>
             <Toolbar>
-                <IconButton
-                    color='inherit'
-                    aria-label='open drawer'
-                    onClick={handleDrawerOpen}
-                    edge='start'
-                    className={clsx(classes.menuButton, {
-                        [classes.hide]: open,
-                    })}
-                >
-                    <MenuIcon />
-                </IconButton>
+                <Hidden smDown>
+                    <IconButton
+                        color='inherit'
+                        aria-label='open drawer'
+                        onClick={handleDrawerOpen}
+                        edge='start'
+                        className={clsx(classes.menuButton, {
+                            [classes.hide]: open,
+                        })}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                </Hidden>
+
                 <Typography
                     variant='h6'
                     component='h1'
