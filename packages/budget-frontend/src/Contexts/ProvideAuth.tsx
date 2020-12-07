@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import React, { createContext, useContext, useEffect } from 'react';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { useMeQuery, User } from '../generated/graphql';
 import { useStateWithLocalStorage } from '../hooks/use-state-with-local-storage';
 
@@ -28,7 +28,7 @@ const useProvideAuth = () => {
     return user;
 };
 
-const PrivateRoute = ({ children, ...rest }: any) => {
+const PrivateRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
     const auth = useAuth();
 
     return (

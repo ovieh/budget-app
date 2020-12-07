@@ -5,7 +5,6 @@ import { useMediaQuery, Theme } from '@material-ui/core';
 import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlaceholder';
 import { ActiveDateContext, updateActiveDate } from '../../../Contexts/ActiveDate';
 import { EditableCell } from './EditableCell';
-import { Cell } from 'recharts';
 
 interface Props {
     handleClickOpen?: () => void;
@@ -18,7 +17,6 @@ export const TransactionsTable: React.FC<Props> = () => {
     } = useContext(ActiveDateContext);
 
     const { data, loading, error } = useTransactionsByMonthAndYearQuery({
-        fetchPolicy: 'cache-and-network',
         variables: {
             year: activeDate?.year,
             month: activeDate?.month,

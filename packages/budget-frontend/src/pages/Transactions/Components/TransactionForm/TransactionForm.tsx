@@ -15,6 +15,8 @@ import { useForm } from 'react-hook-form';
 import {
     useCreateTransactionMutation,
     TransactionsByMonthAndYearDocument,
+    SumDebitsByYearMonthDocument,
+    Transaction,
 } from '../../../../generated/graphql';
 import { ActiveDateContext, updateActiveDate } from '../../../../Contexts/ActiveDate';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -28,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const TransactionSchema = yup.object().shape({
+const transactionSchema = yup.object().shape({
     date: yup.date().required('Date is required'),
     description: yup.string().min(2, 'Too Short!').max(20, 'Too long!').required('Requiried'),
     debitAmount: yup.number().positive('Must be positive').required('Must be a number'),
@@ -52,7 +54,7 @@ export const TransactionForm: React.FC<{}> = () => {
     ];
 
     const { register, errors, handleSubmit, formState } = useForm({
-        resolver: yupResolver(TransactionSchema),
+        resolver: yupResolver(transactionSchema),
     });
 
     const { isSubmitting } = formState;
@@ -67,18 +69,7 @@ export const TransactionForm: React.FC<{}> = () => {
         });
     };
 
-    // initialValues={{
-    //     date: '',
-    //     type: 'none',
-    //     sortCode: '0',
-    //     description: '',
-    //     accountNumber: '0',
-    //     debitAmount: '',
-    //     creditAmount: '0',
-    //     balance: '',
-    // }}
-
-    const onSubmit = async (values: any) => {
+    const onSubmit = async (values: Transaction) => {
         const date = new Date(values.date);
         // adding 1 is cRazY !!!
         const month = date.getMonth() + 1;
@@ -90,9 +81,9 @@ export const TransactionForm: React.FC<{}> = () => {
                 sortCode: values.sortCode,
                 description: values.description,
                 accountNumber: values.accountNumber,
-                debitAmount: parseFloat(values.debitAmount),
-                creditAmount: parseFloat(values.creditAmount),
-                balance: parseFloat(values.balance),
+                debitAmount: Number(values.debitAmount),
+                creditAmount: Number(values.creditAmount),
+                balance: Number(values.balance),
             },
             awaitRefetchQueries: true,
             refetchQueries: [
@@ -103,19 +94,23 @@ export const TransactionForm: React.FC<{}> = () => {
                         year,
                     },
                 },
+                {
+                    query: SumDebitsByYearMonthDocument,
+                    variables: {
+                        year,
+                        month,
+                    },
+                },
             ],
         });
         newTransaction.data && updateContextDate(newTransaction.data.createTransaction.date);
-        // setSubmitting(false);
     };
 
     return (
         <Paper style={{ minHeight: '20rem' }}>
-            {/* <Grid container> */}
             <Container>
                 <FileUpload />
             </Container>
-            {/* </Grid> */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Container>
                     <Typography variant='h6' align='left' className={classes.label}>

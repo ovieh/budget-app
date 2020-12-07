@@ -1,7 +1,11 @@
 import { MenuItem, Select } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { ActiveDateContext } from '../../../Contexts/ActiveDate';
 import {
+    MonthlySpendingChartDocument,
+    SumDebitsByYearMonthDocument,
     TransactionsByMonthAndYearDocument,
+    TransactionType,
     useCategoriesQuery,
     useUpdateTransactionCategoryMutation,
 } from '../../../generated/graphql';
@@ -23,6 +27,10 @@ export const EditableCell: React.FC<EditableCellTypes> = ({
 
     const [categoryId, setCategoryId] = useState(0);
 
+    const {
+        store: { activeDate },
+    } = useContext(ActiveDateContext);
+
     const onBlur = () => {
         updateCategory({
             variables: {
@@ -32,7 +40,18 @@ export const EditableCell: React.FC<EditableCellTypes> = ({
             refetchQueries: [
                 {
                     query: TransactionsByMonthAndYearDocument,
-                    variables: {},
+                    variables: {
+                        year: activeDate?.year,
+                        month: activeDate?.month,
+                        transactionType: TransactionType.Debit,
+                    },
+                },
+                {
+                    query: MonthlySpendingChartDocument,
+                    variables: {
+                        year: activeDate?.year,
+                        month: activeDate?.month,
+                    },
                 },
             ],
         });
