@@ -3,6 +3,7 @@ import { ReusableNav } from './ReusableNav';
 import { useSignOutMutation } from '../generated/graphql';
 import { Button, Avatar, makeStyles, createStyles } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
+import { setAccessToken } from '../accessToken';
 
 interface Props {
     className?: string;
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme =>
 );
 
 export const LoggedInNav: React.FC<Props> = ({ userName, open, handleDrawerOpen }) => {
-    const [signout, { data }] = useSignOutMutation();
+    const [signout, { data, client }] = useSignOutMutation();
     const classes = useStyles();
 
     if (data) {
@@ -31,9 +32,10 @@ export const LoggedInNav: React.FC<Props> = ({ userName, open, handleDrawerOpen 
 
     const firstLetterOfUsername = userName && userName.split('')[0];
 
-    const handelSignout = () => {
-        localStorage.clear();
+    const handelSignout = async () => {
         signout();
+        setAccessToken('');
+        await client.clearStore();
     };
 
     return (

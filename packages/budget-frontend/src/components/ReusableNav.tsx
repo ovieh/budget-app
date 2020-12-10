@@ -85,12 +85,11 @@ export const ReusableNav: React.FC<Props> = ({ links, children, open, handleDraw
                 </Typography>
                 <div className={classes.root}>
                     {children}
-                    {links &&
-                        links.map((link, index) => (
-                            <Button color='inherit' key={index}>
-                                <Link to={link.to}>{link.name}</Link>
-                            </Button>
-                        ))}
+                    {links?.map((link, index) => (
+                        <Button color='inherit' key={index}>
+                            <Link to={link.to}>{link.name}</Link>
+                        </Button>
+                    ))}
                 </div>
             </Toolbar>
         </AppBar>

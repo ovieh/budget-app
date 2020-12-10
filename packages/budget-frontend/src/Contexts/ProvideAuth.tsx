@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import { useMeQuery, User } from '../generated/graphql';
-import { useStateWithLocalStorage } from '../hooks/use-state-with-local-storage';
+import { getAccessToken } from '../accessToken';
 
 interface Props {}
 
-const authContext = createContext<User | null>(null);
+const authContext = createContext<string | null>(null);
 
 const ProvideAuth: React.FC<Props> = ({ children }) => {
     const auth = useProvideAuth();
@@ -17,15 +16,7 @@ export const useAuth = () => {
 };
 
 const useProvideAuth = () => {
-    const { data } = useMeQuery();
-
-    const [user, setUser] = useStateWithLocalStorage('user');
-
-    useEffect(() => {
-        data?.me && setUser(data?.me);
-    }, [data?.me, setUser]);
-
-    return user;
+    return getAccessToken();
 };
 
 const PrivateRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
