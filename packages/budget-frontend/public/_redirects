@@ -1,2 +1,2 @@
 /* /index.html 200
-/api/* http://budgetapp-backend.herokuapp.com/:splat 200
+/api/* https://budgetapp-backend.herokuapp.com/:splat 200
