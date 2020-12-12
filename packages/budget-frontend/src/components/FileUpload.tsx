@@ -8,7 +8,7 @@ interface Props {}
 
 export const FileUpload: React.FC<Props> = () => {
     const ref = useRef(null);
-    const URL = `${process.env.REACT_APP_API_URL}`;
+    const URL = `/api`;
 
     const onUploadButtonClick = () => (ref as any).current.click();
 

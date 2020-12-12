@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { getAccessToken } from '../accessToken';
 

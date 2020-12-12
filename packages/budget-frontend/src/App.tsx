@@ -22,7 +22,7 @@ export const App: React.FC<Props> = () => {
 
     const classes = useStyles();
 
-    const URL = `${process.env.REACT_APP_API_URL}`;
+    const URL = `/api`;
 
     useEffect(() => {
         fetch(`${URL}/refresh_token`, {
