@@ -107,6 +107,7 @@ declare module 'react-table' {
         toggleSelectAll: (forcedState: boolean) => any;
         preGlobalFilteredRows: any;
         setGlobalFilter: () => void;
+        selectedFlatRows: any;
     }
 
     export interface TableOptions<D> {
@@ -182,6 +183,12 @@ declare module 'react-table' {
     };
 
     export function useSortBy<D>(
+        props: TableOptions<D>
+    ): TableOptions<D> & {
+        rows: Row<D>[];
+    };
+
+    export function useRowSelect<D>(
         props: TableOptions<D>
     ): TableOptions<D> & {
         rows: Row<D>[];

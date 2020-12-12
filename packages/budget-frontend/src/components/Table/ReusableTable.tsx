@@ -8,22 +8,45 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import React from 'react';
-import { useTable, usePagination, useGlobalFilter, useSortBy } from 'react-table';
-import { TableFooter, TablePagination } from '@material-ui/core';
+import { useTable, usePagination, useGlobalFilter, useSortBy, useRowSelect } from 'react-table';
+import { Checkbox, TableFooter, TablePagination } from '@material-ui/core';
 import TableToolbar from './TableToolbar';
+
+const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }: any, ref) => {
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || (defaultRef as any);
+
+    React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return <Checkbox ref={resolvedRef} {...rest} />;
+});
 
 export type ToolbarConfig = {
     title?: string;
+    checkboxes?: boolean;
     search?: boolean;
+    numSelected?: number;
+};
+
+export type TableConfig = {
+    checkboxes?: boolean;
 };
 
 interface Props {
     columns: any;
     data: any;
     toolbarConfig?: ToolbarConfig;
+    tableConfig?: TableConfig;
 }
 
-export const ReusuableTable: React.FC<Props> = ({ columns, data, toolbarConfig }) => {
+export const ReusuableTable: React.FC<Props> = ({
+    columns,
+    data,
+    toolbarConfig,
+    tableConfig = { checkboxes: false },
+}) => {
     const [currentPage, setCurrentPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -32,8 +55,9 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, toolbarConfig }
         getTableBodyProps,
         headerGroups,
         prepareRow,
+        selectedFlatRows,
         page,
-        state: { globalFilter = '' },
+        state: { globalFilter = '', selectedRowIds },
         gotoPage,
         setPageSize,
         preGlobalFilteredRows,
@@ -46,7 +70,27 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, toolbarConfig }
         },
         useGlobalFilter,
         useSortBy,
-        usePagination
+        usePagination,
+        useRowSelect,
+        (hooks: any) => {
+            tableConfig.checkboxes &&
+                hooks.visibleColumns.push((columns: any) => [
+                    {
+                        id: 'selection',
+                        Header: ({ getToggleAllRowsSelectedProps }: any) => (
+                            <div>
+                                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+                            </div>
+                        ),
+                        Cell: ({ row }: any) => (
+                            <div>
+                                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                            </div>
+                        ),
+                    },
+                    ...(columns as any),
+                ]);
+        }
     );
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -67,6 +111,7 @@ export const ReusuableTable: React.FC<Props> = ({ columns, data, toolbarConfig }
                 setGlobalFilter={setGlobalFilter}
                 globalFilter={globalFilter}
                 config={toolbarConfig}
+                numSelected={Object.keys(selectedRowIds).length}
             />
             <Table {...getTableProps()}>
                 <TableHead>

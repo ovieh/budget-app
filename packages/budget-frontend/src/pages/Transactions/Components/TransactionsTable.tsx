@@ -69,6 +69,7 @@ export const TransactionsTable: React.FC<Props> = () => {
             columns={TransactionsColumns}
             data={data!.MonthByDate[0].transactions}
             toolbarConfig={{ title: matches ? 'Transactions' : undefined, search: true }}
+            tableConfig={{ checkboxes: true }}
         />
     ) : (
         <h1>i'm waiting for data!!!</h1>
