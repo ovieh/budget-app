@@ -35,7 +35,7 @@ const requestLink = new ApolloLink(
         })
 );
 
-const URL = `/api/graphql`;
+const URL = process.env.REACT_APP_API_URL || `/api`;
 
 export const link = ApolloLink.from([
     new TokenRefreshLink({
@@ -59,7 +59,7 @@ export const link = ApolloLink.from([
             }
         },
         fetchAccessToken: () => {
-            return fetch(`/api/refresh_token`, {
+            return fetch(`${URL}/refresh_token`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -77,7 +77,7 @@ export const link = ApolloLink.from([
     }),
     requestLink,
     new HttpLink({
-        uri: URL,
+        uri: `${URL}/graphql`,
         credentials: 'include',
     }),
 ]);

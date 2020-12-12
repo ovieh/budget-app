@@ -8,7 +8,7 @@ interface Props {}
 
 export const FileUpload: React.FC<Props> = () => {
     const ref = useRef(null);
-    const URL = `/api`;
+    const URL = process.env.REACT_APP_API_URL || `/api`;
 
     const onUploadButtonClick = () => (ref as any).current.click();
 
@@ -18,7 +18,7 @@ export const FileUpload: React.FC<Props> = () => {
 
     const accessToken = getAccessToken();
     const [loading, setLoading] = useState('idle');
-    const [getTransactions, { data }] = useTransactionsByMonthAndYearLazyQuery();
+    const [getTransactions] = useTransactionsByMonthAndYearLazyQuery();
 
     const fileUpload = (file: any): any => {
         const formData = new FormData();
@@ -40,8 +40,6 @@ export const FileUpload: React.FC<Props> = () => {
                         getTransactions({
                             variables: { year: activeDate?.year, month: activeDate?.month },
                         });
-
-                        console.log(data);
                     }
                 })
                 .catch(error => {

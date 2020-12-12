@@ -3,6 +3,7 @@ import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { orange, teal } from '@material-ui/core/colors';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { link } from './apollo-link';
 import { App } from './App';
 import { cache } from './cache';
@@ -29,8 +30,10 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 ReactDOM.render(
     <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
+            <BrowserRouter>
+                <App />
+                <CssBaseline />
+            </BrowserRouter>
         </ThemeProvider>
     </ApolloProvider>,
     document.getElementById('root')

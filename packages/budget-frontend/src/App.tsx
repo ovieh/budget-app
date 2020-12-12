@@ -3,6 +3,7 @@ import { Routes } from './Routes';
 import { setAccessToken } from './accessToken';
 import { ActiveDateContext, initialState, reducer } from './Contexts/ActiveDate';
 import { Backdrop, CircularProgress, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,18 +23,26 @@ export const App: React.FC<Props> = () => {
 
     const classes = useStyles();
 
-    const URL = `/api`;
-
+    const URL = process.env.REACT_APP_API_URL || `/api`;
+    const history = useHistory();
     useEffect(() => {
         fetch(`${URL}/refresh_token`, {
             method: 'POST',
             credentials: 'include',
         }).then(async result => {
-            const { accessToken } = await result.json();
-            setAccessToken(accessToken);
-            setLoading(false);
+            try {
+                const { accessToken } = await result.json();
+                setAccessToken(accessToken);
+                setLoading(false);
+                if (!accessToken) {
+                    history.push('/signin');
+                }
+            } catch {
+                setLoading(false);
+                history.push('/signin');
+            }
         });
-    });
+    }, [history, URL]);
 
     if (loading) {
         return (
