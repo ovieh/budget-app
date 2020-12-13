@@ -27,8 +27,13 @@ const filterCategory = (entry: ChartProps) => {
     }
 };
 
+// TODO: figure out types
 export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) => {
     const notUncategorized = data!.filter((category: any) => filterCategory(category));
+
+    const highestBudget = data?.reduce((a: any, b: any) => (a.budget > b.budget ? a : b)) as any;
+    const yDomainMax = parseInt(highestBudget.budget.split('.')[0], 10) + 200;
+
     return (
         <ResponsiveContainer>
             <ReBarChart
@@ -46,7 +51,7 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                 </XAxis>
                 <YAxis
                     type='number'
-                    domain={[0, 500]}
+                    domain={[0, yDomainMax]}
                     scale='linear'
                     label={{
                         value: value,
