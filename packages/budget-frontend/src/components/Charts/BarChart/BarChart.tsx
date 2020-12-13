@@ -18,11 +18,17 @@ import COLORS from '../colors';
 interface ChartProps {
     name: string;
     budget: string;
-    actual: string;
+    actual: number;
 }
 
+const filterCategory = (entry: ChartProps) => {
+    if (entry.name !== 'Uncategorized' && entry.actual !== 0) {
+        return true;
+    }
+};
+
 export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) => {
-    const notUncategorized = data!.filter((category: any) => category.name !== 'Uncategorized');
+    const notUncategorized = data!.filter((category: any) => filterCategory(category));
     return (
         <ResponsiveContainer>
             <ReBarChart
@@ -35,7 +41,7 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                 data={notUncategorized}
             >
                 <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='name' type='category'>
+                <XAxis dataKey='name' type='category' tick={<CustomizedAxisTick />}>
                     {/* <Label value={value} offset={0} position='insideBottom' fill='white' /> */}
                 </XAxis>
                 <YAxis
@@ -54,6 +60,7 @@ export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) 
                 <Tooltip />
                 <Legend
                     payload={[{ value: 'budget', type: 'rect', id: 'ID02', color: '#c12929' }]}
+                    margin={{ top: 20 }}
                 />
                 <Bar dataKey='actual' shape={<CustomBarWithTarget />} isAnimationActive={true}>
                     {data?.map((entry, index) => (
@@ -70,6 +77,8 @@ const CustomBarWithTarget = (props: any) => {
     let totalHeight = y + height;
     let targetY = totalHeight - (height / actual) * budget;
 
+    if (actual === 0) return null;
+
     return (
         <svg>
             <rect x={x} y={y} width={width} height={height} stroke='none' fill={fill} />
@@ -85,3 +94,17 @@ const CustomBarWithTarget = (props: any) => {
         </svg>
     );
 };
+
+class CustomizedAxisTick extends React.PureComponent {
+    render() {
+        const { x, y, stroke, payload } = this.props as any;
+
+        return (
+            <g transform={`translate(${x},${y})`}>
+                <text x={0} y={0} dy={16} textAnchor='end' fill='#666' transform='rotate(-35)'>
+                    {payload.value}
+                </text>
+            </g>
+        );
+    }
+}
