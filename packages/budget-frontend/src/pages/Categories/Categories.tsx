@@ -52,7 +52,10 @@ export const Categories: FC<Props> = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-    const { register, errors, handleSubmit } = useForm({ resolver: yupResolver(CategorySchema) });
+    const { register, errors, handleSubmit, formState } = useForm({
+        resolver: yupResolver(CategorySchema),
+        mode: 'onChange',
+    });
 
     const { data, loading, error } = useCategoriesQuery();
 
@@ -138,7 +141,7 @@ export const Categories: FC<Props> = () => {
                                     <Grid item xs={12}>
                                         <Button
                                             type='submit'
-                                            // disabled={isSubmitting}
+                                            disabled={!formState.isValid}
                                             variant='contained'
                                             centerRipple
                                             color='primary'
