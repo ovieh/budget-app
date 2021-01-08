@@ -4,7 +4,7 @@ import { ReusuableTable } from '../../../components/Table/ReusableTable';
 import { useMediaQuery, Theme } from '@material-ui/core';
 import { TablePlaceholder } from '../../../components/TablePlaceholder/TablePlaceholder';
 import { ActiveDateContext, updateActiveDate } from '../../../Contexts/ActiveDate';
-import { EditableCell } from './EditableCell';
+import { SelectCategoryCell } from './SelectCategoryCell';
 
 interface Props {
     handleClickOpen?: () => void;
@@ -50,7 +50,7 @@ export const TransactionsTable: React.FC<Props> = () => {
             {
                 Header: 'Category',
                 accessor: 'category.name',
-                Cell: EditableCell,
+                Cell: SelectCategoryCell,
             },
         ],
         [matches]

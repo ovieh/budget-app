@@ -104,6 +104,10 @@ export const ReusuableTable: React.FC<Props> = ({
         setCurrentPage(0);
     };
 
+    const selectedItems = selectedFlatRows.map(
+        (row: { original: { id: string } }) => row.original.id
+    );
+
     return (
         <TableContainer component={Paper}>
             <TableToolbar
@@ -112,6 +116,7 @@ export const ReusuableTable: React.FC<Props> = ({
                 globalFilter={globalFilter}
                 config={toolbarConfig}
                 numSelected={Object.keys(selectedRowIds).length}
+                selectedItems={selectedItems}
             />
             <Table {...getTableProps()}>
                 <TableHead>

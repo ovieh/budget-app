@@ -7,6 +7,7 @@ import { Box, makeStyles, Menu, MenuItem, Theme, Typography } from '@material-ui
 import { ToolbarConfig } from './ReusableTable';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import IconButton from '@material-ui/core/IconButton';
+import { SelectCategoryCell } from '../../pages/Transactions/Components/SelectCategoryCell';
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -21,6 +22,7 @@ interface Props {
     setGlobalFilter: (filter: string | undefined) => void;
     config?: ToolbarConfig;
     numSelected: number;
+    selectedItems: string[];
 }
 
 const TableToolbar = ({
@@ -29,6 +31,7 @@ const TableToolbar = ({
     setGlobalFilter,
     config = { title: '', checkboxes: false },
     numSelected,
+    selectedItems,
 }: Props) => {
     const classes = useStyles();
 
@@ -42,28 +45,12 @@ const TableToolbar = ({
         setAnchorEl(null);
     };
 
+    console.log(selectedItems);
+
     return (
         <Toolbar className={classes.root}>
             <Typography variant='h4'>{config.title}</Typography>
-            {numSelected > 0 && (
-                <Box className={classes.root}>
-                    <p>Add Category to Selected</p>
-                    <IconButton aria-label='delete' color='primary' onClick={handleClick}>
-                        <MenuOpenIcon />
-                    </IconButton>
-                    <Menu
-                        id='simple-menu'
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
-                    </Menu>
-                </Box>
-            )}
+            {numSelected > 0 && <SelectCategoryCell selectedItems={selectedItems} />}
             {config.search && numSelected === 0 && (
                 <GlobalFilter
                     preGlobalFilteredRows={preGlobalFilteredRows}
