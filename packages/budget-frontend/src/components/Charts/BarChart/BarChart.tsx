@@ -4,7 +4,6 @@ import {
     ResponsiveContainer,
     CartesianGrid,
     XAxis,
-    Label,
     YAxis,
     Bar,
     Legend,
@@ -31,8 +30,10 @@ const filterCategory = (entry: ChartProps) => {
 export const BarChart: React.FC<BarChartProps & LabelProps> = ({ data, value }) => {
     const notUncategorized = data!.filter((category: any) => filterCategory(category));
 
-    const highestBudget = data?.reduce((a: any, b: any) => (a.budget > b.budget ? a : b)) as any;
-    const yDomainMax = parseInt(highestBudget.budget.split('.')[0], 10) + 200;
+    const highestBudget = data?.reduce((a: any, b: any) =>
+        parseFloat(a.actual) > parseFloat(b.actual) ? a : b
+    ) as any;
+    const yDomainMax = parseInt(highestBudget.actual.split('.')[0], 10) + 200;
 
     return (
         <ResponsiveContainer>

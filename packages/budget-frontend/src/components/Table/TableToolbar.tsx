@@ -45,8 +45,6 @@ const TableToolbar = ({
         setAnchorEl(null);
     };
 
-    console.log(selectedItems);
-
     return (
         <Toolbar className={classes.root}>
             <Typography variant='h4'>{config.title}</Typography>

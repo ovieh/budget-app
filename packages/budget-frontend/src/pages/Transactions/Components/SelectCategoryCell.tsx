@@ -23,7 +23,7 @@ export const SelectCategoryCell: React.FC<SelectCategoryCellTypes> = ({
 }) => {
     const { data } = useCategoriesQuery();
     const [updateCategory] = useUpdateTransactionCategoryMutation();
-    const [value, setValue] = useState(initialValue);
+    const [value, setValue] = useState<string>(initialValue);
 
     const [categoryId, setCategoryId] = useState(0);
 
@@ -71,7 +71,7 @@ export const SelectCategoryCell: React.FC<SelectCategoryCellTypes> = ({
     };
 
     const onChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-        setValue(e.target.value as number);
+        setValue(e.target.value as string);
     };
 
     useEffect(() => {
@@ -92,11 +92,13 @@ export const SelectCategoryCell: React.FC<SelectCategoryCellTypes> = ({
             value={value}
             defaultValue={data?.getCategories[0].name}
         >
-            {data?.getCategories.map(({ id, name }) => (
-                <MenuItem value={name} key={name}>
-                    {name}
-                </MenuItem>
-            ))}
+            {data?.getCategories.map(({ name }) => {
+                return (
+                    <MenuItem value={name} key={name}>
+                        {name}
+                    </MenuItem>
+                );
+            })}
         </Select>
     );
 };
