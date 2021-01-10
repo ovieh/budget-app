@@ -66,7 +66,7 @@ export const Layout: React.FC<Props> = ({ children }) => {
 
                 <main className={classes.content}>{children}</main>
             </div>
-            <Hidden smUp>
+            <Hidden mdUp>
                 <BottomNavigation className={classes.bottomNavigation} />
             </Hidden>
         </div>
