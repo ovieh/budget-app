@@ -9,7 +9,9 @@ const connectionOptions =
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,
-  port: process.env.DATABASE_URL ? parseInt(connectionOptions.port, 10) : dbConfig.port,
+  port: process.env.DATABASE_URL
+    ? parseInt(connectionOptions.port, 10)
+    : dbConfig.port,
   host: process.env.DATABASE_URL ? connectionOptions.host : dbConfig.host,
   username: process.env.DATABASE_URL
     ? connectionOptions.user
@@ -28,4 +30,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   synchronize: true, //dbConfig.synchronize,
   // logging: ['error'],
   cache: false,
+  ssl: dbConfig.ssl,
 };

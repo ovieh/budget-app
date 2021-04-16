@@ -1,7 +1,6 @@
 server:
   origin: 'https://www.budgetapp.xyz'
 
-
 db:
   synchronize: false
-
+  ssl: { rejectUnauthorized: false }

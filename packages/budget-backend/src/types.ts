@@ -8,5 +8,6 @@ export interface IConfig {
     secret: string;
     secret2: string;
     type: 'postgres';
+    ssl: unknown;
   }
   
